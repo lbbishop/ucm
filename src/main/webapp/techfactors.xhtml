@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Project Technical Factors</ui:define>
+	<ui:define name="content">
+		
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+				<h:form id="form">
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}"/>
+					<div style="margin: 6px">
+						<h:outputText value="#{technicalFactorsAction.project.name}: Technical Factors" styleClass="header" />
+					</div>
+					<p:panelGrid id="editPanel" columns="2" columnClasses="left-300,left-300">
+						<f:facet name="header">
+							<h:outputText value="Technical Factors" styleClass="header" />
+						</f:facet>
+
+						<p:outputLabel for="tf1" value="Distributed Systems:" />
+						<p:selectOneMenu id="tf1" value="#{technicalFactorsAction.technicalFactors.tf1}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf2" value="Application Performance Objects:" />
+						<p:selectOneMenu id="tf2" value="#{technicalFactorsAction.technicalFactors.tf2}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf3" value="End User Efficiency (On-Line):" />
+						<p:selectOneMenu id="tf3" value="#{technicalFactorsAction.technicalFactors.tf3}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf4" value="Complex Internal Processing:" />
+						<p:selectOneMenu id="tf4" value="#{technicalFactorsAction.technicalFactors.tf4}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf5" value="Reusability:" />
+						<p:selectOneMenu id="tf5" value="#{technicalFactorsAction.technicalFactors.tf5}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf6" value="Installation Ease:" />
+						<p:selectOneMenu id="tf6" value="#{technicalFactorsAction.technicalFactors.tf6}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf7" value="Operational Ease, Usability:" />
+						<p:selectOneMenu id="tf7" value="#{technicalFactorsAction.technicalFactors.tf7}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf8" value="Portability:" />
+						<p:selectOneMenu id="tf8" value="#{technicalFactorsAction.technicalFactors.tf8}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf9" value="Changeability:" />
+						<p:selectOneMenu id="tf9" value="#{technicalFactorsAction.technicalFactors.tf9}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf10" value="Concurrency:" />
+						<p:selectOneMenu id="tf10" value="#{technicalFactorsAction.technicalFactors.tf10}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf11" value="Special Security Features:" />
+						<p:selectOneMenu id="tf11" value="#{technicalFactorsAction.technicalFactors.tf11}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf12" value="Provide Direct Access To Third Parties:" />
+						<p:selectOneMenu id="tf12" value="#{technicalFactorsAction.technicalFactors.tf12}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="tf13" value="Special User Training Facilities Required:" />
+						<p:selectOneMenu id="tf13" value="#{technicalFactorsAction.technicalFactors.tf13}" effect="fade" style="width:150px" required="true">
+							<f:selectItem itemLabel="Select Complexity" itemValue="" />
+							<f:selectItems value="#{tcfComplexityItems}" />
+						</p:selectOneMenu>
+						<f:facet name="footer">
+							<div style="text-align: right">
+								<p:commandButton value="OK" ajax="false" immediate="true" action="#{technicalFactorsAction.okay}" styleClass="center-75" title="Apply settings and close form" />
+								<p:spacer width="4" />
+								<p:button value="Cancel" outcome="/home.jsf?faces-redirect=true" styleClass="center-75" icon="ui-icon-close" title="Cancel form changes and close form" />
+								<p:spacer width="4" />
+								<p:commandButton value="Apply" action="#{technicalFactorsAction.apply}" styleClass="center-75" title="Apply form settings" />
+							</div>
+						</f:facet>
+
+					</p:panelGrid>
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+		
+		
+		
+	</ui:define>
+</ui:composition>

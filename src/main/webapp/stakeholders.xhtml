@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Project Stakeholders</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+
+					<div style="margin: 6px">
+						<h:outputText value="#{stakeholderAction.project.name}: Stakeholders" styleClass="header" />
+					</div>
+					<p:dataTable id="table" var="_stakeholder" scrollable="true" value="#{stakeholderAction.stakeholders}" scrollHeight="#{appManager.tableScrollHeight}" rowKey="#{_stakeholder.id}" selection="#{stakeholderAction.stakeholder}" selectionMode="single">
+						<p:ajax event="rowSelect" listener="#{stakeholderAction.onRowSelect}" update="editButton deleteButton :form:table:testButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+						<f:facet name="header">
+							<h:outputText value="#{stakeholderAction.project.name} Stakeholders" />
+						</f:facet>
+
+						<p:column style="width:50px;vertical-align:top" sortBy="#{_stakeholder.artifact}">
+							<f:facet name="header">
+								<h:outputText value="Id" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_stakeholder.artifact}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:150px;vertical-align:top" sortBy="#{_stakeholder.role}">
+							<f:facet name="header">
+								<h:outputText value="Stakeholder Role" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_stakeholder.role}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:150px;vertical-align:top">
+							<f:facet name="header">
+								<h:outputText value="Representative" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_stakeholder.representative}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:350px;vertical-align:top">
+							<f:facet name="header">
+								<h:outputText value="Responsibilities" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_stakeholder.responsibilities}" styleClass="wordWrap" style="font-size:0.9em" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton id="newButton" value="New Stakeholder" disabled="#{not stakeholderAction.editable}" update=":editForm:editPanel" action="#{stakeholderAction.add}" oncomplete="PF('editDialog').show()" title="New Stakeholder" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not stakeholderAction.selected or not stakeholderAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not stakeholderAction.selected or not stakeholderAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<p:spacer width="10" />
+							<p:button id="viewButton" value="View All" outcome="/stakeholderlist" icon="ui-icon-search" title="View or Print Stakeholder List">
+								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+								<f:param name="id" value="#{stakeholderAction.id}" />
+							</p:button>
+							<p:spacer width="20" />
+							<p:commandButton id="testButton" value="Take Survival Test" disabled="#{not stakeholderAction.editable}" action="#{stakeholderAction.initSurvivalTest}" update=":survivalTestForm:survivalTestTabView" oncomplete="PF('survivalTestDialog').show()" title="Take Project Survival Test" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="#{stakeholderAction.project.name}_stakeholders" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{stakeholderAction.close}" style="width:80px" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog header="Edit Stakeholder" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+
+			<h:form id="editForm">
+				<p:messages severity="error" />
+				<h:panelGrid id="editPanel" columns="2" cellpadding="4">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{stakeholderAction.stakeholder.artifact}" />
+
+					<p:outputLabel for="role" value="Stakeholder Role:" />
+					<p:inputText id="role" value="#{stakeholderAction.stakeholder.role}" size="50" maxlength="100" required="true" requiredMessage="Role is required" />
+
+					<p:outputLabel for="representative" value="Representative:" />
+					<p:inputText id="representative" value="#{stakeholderAction.stakeholder.representative}" size="80" maxlength="80" required="true" requiredMessage="Representative is required" />
+
+					<p:outputLabel for="responsibilities" value="Responsibilities:" />
+					<p:inputTextarea id="responsibilities" value="#{stakeholderAction.stakeholder.responsibilities}" rows="3" cols="80" required="true" requiredMessage="Responsibilities required" />
+
+					<p:outputLabel for="involvement" value="Involvement:" />
+					<p:inputTextarea id="involvement" value="#{stakeholderAction.stakeholder.involvement}" rows="3" cols="80" />
+
+					<p:outputLabel for="deliverables" value="Deliverables:" />
+					<p:inputTextarea id="deliverables" value="#{stakeholderAction.stakeholder.deliverables}" rows="3" cols="80" />
+
+					<p:outputLabel for="comments" value="Comments:" />
+					<p:inputTextarea id="comments" value="#{stakeholderAction.stakeholder.comments}" rows="3" cols="80" />
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{stakeholderAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Survival Test" widgetVar="survivalTestDialog" minWidth="600" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="survivalTestForm">
+				<p:tabView id="survivalTestTabView">
+					<p:tab title="Requirements">
+						<p:panelGrid columns="2" columnClasses="left-700,left">
+							<f:facet name="header">
+								Requirements
+							</f:facet>
+							<p:outputLabel for="q1Select" value="1. #{msg.survivalQuestion1}" />
+							<p:selectOneMenu id="q1Select" style="width:140px" value="#{stakeholderAction.survivalTest.question1}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q2Select" value="2. #{msg.survivalQuestion2}" />
+							<p:selectOneMenu id="q2Select" style="width:140px" value="#{stakeholderAction.survivalTest.question2}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q3Select" value="3. #{msg.survivalQuestion3}" />
+							<p:selectOneMenu id="q3Select" style="width:140px" value="#{stakeholderAction.survivalTest.question3}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q4Select" value="4. #{msg.survivalQuestion4}" />
+							<p:selectOneMenu id="q4Select" style="width:140px" value="#{stakeholderAction.survivalTest.question4}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q5Select" value="5. #{msg.survivalQuestion5}" />
+							<p:selectOneMenu id="q5Select" style="width:140px" value="#{stakeholderAction.survivalTest.question5}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q6Select" value="6. #{msg.survivalQuestion6}" />
+							<p:selectOneMenu id="q6Select" style="width:140px" value="#{stakeholderAction.survivalTest.question6}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:tab>
+
+					<p:tab title="Planning">
+						<p:panelGrid columns="2" columnClasses="left-700,left">
+							<f:facet name="header">
+								Planning
+							</f:facet>
+
+							<p:outputLabel for="q7Select" value="7. #{msg.survivalQuestion7}" />
+							<p:selectOneMenu id="q7Select" style="width:140px" value="#{stakeholderAction.survivalTest.question7}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q8Select" value="8. #{msg.survivalQuestion8}" />
+							<p:selectOneMenu id="q8Select" style="width:140px" value="#{stakeholderAction.survivalTest.question8}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q9Select" value="9. #{msg.survivalQuestion9}" />
+							<p:selectOneMenu id="q9Select" style="width:140px" value="#{stakeholderAction.survivalTest.question9}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q10Select" value="10. #{msg.survivalQuestion10}" />
+							<p:selectOneMenu id="q10Select" style="width:140px" value="#{stakeholderAction.survivalTest.question10}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q11Select" value="11. #{msg.survivalQuestion11}" />
+							<p:selectOneMenu id="q11Select" style="width:140px" value="#{stakeholderAction.survivalTest.question11}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q12Select" value="12. #{msg.survivalQuestion12}" />
+							<p:selectOneMenu id="q12Select" style="width:140px" value="#{stakeholderAction.survivalTest.question12}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q13Select" value="13. #{msg.survivalQuestion13}" />
+							<p:selectOneMenu id="q13Select" style="width:140px" value="#{stakeholderAction.survivalTest.question13}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q14Select" value="14. #{msg.survivalQuestion14}" />
+							<p:selectOneMenu id="q14Select" style="width:140px" value="#{stakeholderAction.survivalTest.question14}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="Project Control">
+
+						<p:panelGrid columns="2" columnClasses="left-700,left">
+							<f:facet name="header">
+								Project Control
+							</f:facet>
+
+							<p:outputLabel for="q15Select" value="15. #{msg.survivalQuestion15}" />
+							<p:selectOneMenu id="q15Select" style="width:140px" value="#{stakeholderAction.survivalTest.question15}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q16Select" value="16. #{msg.survivalQuestion16}" />
+							<p:selectOneMenu id="q16Select" style="width:140px" value="#{stakeholderAction.survivalTest.question16}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q17Select" value="17. #{msg.survivalQuestion17}" />
+							<p:selectOneMenu id="q17Select" style="width:140px" value="#{stakeholderAction.survivalTest.question17}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q18Select" value="18. #{msg.survivalQuestion18}" />
+							<p:selectOneMenu id="q18Select" style="width:140px" value="#{stakeholderAction.survivalTest.question18}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q19Select" value="19. #{msg.survivalQuestion19}" />
+							<p:selectOneMenu id="q19Select" style="width:140px" value="#{stakeholderAction.survivalTest.question19}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q20Select" value="20. #{msg.survivalQuestion20}" />
+							<p:selectOneMenu id="q20Select" style="width:140px" value="#{stakeholderAction.survivalTest.question20}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q21Select" value="21. #{msg.survivalQuestion21}" />
+							<p:selectOneMenu id="q21Select" style="width:140px" value="#{stakeholderAction.survivalTest.question21}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q22Select" value="22. #{msg.survivalQuestion22}" />
+							<p:selectOneMenu id="q22Select" style="width:140px" value="#{stakeholderAction.survivalTest.question22}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q23Select" value="23. #{msg.survivalQuestion23}" />
+							<p:selectOneMenu id="q23Select" style="width:140px" value="#{stakeholderAction.survivalTest.question23}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q24Select" value="24. #{msg.survivalQuestion24}" />
+							<p:selectOneMenu id="q24Select" style="width:140px" value="#{stakeholderAction.survivalTest.question24}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+					</p:tab>
+
+					<p:tab title="Project Risk">
+
+						<p:panelGrid columns="2" columnClasses="left-700,left">
+							<f:facet name="header">
+								Project Risk
+							</f:facet>
+							<p:outputLabel for="q25Select" value="25. #{msg.survivalQuestion25}" />
+							<p:selectOneMenu id="q25Select" style="width:140px" value="#{stakeholderAction.survivalTest.question25}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q26Select" value="26. #{msg.survivalQuestion26}" />
+							<p:selectOneMenu id="q26Select" style="width:140px" value="#{stakeholderAction.survivalTest.question26}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q27Select" value="27. #{msg.survivalQuestion27}" />
+							<p:selectOneMenu id="q27Select" style="width:140px" value="#{stakeholderAction.survivalTest.question27}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:tab>
+
+					<p:tab title="Personnel">
+
+						<p:panelGrid columns="2" columnClasses="left-700,left">
+							<f:facet name="header">
+								Personnel
+							</f:facet>
+
+							<p:outputLabel for="q28Select" value="28. #{msg.survivalQuestion28}" />
+							<p:selectOneMenu id="q28Select" style="width:140px" value="#{stakeholderAction.survivalTest.question28}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q29Select" value="29. #{msg.survivalQuestion29}" />
+							<p:selectOneMenu id="q29Select" style="width:140px" value="#{stakeholderAction.survivalTest.question29}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q30Select" value="30. #{msg.survivalQuestion30}" />
+							<p:selectOneMenu id="q30Select" style="width:140px" value="#{stakeholderAction.survivalTest.question30}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q31Select" value="31. #{msg.survivalQuestion31}" />
+							<p:selectOneMenu id="q31Select" style="width:140px" value="#{stakeholderAction.survivalTest.question31}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q32Select" value="32. #{msg.survivalQuestion32}" />
+							<p:selectOneMenu id="q32Select" style="width:140px" value="#{stakeholderAction.survivalTest.question32}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="q33Select" value="33. #{msg.survivalQuestion33}" />
+							<p:selectOneMenu id="q33Select" style="width:140px" value="#{stakeholderAction.survivalTest.question33}" required="true">
+								<f:selectItem itemLabel="Select Answer" itemValue="" />
+								<f:selectItems value="#{survivalTestItems}" />
+							</p:selectOneMenu>
+
+
+						</p:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+				<div style="text-align: right; margin: 10px">
+					<p:commandButton value="Save" update=":survivalTestForm:survivalTestTabView" actionListener="#{stakeholderAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+					<p:spacer width="6" />
+					<p:commandButton value="Cancel" onclick="PF('survivalTestDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{stakeholderAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="center-50" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog header="Stakeholder Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
+			<h:panelGrid id="helpPanel" columns="1">
+				<h:outputLabel value="Stakeholder help content:" escape="false" />
+			</h:panelGrid>
+		</p:dialog>
+
+		
+		
+	</ui:define>
+</ui:composition>

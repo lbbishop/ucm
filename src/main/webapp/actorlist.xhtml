@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Use Case Actors</ui:define>
+
+	<ui:define name="content">
+		
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}" />
+
+			<p:layoutUnit position="center">
+
+				<h:form id="form">
+
+					<div style="text-align: right; margin: 10px">
+						<h:link value="Close" outcome="/actors" styleClass="center-75" icon="ui-icon-close" title="Close view">
+							<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+							<f:param name="id" value="#{actorAction.id}" />
+						</h:link>
+						<p:spacer width="10" />
+						<h:commandLink value="Print">
+							<p:printer target=":form:table" />
+						</h:commandLink>
+					</div>
+
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+
+					<p:dataTable id="table" emptyMessage="No Actors Defined" resizableColumns="true" var="_actor" value="#{actorAction.actors}">
+
+						<f:facet name="header">
+							#{actorAction.project.name}: UseCase Actors (#{projectSecurityMarking})
+						</f:facet>
+
+						<p:column headerText="Id" style="width:40px;vertical-align:top" sortBy="#{_actor.artifact}">
+							<h:outputText value="#{_actor.artifact}" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column headerText="Actor Name" style="width:100px;vertical-align:top">
+							<h:outputText value="#{_actor.name}" styleClass="wordWrap" escape="false" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column headerText="Complexity" style="width:70px;vertical-align:top" sortBy="#{_actor.complexityLabel}">
+							<h:outputText value="#{_actor.complexityLabel}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column headerText="Responsibilities" style="width:280px">
+							<h:outputText value="#{_actor.responsibilities}" styleClass="wordWrap" escape="false" style="font-size:0.9em"/>
+						</p:column>
+
+					</p:dataTable>
+
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+
+					<div style="text-align: right; margin: 10px">
+						<h:link value="Close" outcome="/actors" styleClass="center-75" icon="ui-icon-close" title="Close view">
+							<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+							<f:param name="id" value="#{actorAction.id}" />
+						</h:link>
+						<p:spacer width="10" />
+						<h:commandLink value="Print">
+							<p:printer target=":form:table" />
+						</h:commandLink>
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+	</ui:define>
+</ui:composition>

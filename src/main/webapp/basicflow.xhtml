@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">UseCase Flow</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleEditDialogComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		function handleFlowDialogComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('flowDialog').hide();
+		}		
+		function handleRuleDialogComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('ruleDialog').hide();
+		}	
+		</script>
+
+
+
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}" />
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<div style="text-align: right; margin: 10px">
+						<h:commandLink value="Close" action="#{useCaseFlowAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+						<p:spacer width="10" />
+						<h:commandLink value="Print">
+							<p:printer target=":form:flowPanel" />
+						</h:commandLink>
+					</div>
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					<div style="margin: 10px">
+						<h:outputText value="UseCase Basic Flow" styleClass="header" />
+					</div>
+					<p:panel id="flowPanel" header="#{useCaseFlowAction.project.name}: #{useCaseFlowAction.useCase.identifierName}">
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<h:panelGrid columns="2" columnClasses="left,left">
+							<p:panelGrid columns="2" columnClasses="left-140,left-500">
+								<h:outputLabel for="useCaseFlow" value="Flow Name: " style="font-weight:bold" />
+								<h:outputText id="useCaseFlow" value="#{useCaseFlowAction.useCase.basicFlow.name}" style="font-weight:bold" />
+
+								<h:outputLabel for="objective" value="Objective: " />
+								<h:outputText id="objective" value="#{useCaseFlowAction.useCase.objective}" />
+
+								<h:outputLabel for="primaryActor" value="Primary Actor: " />
+								<h:outputText id="primaryActor" value="#{useCaseFlowAction.useCase.primaryActor.name}" />
+
+								<h:outputLabel for="triggerEvent" value="Trigger Event: " />
+								<h:outputText id="triggerEvent" value="#{useCaseFlowAction.useCase.triggerEvent}" />
+
+								<h:outputLabel for="preConditions" value="Preconditions: " />
+								<h:outputText id="preConditions" value="#{useCaseFlowAction.useCase.preconditions}" />
+
+								<h:outputLabel for="extendedFlow" value="Extended Flow: " />
+								<h:outputText id="extendedFlow" value="#{useCaseFlowAction.useCase.extendedFlow.name}" />
+
+								<h:outputLabel for="productRelease" value="Product Release: " />
+								<h:outputText id="productRelease" value="#{useCaseFlowAction.useCase.productRelease.version}" />
+							</p:panelGrid>
+
+							<h:panelGrid columns="1" columnClasses="left">
+								<p:outputLabel value="Alternative Flows:" />
+								<h:panelGrid columns="2" columnClasses="left,left">
+									<p:selectOneMenu id="alternativeFlows" value="#{useCaseFlowAction.selectedAlternativeFlow}" converter="#{flowConverter}" style="width:350px" effect="fade">
+										<f:selectItem itemLabel="Select Alternative Flow" itemValue="" />
+										<f:selectItems value="#{useCaseFlowAction.alternativeFlows}" var="flow" itemLabel="#{flow.name}" itemValue="#{flow}" />
+										<p:ajax update="altFlowEditButton" />
+									</p:selectOneMenu>
+									<p:button id="altFlowEditButton" value="Edit" outcome="/alternativeflow">
+										<f:param name="id" value="#{useCaseFlowAction.selectedAlternativeFlow.id}" />
+									</p:button>
+								</h:panelGrid>
+							</h:panelGrid>
+						</h:panelGrid>
+
+						<p:spacer height="10" />
+
+						<p:dataTable id="table" emptyMessage="No Flow Steps Defined" resizableColumns="true" var="_step" value="#{useCaseFlowAction.basicFlow.flowSteps}" selectionMode="single" rowKey="#{_step.id}" selection="#{useCaseFlowAction.basicFlowStep}">
+							<p:ajax event="rowSelect" listener="#{useCaseFlowAction.onBasicFlowRowSelect}" update="editButton deleteButton insertButton addRuleButton addFlowButton" />
+
+							<f:facet name="header">
+								<h:outputText value="#{useCaseFlowAction.useCase.basicFlow.name}" />
+							</f:facet>
+
+							<p:column style="width:30px;vertical-align: top;">
+								<f:facet name="header">
+									<h:outputText value="Step" style="font-size:0.95em" />
+								</f:facet>
+								<h:outputText value="#{_step.stepNumber}" />
+							</p:column>
+
+							<p:column style="width:80px;vertical-align: top;">
+								<f:facet name="header">
+									<h:outputText value="Actor" style="font-size:0.95em" />
+								</f:facet>
+								<h:outputText value="#{_step.actor.name}" />
+							</p:column>
+
+							<p:column style="width:400px">
+								<f:facet name="header">
+									<h:outputText value="Action Description" style="font-size:0.95em" />
+								</f:facet>
+								<h:outputText id="actionDescription" value="#{_step.actionDescription}" escape="false" styleClass="wordWrap" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
+								<p:spacer width="4" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" styleClass="center-75" oncomplete="PF('editDialog').show()" title="Edit flow step" />
+								<p:spacer width="4" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-close" styleClass="center-75" onclick="PF('cd').show()" title="Delete selected basic flow step" />
+								<p:spacer width="4" />
+								<p:commandButton id="insertButton" value="Insert" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.insertFlowStep}" styleClass="center-75" oncomplete="PF('editDialog').show()"
+									title="Insert new step above selection" />
+								<p:spacer width="4" />
+								<p:commandButton id="addFlowButton" value="Add Alternative Flow" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":flowForm:flowPanel" action="#{useCaseFlowAction.addAlternativeFlow}" oncomplete="PF('flowDialog').show()"
+									title="Add new Alternative Flow" />
+								<p:spacer width="4" />
+								<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":ruleForm:rulePanel" action="#{useCaseFlowAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()"
+									title="Add new Business Rule at selected step" />
+								<p:spacer width="4" />
+							</f:facet>
+						</p:dataTable>
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+					</p:panel>
+
+					<div style="text-align: right; margin: 10px">
+						<h:commandLink value="Close" action="#{useCaseFlowAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+						<p:spacer width="10" />
+						<h:commandLink value="Print">
+							<p:printer target=":form:flowPanel" />
+						</h:commandLink>
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog header="Edit Flow Step" widgetVar="editDialog" resizable="true" modal="true" position="25,25">
+			<h:form id="editForm">
+				<p:messages id="editMessages" severity="error" />
+				<h:panelGrid id="editPanel" columns="2" columnClasses="left-100,left">
+
+					<h:outputLabel for="stepNumber" value="Step:" />
+					<h:outputText id="stepNumber" value="#{useCaseFlowAction.basicFlowStep.stepNumber}" />
+
+					<p:outputLabel for="actorSelect" value="Actor:" />
+					<p:selectOneMenu id="actorSelect" value="#{useCaseFlowAction.basicFlowStep.actor}" converter="#{actorConverter}" style="width:160px" effect="fade" title="The actor interacting with the system" required="true" requiredMessage="Actor is required">
+						<f:selectItem itemLabel="Select Actor" itemValue="" />
+						<f:selectItems value="#{projectActors}" var="actor" itemLabel="#{actor.name}" itemValue="#{actor}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="action" value="Action:" />
+					<pe:ckEditor id="action" value="#{useCaseFlowAction.basicFlowStep.actionDescription}" width="800px" height="400px" toolbar="#{toolbarControls}" label="Action Description" required="true" requiredMessage="Action is required">
+						<p:ajax event="save" listener="#{useCaseFlowAction.saveBasicFlow}" update=":form:messages" />
+					</pe:ckEditor>
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="#{msg.buttonSave}" actionListener="#{useCaseFlowAction.saveBasicFlow}" update="@(form)" styleClass="center-75" oncomplete="handleEditDialogComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="#{msg.buttonCancel}" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" styleClass="center-75" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Alternative Flow" widgetVar="flowDialog" resizable="true" modal="true">
+			<h:form id="flowForm">
+				<p:messages id="flowMessages" severity="error" />
+				<h:panelGrid id="flowPanel" columns="2" columnClasses="left-100,left">
+
+					<h:outputLabel for="beginStep" value="Begin Step:" />
+					<h:outputText id="beginStep" value="#{useCaseFlowAction.alternativeFlow.startStep}" />
+
+					<p:outputLabel for="flowName" value="Flow Name:" />
+					<p:inputText id="flowName" value="#{useCaseFlowAction.alternativeFlow.name}" size="80" maxlength="100" required="true" requiredMessage="Flow Name is required" />
+
+					<p:outputLabel for="endStep" value="End Step:" />
+					<p:spinner id="endStep" value="#{useCaseFlowAction.alternativeFlow.endStep}" maxlength="4" size="4" min="0" max="#{useCaseFlowAction.useCase.basicFlow.flowSteps.size()}" />
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton id="saveFlowButton" value="Save" actionListener="#{useCaseFlowAction.saveAlternativeFlow}" update=":form:messages :form:alternativeFlows" oncomplete="handleFlowDialogComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('flowDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Edit Business Rule" widgetVar="ruleDialog" minWidth="750" resizable="true" modal="true" styleClass="modalDialog" position="25,25">
+			<h:form id="ruleForm">
+				<p:messages id="ruleMessages" severity="error" />
+				<h:panelGrid id="rulePanel" columns="2" columnClasses="left-100,left">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{useCaseFlowAction.flowStepRule.artifact}" />
+
+					<h:outputLabel for="atStep" value="At Step:" />
+					<h:outputText id="atStep" value="#{useCaseFlowAction.basicFlowStep.stepNumber}" />
+
+					<p:outputLabel for="ruleName" value="Rule Name:" />
+					<p:inputText id="ruleName" value="#{useCaseFlowAction.flowStepRule.name}" size="80" maxlength="100" label="Name" required="true" requiredMessage="Rule Name is required" />
+
+					<p:outputLabel for="rule" value="Business Rule:" />
+					<pe:ckEditor id="rule" value="#{useCaseFlowAction.flowStepRule.rule}" width="800px" height="160px" toolbar="#{toolbarControls}" label="Action Description" required="true" requiredMessage="Action is required">
+						<p:ajax event="save" listener="#{useCaseFlowAction.saveBusinessRule}" update=":form:messages" />
+					</pe:ckEditor>
+
+					<p:outputLabel for="ruleType" value="Rule Type:" />
+					<p:selectOneMenu id="ruleType" value="#{useCaseFlowAction.flowStepRule.ruleType}" effect="fade">
+						<f:selectItem itemLabel="Select Rule Type" itemValue="" />
+						<f:selectItems value="#{ruleTypes}" var="_rule" itemValue="#{_rule}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="ruleStatus" value="Status:" />
+					<p:selectOneMenu id="ruleStatus" value="#{useCaseFlowAction.flowStepRule.statusType}" effect="fade" required="true">
+						<f:selectItem itemLabel="Select Status" itemValue="" />
+						<f:selectItems value="#{statusTypes}" var="_status" itemValue="#{_status}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="implementation" value="Implementation: " />
+					<pe:ckEditor id="implementation" value="#{useCaseFlowAction.flowStepRule.implementation}" width="800px" height="160px" toolbar="#{toolbarControls}" label="Action Description" required="true" requiredMessage="Action is required">
+						<p:ajax event="save" listener="#{useCaseFlowAction.saveBusinessRule}" update=":form:messages" />
+					</pe:ckEditor>
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton id="saveButton" value="Save" update="ruleForm :form:messages" actionListener="#{useCaseFlowAction.saveBusinessRule}" oncomplete="handleRuleDialogComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('ruleDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update=":form:table :form:messages" styleClass="center-50" actionListener="#{useCaseFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" styleClass="center-50" onclick="PF('cd').hide()" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+	</ui:define>
+</ui:composition>

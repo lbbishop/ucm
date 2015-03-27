@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Alternative Flows</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleEditDialogComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		function handleRuleDialogComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('ruleDialog').hide();
+		}	
+		</script>
+
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+
+					<div style="margin: 6px">
+						<h:outputText value="#{alternativeFlowAction.project.name}: #{alternativeFlowAction.useCase.identifierName}" styleClass="header" />
+					</div>
+					<p:panelGrid columns="2" columnClasses="left-140,left-600">
+
+						<h:outputLabel for="objective" value="Objective: " />
+						<h:outputText id="objective" value="#{alternativeFlowAction.useCase.objective}" />
+
+						<h:outputLabel for="primaryActor" value="Primary Actor: " />
+						<h:outputText id="primaryActor" value="#{alternativeFlowAction.useCase.primaryActor.name}" />
+
+						<h:outputLabel for="triggerEvent" value="Trigger Event: " />
+						<h:outputText id="triggerEvent" value="#{alternativeFlowAction.useCase.triggerEvent}" />
+
+						<h:outputLabel for="basicFlow" value="Basic Flow: " />
+						<h:outputText id="basicFlow" value="#{alternativeFlowAction.useCase.basicFlow.name}" />
+
+						<h:outputLabel for="productRelease" value="Product Release: " />
+						<h:outputText id="productRelease" value="#{alternativeFlowAction.useCase.productRelease.version}" />
+
+					</p:panelGrid>
+
+					<p:spacer height="10" />
+
+					<p:dataTable id="table" emptyMessage="No Flows Defined" resizableColumns="true" scrollable="true" scrollHeight="350" var="flow" value="#{alternativeFlowAction.useCase.alternativeFlows}" selectionMode="single" rowKey="#{flow.id}" selection="#{alternativeFlowAction.alternativeFlow}">
+						<p:ajax event="rowSelect" listener="#{alternativeFlowAction.onRowSelect}" update="deleteButton editButton" />
+
+						<f:facet name="header">
+							<h:outputText value="UseCase Alternative Flows" />
+						</f:facet>
+
+						<p:column style="width:250px">
+							<f:facet name="header">
+								<h:outputText value="Name" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{flow.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:80px">
+							<f:facet name="header">
+								<h:outputText value="Begin Step" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText id="beginStep" value="#{flow.startStep}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:80px">
+							<f:facet name="header">
+								<h:outputText value="End Step" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText id="endStep" value="#{flow.endStep}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:50px">
+							<f:facet name="header">
+								<h:outputText value="Steps" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText id="numSteps" value="#{flow.flowSteps.size()}" style="font-size:0.9em" />
+						</p:column>
+
+
+						<f:facet name="footer">
+							<p:button id="editButton" value="Edit" outcome="/alternativeflow" styleClass="center-75" disabled="#{not alternativeFlowAction.selected or not alternativeFlowAction.editable}" icon="ui-icon-pencil" title="Edit Alternative Flow">
+								<f:param name="id" value="#{alternativeFlowAction.alternativeFlow.id}" />
+								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+							</p:button>
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not alternativeFlowAction.selected or not alternativeFlowAction.editable}" styleClass="center-75" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete selected basic flow step" />
+							<p:spacer width="6" />
+
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="usecaseflow" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{alternativeFlowAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{alternativeFlowAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="center-50" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+		
+		
+
+	</ui:define>
+</ui:composition>

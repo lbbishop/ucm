@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Stakeholder Requests</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+		
+		<!-- Default ajaxErrorHandler -->
+		<pe:ajaxErrorHandler />
+		
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+
+					<div style="margin: 6px">
+						<h:outputText value="#{stakeholderRequestAction.project.name}: Stakeholder Requests" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No Requests Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_stakeholderRequest" value="#{stakeholderRequestAction.stakeholderRequests}" selectionMode="single" rowKey="#{_stakeholderRequest.id}"
+						selection="#{stakeholderRequestAction.stakeholderRequest}">
+						<p:ajax event="rowSelect" listener="#{stakeholderRequestAction.onRowSelect}" update="editButton deleteButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+						<f:facet name="header">
+							<h:outputText value="Stakeholder Requests"/>
+						</f:facet>
+
+						<p:column style="width:50px" sortBy="#{_stakeholderRequest.artifact}">
+							<f:facet name="header">
+								<h:outputText value="Id" style="font-size:0.93em" />
+							</f:facet>							
+							<h:outputText value="#{_stakeholderRequest.artifact}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:400px">
+							<f:facet name="header">
+								<h:outputText value="Stakeholder Request" style="font-size:0.93em" />
+							</f:facet>							
+							<h:outputText value="#{_stakeholderRequest.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column  style="width:150px" sortBy="#{_stakeholderRequest.stakeholder.role}">
+							<f:facet name="header">
+								<h:outputText value="Stakeholder Role" style="font-size:0.93em" />
+							</f:facet>							
+							<h:outputText value="#{_stakeholderRequest.stakeholder.role}" style="font-size:0.9em" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="New StakeholderRequest" disabled="#{not stakeholderRequestAction.editable}" update=":editForm:editPanel" action="#{stakeholderRequestAction.add}" oncomplete="PF('editDialog').show()" title="New StakeholderRequest" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not stakeholderRequestAction.selected or not stakeholderRequestAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not stakeholderRequestAction.selected or not stakeholderRequestAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<p:button id="viewButton" value="View All" outcome="/stakeholderrequestlist" icon="ui-icon-search" title="View or Print Stakeholder Requests">
+								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+								<f:param name="id" value="#{stakeholderRequestAction.id}" />
+							</p:button>
+							<p:spacer width="10" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="#{stakeholderRequestAction.project.name}_requests" orientation="landscape"/>
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{stakeholderRequestAction.close}" style="width:80px" title="Close view" />
+					</div>
+
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog id="dialog" header="Edit StakeholderRequest" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="editForm">
+				<p:messages severity="error" />
+				<h:panelGrid id="editPanel" columns="3" columnClasses="left-120,left-500,left">
+
+					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="The artifact identifier" />
+					<h:outputText id="identifier" value="#{stakeholderRequestAction.stakeholderRequest.artifact}" />
+					<pe:tooltip for="identifierLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="nameLabel" for="name" value="Name:" title="A brief, descriptive title for the stakeholder need" />
+					<p:inputText id="name" value="#{stakeholderRequestAction.stakeholderRequest.name}" size="90" maxlength="100" requiredMessage="Name is required" required="true" />
+					<pe:tooltip for="nameLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="Provide a detailed description of the stakeholder need" />
+					<p:editor id="description" value="#{stakeholderRequestAction.stakeholderRequest.description}" style="width:500px" width="500" height="300" controls="#{editorControls}" requiredMessage="Description is required" required="true" />
+					<pe:tooltip for="descriptionLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="stakeholderLabel" for="stakeholder" value="Stakeholder:" title="The stakeholder making this request" />
+					<p:selectOneMenu id="stakeholder" value="#{stakeholderRequestAction.stakeholderRequest.stakeholder}" style="width:200px" converter="#{stakeholderConverter}" effect="fade">
+						<f:selectItem itemLabel="Select Stakeholder" itemValue="" />
+						<f:selectItems value="#{projectStakeholders}" var="stk" itemLabel="#{stk.role}" itemValue="#{stk}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="stakeholderLabel" styleClass="customTooltip" />
+
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{stakeholderRequestAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{stakeholderRequestAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="center-50" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog header="StakeholderRequest Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
+			<h:panelGrid id="helpPanel" columns="1">
+				<h:outputText value="StakeholderRequest help content:" escape="false" />
+			</h:panelGrid>
+		</p:dialog>
+		
+		
+
+	</ui:define>
+</ui:composition>

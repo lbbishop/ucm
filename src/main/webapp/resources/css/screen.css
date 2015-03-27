@@ -1,0 +1,429 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
+ * contributors by the @authors tag. See the copyright.txt in the
+ * distribution for a full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* Core styles for the page */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #F1F1F1;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size: 0.8em;
+  color:#363636;
+}
+
+#container {
+  margin: 0 auto;
+  padding: 0 20px 10px 20px;
+  border-top: 5px solid #000000;
+  border-left: 5px solid #8c8f91;
+  border-right: 5px solid #8c8f91;
+  border-bottom: 25px solid #8c8f91;
+  width: 865px; /* subtract 40px from banner width for padding */
+  background: #FFFFFF;
+  background-image: url(#{request.contextPath}/resources/gfx/headerbkg.png);
+  background-repeat: repeat-x;
+  padding-top: 30px;
+  box-shadow: 3px 3px 15px #d5d5d5;
+}
+#content {
+  float: left;
+  width: 500px;
+  margin: 20px;
+}
+#aside {
+  font-size: 0.9em;
+  width: 275px;
+  float: left;
+  margin: 20px 0px;
+  border: 1px solid #D5D5D5;
+  background: #F1F1F1;
+  background-image: url(#{request.contextPath}/resources/gfx/asidebkg.png);
+  background-repeat: repeat-x;
+  padding: 20px;
+}
+
+#aside ul {
+  padding-left: 30px;
+}
+.dualbrand {
+  float: right;
+  padding-right: 10px;
+}
+#footer {
+  clear: both;
+  text-align: center;
+  color: #666666;
+  font-size: 0.85em;
+}
+code {
+  font-size: 1.1em;
+}
+a {
+  color: #4a5d75;
+  text-decoration: none;
+}
+a:hover {
+  color: #369;
+  text-decoration: underline;
+}
+h1 {
+  color:#243446;
+  font-size: 2.25em;
+}
+h2 {
+  font-size: 1em;
+}
+h3 {
+  color:#243446;
+}
+h4 {
+}
+h5 {
+}
+h6 {
+}
+/* Member registration styles */
+span.invalid {
+  padding-left: 3px;
+  color: red;
+}
+form {
+  padding: 1em;
+  font: 80%/1 sans-serif;
+  width: 375px;
+  border: 1px solid #D5D5D5;
+}
+label {
+  float: left;
+  width: 15%;
+  margin-left: 20px;
+  margin-right: 0.5em;
+  padding-top: 0.2em;
+  text-align: right;
+  font-weight: bold;
+  color:#363636;
+}
+input {
+  margin-bottom: 8px;
+}
+.register {
+  float: left;
+  margin-left: 85px;
+}
+
+/*  -----  table style  -------  */
+
+
+/*  = Simple Table style (black header, grey/white stripes  */
+
+.simpletablestyle {
+  background-color:#E6E7E8;
+  clear:both;
+  width: 550px;
+}
+
+.simpletablestyle img {
+  border:0px;
+}
+
+.simpletablestyle td {
+  height:2em;
+  padding-left: 6px;
+  font-size:11px;
+  padding:5px 5px;
+}
+
+.simpletablestyle th {
+	background: url(#{request.contextPath}/resources/gfx/bkg-blkheader.png) black repeat-x top left;
+  font-size:12px;
+  font-weight:normal;
+  padding:0 10px 0 5px;
+  border-bottom:#999999 dotted 1px;
+}
+
+.simpletablestyle thead {
+  background: url(#{request.contextPath}/resources/gfx/bkg-blkheader.png) black repeat-x top left;
+  height:31px;
+  font-size:10px;
+  font-weight:bold;
+  color:#FFFFFF;
+  text-align:left;
+}
+
+.simpletablestyle .header a {
+  color:#94aebd;
+}
+
+.simpletablestype tfoot {
+	height: 20px;
+  font-size: 10px;
+  font-weight: bold;
+  background-color: #EAECEE;
+  text-align: center;
+}
+
+.simpletablestyle tr.header td {
+  padding: 0px 10px 0px 5px;
+}
+
+
+.simpletablestyle .subheader {
+  background-color: #e6e7e8;
+  font-size:10px;
+  font-weight:bold;
+  color:#000000;
+  text-align:left;
+}
+
+/* Using new CSS3 selectors for styling*/
+.simpletablestyle tr:nth-child(odd) {
+  background: #f4f3f3;
+}
+.simpletablestyle tr:nth-child(even) {
+  background: #ffffff;
+}
+
+.simpletablestyle td a:hover {
+  color:#3883ce;
+  text-decoration:none; 
+}
+
+.header {
+	font-weight: bold;
+	font-size: 1.3em
+}
+
+.subheader {
+	font-weight: bold;
+	font-size: 1.1em
+}
+
+.dataTable {
+	width: 100%;
+	word-wrap: break-all;
+	table-layout: fixed;
+}
+
+.wordWrap {
+	text-align: justify;
+	white-space: normal;
+	word-wrap: break-all;
+}
+
+.center-50 {
+	text-align: center;
+	width: 50px;
+}
+
+.center-75 {
+	text-align: center;
+	width: 75px;
+}
+
+.left {
+	text-align: left;
+	vertical-align: top;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-25 {
+	text-align: left;
+	vertical-align: top;
+	width: 25px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-90 {
+	text-align: left;
+	vertical-align: top;
+	width: 90px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-50 {
+	text-align: left;
+	vertical-align: top;
+	width: 50px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-75 {
+	text-align: left;
+	vertical-align: top;
+	width: 75px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-100 {
+	text-align: left;
+	vertical-align: top;
+	width: 100px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-120 {
+	text-align: left;
+	vertical-align: top;
+	width: 120px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-140 {
+	text-align: left;
+	vertical-align: top;
+	width: 140px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-160 {
+	text-align: left;
+	vertical-align: top;
+	width: 160px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-180 {
+	text-align: left;
+	vertical-align: top;
+	width: 180px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-200 {
+	text-align: left;
+	vertical-align: top;
+	width: 200px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-250 {
+	text-align: left;
+	vertical-align: top;
+	width: 250px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-300 {
+	text-align: left;
+	vertical-align: top;
+	width: 300px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-400 {
+	text-align: left;
+	vertical-align: top;
+	width: 400px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-450 {
+	text-align: left;
+	vertical-align: top;
+	width: 450px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-500 {
+	text-align: left;
+	vertical-align: top;
+	width: 500px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-600 {
+	text-align: left;
+	vertical-align: top;
+	width: 600px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-700 {
+	text-align: left;
+	vertical-align: top;
+	width: 700px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-800 {
+	text-align: left;
+	vertical-align: top;
+	width: 800px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-900 {
+	text-align: left;
+	vertical-align: top;
+	width: 900px;
+	padding: 2px 2px 2px 2px;
+}
+
+.left-1000 {
+	text-align: left;
+	vertical-align: top;
+	width: 1000px;
+	padding: 2px 2px 2px 2px;
+}
+
+.right {
+	text-align: right;
+}
+
+.right-100 {
+	text-align: right;
+	width: 100px;
+}
+
+.info {
+	color: blue;
+	font-family: tahoma;
+	font-size: 10pt;
+}
+
+.error {
+	color: red;
+	border: thin solid red;
+	margin: 0px;
+}
+
+.securityMarking {
+	color: red;
+	font-weight: bold;
+	font-family: tahoma;
+	font-size: 12pt;
+}
+
+.modalDialog {
+	background-color:#F8F8F8;
+}
+
+.customTooltip {
+   position: relative;
+   z-index: 2000;
+   min-width: 10px;
+   max-width: 300px;
+   font-size: 1.0em;
+   font-weight: bold;
+   border: 1px solid #D8000C;
+   border-radius: 5px;
+   background: -moz-linear-gradient(top, #FFFFFF, #FFBABA);
+   background: -webkit-linear-gradient(top, #FFFFFF, #FFBABA);
+   background: -o-linear-gradient(top, #FFFFFF, #FFBABA);
+   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#FFFFFF', endColorstr='#FFBABA');
+   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#FFFFFF', endColorstr='#FFBABA')";
+   background: -ms-linear-gradient(top, #FFFFFF, #FFBABA);
+}

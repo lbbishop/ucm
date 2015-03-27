@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Test Plan</ui:define>
+	<ui:define name="content">
+		
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+				<h:form id="form">
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}"/>
+					<div style="text-align:center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>						
+					<p:focus />
+					<div style="margin: 6px">
+						<h:outputText value="Test Plan Description" styleClass="header" />
+					</div>
+					<p:panelGrid id="editPanel" columns="1">
+						<p:editor id="description" value="#{testPlanAction.testPlan.description}" width="700" height="450" controls="#{editorControls}" widgetVar="descriptionEditor" label="Description" required="true" />
+
+						<f:facet name="footer">
+							<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+								<p:commandButton value="OK" update=":navigatorForm:treeRoot,:form:messages" action="#{testPlanAction.okay}" style="width:80px" icon="ui-icon ui-icon-check" title="Save form changes and close view" />
+								<p:spacer width="6"/>
+								<p:commandButton value="Cancel" action="#{testPlanAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+								<p:spacer width="6"/>
+								<p:commandButton value="Apply" update=":navigatorForm:treeRoot,:form:messages" action="#{testPlanAction.apply}" style="width:80px" icon="ui-icon ui-icon-check" title="Save form changes" />
+							</p:outputPanel>
+						</f:facet>
+					</p:panelGrid>
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+		
+		
+		
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Product Vision</ui:define>
+	<ui:define name="content">
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+				<h:form id="form">
+					<p:growl id="messages" life="#{appManager.growlLife}" />
+					<p:focus />
+
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+					<div style="margin: 6px">
+						<h:outputText value="#{productVisionAction.productVision.project.name}: Product Vision" styleClass="header" />
+					</div>
+
+					<p:tabView>
+						<p:tab title="Product Description">
+							<p:editor id="descriptionEditor" value="#{productVisionAction.productVision.productDescription}" width="750" height="450" controls="#{editorControls}" />
+						</p:tab>
+
+						<p:tab title="Problem Statement">
+							<p:editor id="problemStatement" value="#{productVisionAction.productVision.problemStatement}" width="750" height="450" controls="#{editorControls}" />
+						</p:tab>
+					</p:tabView>
+					<div style="margin:10px;text-align: right">
+						<p:commandButton value="OK" style="width:80px" update=":form:messages" action="#{productVisionAction.okay}" icon="ui-icon-check" oncomplete="handleComplete(xhr, status, args)" />
+						<p:spacer width="10" />
+						<p:commandButton value="Cancel" action="#{productVisionAction.close}" styleClass="center-75" icon="ui-icon-close" title="Cancel form changes and close form" />
+						<p:spacer width="10" />
+						<p:commandButton value="Apply" style="width:80px" update=":form:messages" ajax="false" icon="ui-icon-check" actionListener="#{productVisionAction.apply}" oncomplete="handleComplete(xhr, status, args)" />
+					</div>
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+		
+		
+		
+	</ui:define>
+</ui:composition>

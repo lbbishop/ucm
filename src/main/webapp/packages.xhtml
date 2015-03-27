@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Project Packages</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+
+					<div style="margin: 6px">
+						<h:outputText value="#{projectPackageAction.project.name}: Project Packages" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No Packages Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_package" value="#{projectPackageAction.projectPackages}" selectionMode="single" rowKey="#{_package.id}"
+						selection="#{projectPackageAction.projectPackage}">
+						<p:ajax event="rowSelect" listener="#{projectPackageAction.onRowSelect}" update="editButton deleteButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+						<f:facet name="header">
+							<h:outputText value="#{projectPackageAction.project.name}: Packages" />
+						</f:facet>
+
+						<p:column style="width:50px" sortBy="#{_package.artifact}">
+							<f:facet name="header">
+								<h:outputText value="Id" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_package.artifact}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:250px" sortBy="#{_package.name}">
+							<f:facet name="header">
+								<h:outputText value="Package Name" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_package.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:400px" sortBy="#{_package.description}">
+							<f:facet name="header">
+								<h:outputText value="Description" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_package.description}" escape="false" style="font-size:0.9em" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="New Package" disabled="#{not projectPackageAction.editable}" update=":editForm:editPanel" action="#{projectPackageAction.add}" oncomplete="PF('editDialog').show()" title="New Package" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not projectPackageAction.selected or not projectPackageAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not projectPackageAction.selected or not projectPackageAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="#{projectPackageAction.project.name}_packages" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{projectPackageAction.close}" styleClass="center-75" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog id="dialog" header="Edit Package" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="editForm">
+				<p:messages severity="error" />
+				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{projectPackageAction.projectPackage.artifact}" />
+
+					<p:outputLabel for="name" value="Package Name:" />
+					<p:inputText id="name" value="#{projectPackageAction.projectPackage.name}" size="80" maxlength="100" requiredMessage="Name is required" required="true" />
+
+					<p:outputLabel for="description" value="Description:" />
+					<p:inputTextarea id="description" value="#{projectPackageAction.projectPackage.description}" cols="80" rows="4" label="Description" required="true" requiredMessage="Description is required" />
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{projectPackageAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{projectPackageAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="center-50" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog header="Package Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
+			<h:panelGrid id="helpPanel" columns="1">
+				<h:outputText value="Package help content:" escape="false" />
+			</h:panelGrid>
+		</p:dialog>
+		
+		
+
+	</ui:define>
+</ui:composition>

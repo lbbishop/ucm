@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">UseCase Rule Tests</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+		
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+				
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					<div style="text-align:center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>						
+					<div style="margin: 6px">
+						<h:outputText value="#{useCaseRuleTestAction.testSet.artifact}: UseCase Rule Tests" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No Tests Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="test" value="#{useCaseRuleTestAction.useCaseRuleTests}" selectionMode="single" rowKey="#{test.id}"
+						selection="#{useCaseRuleTestAction.useCaseRuleTest}">
+						<p:ajax event="rowSelect" listener="#{useCaseRuleTestAction.onRowSelect}" update="editButton deleteButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+						<f:facet name="header">
+							UseCase Rule Tests
+						</f:facet>
+
+						<p:column headerText="Id" style="width:50px;vertical-align:top" sortBy="#{test.artifact}">
+							<h:outputText value="#{test.artifact}" />
+						</p:column>
+						
+						<p:column headerText="UseCase" style="width:50px;vertical-align:top" sortBy="#{test.useCaseRule.useCase.artifact}">
+							<h:outputText value="#{test.useCaseRule.useCase.artifact}" />
+						</p:column>						
+
+						<p:column headerText="UseCase Rule" style="width:240px;vertical-align:top">
+							<h:outputText value="#{test.useCaseRule.name}" />
+						</p:column>
+
+						<p:column headerText="Status" style="width:80px;vertical-align:top" sortBy="#{test.useCaseRule.useCase.statusType}">
+							<h:outputText value="#{test.useCaseRule.useCase.statusType}" />
+						</p:column>
+
+						<p:column headerText="Result" style="width:80px;vertical-align:top" sortBy="#{test.testResultType}">
+							<h:outputText value="#{test.testResultType}" />
+						</p:column>
+
+						<f:facet name="footer">					
+							<p:commandButton value="Clear Results" disabled="#{not useCaseRuleTestAction.editable}" update=":form:table" action="#{useCaseRuleTestAction.clearTestResults}" title="Clear test results" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseRuleTestAction.selected or not useCaseRuleTestAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseRuleTestAction.selected or not useCaseRuleTestAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<p:spacer width="20" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<p:dataExporter type="xls" target="table" fileName="requirements" />
+							</h:commandLink>
+							<p:spacer width="6" />
+							<h:commandLink>
+								<p:graphicImage value="/images/xml.png" height="22" style="vertical-align: middle;" />
+								<p:dataExporter type="xml" target="table" fileName="requirements" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{useCaseRuleTestAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog header="Edit Requirement" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="editForm">
+				<h:panelGrid id="editPanel" columns="2" columnClasses="left-100,left" cellspacing="4">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{useCaseRuleTestAction.useCaseRuleTest.artifact}" />
+
+					<p:outputLabel for="name" value="Name:" />
+					<h:outputText id="name" value="#{useCaseRuleTestAction.useCaseRuleTest.useCaseRule.name}" />
+
+					<p:outputLabel for="rule" value="Rule:" />
+					<p:editor id="rule" value="#{useCaseRuleTestAction.useCaseRuleTest.useCaseRule.rule}" style="width:600px" width="600" height="220" controls="#{editorControls}" disabled="true" />
+
+					<p:outputLabel for="result" value="Result:" />
+					<p:selectOneRadio id="result" value="#{useCaseRuleTestAction.useCaseRuleTest.testResultType}" plain="true">
+						<f:selectItems value="#{testResultTypes}" />
+					</p:selectOneRadio>
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{useCaseRuleTestAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{useCaseRuleTestAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="center-50" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+		
+		
+
+	</ui:define>
+</ui:composition>

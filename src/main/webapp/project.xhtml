@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Project Sumary</ui:define>
+	<ui:define name="content">
+		
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					
+					<div style="text-align:center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>					
+
+					<div style="margin: 6px">
+						<h:outputText value="Project Summary" styleClass="header" />
+					</div>
+
+					<p:panelGrid columns="2" columnClasses="left-200,left-400">
+						<f:facet name="header">
+							<h:outputText value="Project Information"/>
+						</f:facet>
+
+						<h:outputLabel value="Project Name:" />
+						<h:outputText value="#{projectInfoManager.project.name}" />
+
+						<h:outputLabel value="Description:" />
+						<h:outputText value="#{projectInfoManager.project.description}" escape="false" />
+
+						<h:outputLabel value="Security Marking:" />
+						<h:outputText value="#{projectInfoManager.project.securityMarking}" />
+
+						<h:outputLabel value="Status:" />
+						<h:outputText value="#{projectInfoManager.project.projectStatusType}" />
+
+						<h:outputLabel value="Approved By:" />
+						<h:outputText value="#{projectInfoManager.project.approvedBy}" />
+
+						<h:outputLabel value="Actors:" />
+						<h:outputText value="#{projectInfoManager.project.actors.size()}" />
+
+						<h:outputLabel value="Stakeholders:" />
+						<h:outputText value="#{projectInfoManager.project.stakeholders.size()}" />
+					</p:panelGrid>
+
+					<p:spacer height="10" />
+
+					<p:panelGrid columns="2" columnClasses="left-200,left-400">
+						<f:facet name="header">  
+       						Problem Space Metrics
+   						 </f:facet>
+
+						<h:outputLabel value="Stakeholder Requests:" />
+						<h:outputText value="#{projectInfoManager.project.stakeholderRequests.size()}" />
+
+						<h:outputLabel value="Risks:" />
+						<h:outputText value="#{projectInfoManager.project.risks.size()}" />
+
+						<h:outputLabel value="Design Constraints:" />
+						<h:outputText value="#{projectInfoManager.project.designConstraints.size()}" />
+					</p:panelGrid>
+
+					<p:spacer height="10" />
+
+					<p:panelGrid columns="2" columnClasses="left-200,left-400">
+						<f:facet name="header">  
+       						Solution Space Metrics
+   						 </f:facet>
+
+						<h:outputLabel value="Product Features:" />
+						<h:outputText value="#{projectInfoManager.project.features.size()}" />
+
+						<h:outputLabel value="Supplemental Specs:" />
+						<h:outputText value="#{projectInfoManager.project.requirements.size()}" />
+
+						<h:outputLabel value="Use Cases:" />
+						<h:outputText value="#{projectInfoManager.project.useCases.size()}" />
+
+						<h:outputLabel value="Glossary of Terms:" />
+						<h:outputText value="#{projectInfoManager.project.glossaryTerms.size()}" />
+
+						<h:outputLabel value="Total Flows:" />
+						<h:outputText value="#{projectInfoManager.totalFlows}" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" columnClasses="left-200,left-400">
+						<f:facet name="header">  
+       						Project Test Coverage
+   						 </f:facet>
+
+						<h:outputLabel value="Total Test Sets:" />
+						<h:outputText value="#{projectInfoManager.totalTestSets}" />
+
+						<h:outputLabel value="Total Test Cases:" />
+						<h:outputText value="#{projectInfoManager.totalTestCases}" />
+					</p:panelGrid>
+
+					<p:spacer height="10" />
+
+					<p:panelGrid columns="2" columnClasses="left-200,left-400">
+						<f:facet name="header">  
+       						Project Management Metrics
+   						 </f:facet>
+
+						<h:outputLabel value="Project Members:" />
+						<h:outputText value="#{projectInfoManager.project.projectMembers.size()}" />
+
+						<h:outputLabel value="Iterations:" />
+						<h:outputText value="#{projectInfoManager.project.iterations.size()}" />
+
+						<h:outputLabel value="Tasks:" />
+						<h:outputText value="#{projectInfoManager.project.tasks.size()}" />
+					</p:panelGrid>
+
+					<div style="text-align: right; margin: 10px">
+						<p:button value="Close" outcome="/home.jsf?faces-redirect=true" style="width:80px" title="Close view" />
+					</div>
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="south">
+				<h:form>
+					<ui:include src="/includes/footer.xhtml" />
+				</h:form>
+			</p:layoutUnit>			
+		</p:layout>
+		
+		
+
+	</ui:define>
+</ui:composition>

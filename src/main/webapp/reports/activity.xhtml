@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Project Activity</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus id="statusComponent" style="position:fixed;left:50%;top:50%">
+					<f:facet name="start">
+						<h:graphicImage value="/images/ajax-loading.gif" width="30" />
+					</f:facet>
+					<f:facet name="complete">
+						<h:outputText value="" />
+					</f:facet>
+				</p:ajaxStatus>
+				
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" />
+					<div style="margin: 6px">
+						<h:outputText value="Project Activity" styleClass="header" />
+					</div>					
+
+					<p:panelGrid columns="1" columnClasses="left-900">
+
+						<h1>Check back soon!</h1>
+
+						<p:spacer height="200" />
+
+
+						<f:facet name="footer">
+							<div style="text-align: right; margin: 10px">
+								<p:button value="Close" outcome="/home.jsf?faces-redirect=true" style="width:80px" title="Close view" />
+							</div>
+						</f:facet>
+					</p:panelGrid>
+
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+	</ui:define>
+
+</ui:composition>
+

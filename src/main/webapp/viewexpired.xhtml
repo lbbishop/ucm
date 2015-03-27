@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">UCM Session Expired</ui:define>
+	<ui:define name="content">
+
+		<h:panelGrid columns="1" id="messagePanel" style="margin:10px">
+			<h:outputText value="Use Case Manager" styleClass="header" />
+			<p:spacer height="20" />		
+			<h:outputText value="User Session Has Expired" styleClass="header" />
+			<p:spacer height="40" />
+			<h:outputLink value="#{request.contextPath}/index.html">
+				<h:outputText value="Click here to continue" styleClass="subheader" />
+			</h:outputLink>
+		</h:panelGrid>
+
+	</ui:define>
+</ui:composition>

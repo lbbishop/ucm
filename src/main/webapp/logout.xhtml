@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">UCM Error</ui:define>
+
+	<ui:define name="content">
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="center">
+				<h:form style="margin:10px">
+					<h2>You have successfully logged out of UCM</h2>
+
+
+					<div style="text-align: left; margin: 100px 10px 10px 10px">
+						<p>
+							<h:outputLink value="#{request.contextPath}/index.html">
+								<h:outputText value="Click here to log into UCM" />
+							</h:outputLink>
+						</p>
+					</div>
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+	</ui:define>
+</ui:composition>

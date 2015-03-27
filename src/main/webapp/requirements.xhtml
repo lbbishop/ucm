@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Supplementary Requirement Specifications</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('requirementDialog').hide();
+		}
+		function handleBusinessRuleSave(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('ruleDialog').hide();
+		}
+		</script>
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+				
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+					<div style="margin: 6px">
+						<h:outputText value="#{requirementAction.project.name}: Supplementary Requirement Specifications" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No Requirements Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_requirement" value="#{requirementAction.requirements}" selectionMode="single" rowKey="#{_requirement.id}"
+						selection="#{requirementAction.requirement}">
+						<p:ajax event="rowSelect" listener="#{requirementAction.onRowSelect}" update="editButton deleteButton :form:table:addRuleButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('requirementDialog').show()" />
+
+						<f:facet name="header">
+							<h:outputText value="Supplementary Requirement Specifications" />
+						</f:facet>
+
+						<p:column style="width:50px;vertical-align:top" sortBy="#{_requirement.artifact}">
+							<f:facet name="header">
+								<h:outputText value="Id" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_requirement.artifact}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:260px;vertical-align:top">
+							<f:facet name="header">
+								<h:outputText value="Requirement Name" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_requirement.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:100px;vertical-align:top">
+							<f:facet name="header">
+								<h:outputText value="Package" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_requirement.projectPackage.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:80px;vertical-align:top" sortBy="#{_requirement.qualityType}">
+							<f:facet name="header">
+								<h:outputText value="Quality Type" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_requirement.qualityType}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:60px;vertical-align:top" sortBy="#{_requirement.statusType}">
+							<f:facet name="header">
+								<h:outputText value="Status" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_requirement.statusType}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:70px;vertical-align:top" sortBy="#{_requirement.productRelease.version}">
+							<f:facet name="header">
+								<h:outputText value="Release" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_requirement.productRelease.version}" style="font-size:0.9em" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="Add Requirement" disabled="#{not requirementAction.editable}" update=":editForm:editPanel" action="#{requirementAction.add}" oncomplete="PF('requirementDialog').show()" title="Add new Requirement" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not requirementAction.selected or not requirementAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('requirementDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not requirementAction.selected or not requirementAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<p:spacer width="20" />
+							<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not requirementAction.selected or not requirementAction.editable}" update=":ruleForm:rulePanel" action="#{requirementAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()" title="Add new Business Rule" />
+							<p:spacer width="6" />
+							<p:button id="viewButton" value="View all" outcome="/requirementlist" icon="ui-icon-search" title="View or Print Requirements">
+								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+								<f:param name="id" value="#{requirementAction.id}" />
+							</p:button>
+							<p:spacer width="10" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="#{requirementAction.project.name}_requirements" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{requirementAction.close}" styleClass="center-75" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog header="Edit Requirement" widgetVar="requirementDialog" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="editForm">
+				<p:messages severity="error" />
+				<h:panelGrid id="editPanel" columns="3" columnClasses="left-120,left-600,left">
+
+					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="A unique identifier of this requirement" />
+					<h:outputText id="identifier" value="#{requirementAction.requirement.artifact}" />
+					<pe:tooltip for="identifierLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="nameLabel" for="name" value="Name:" title="A brief name of this requirement" />
+					<p:inputText id="name" value="#{requirementAction.requirement.name}" size="90" maxlength="100" requiredMessage="Name is required" required="true" />
+					<pe:tooltip for="nameLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="Provide a detailed specification of this requirement" />
+					<p:editor id="description" value="#{requirementAction.requirement.description}" style="width:600px" width="600" height="180" controls="#{editorControls}" widgetVar="descriptionEditorWidget" requiredMessage="Description is required" required="true" />
+					<pe:tooltip for="descriptionLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="statusLabel" for="status" value="Status:" title="The current status of this requirement" />
+					<p:selectOneMenu id="status" value="#{requirementAction.requirement.statusType}" effect="fade" required="true" style="width:140px">
+						<f:selectItem itemLabel="Select Status" itemValue="" />
+						<f:selectItems value="#{statusTypes}" var="_status" itemValue="#{_status}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="statusLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="packageLabel" for="package" value="Package:" title="Assign a functional category to this requirement" />
+					<p:selectOneMenu id="package" value="#{requirementAction.requirement.projectPackage}" effect="fade" style="width:140px" converter="#{projectPackageConverter}">
+						<f:selectItem itemLabel="Select Package" itemValue="" />
+						<f:selectItems value="#{projectPackages}" var="_package" itemValue="#{_package}" itemLabel="#{_package.name}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="packageLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="qualityTypeLabel" for="qualityType" value="Quality Type:" title="The non-functional, quality aspects of the system" />
+					<p:selectOneMenu id="qualityType" value="#{requirementAction.requirement.qualityType}" effect="fade" required="true" style="width:160px" requiredMessage="Quality Type is required">
+						<f:selectItem itemLabel="Select Quality Type" itemValue="" />
+						<f:selectItems value="#{qualityTypes}" var="_quality" itemValue="#{_quality}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="qualityTypeLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="priorityLabel" for="priority" value="Priority:" title="The relative priority this requirement compared to other requirements" />
+					<p:selectOneMenu id="priority" value="#{requirementAction.requirement.priorityType}" effect="fade" style="width:140px">
+						<f:selectItem itemLabel="Select Priority" itemValue="" />
+						<f:selectItems value="#{priorityTypes}" var="_priority" itemValue="#{_priority}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="priorityLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="difficultyLabel" for="difficulty" value="Difficulty:" title="The relative difficulty of defining and implementing this requirement" />
+					<p:selectOneMenu id="difficulty" value="#{requirementAction.requirement.difficultyType}" effect="fade" style="width:140px">
+						<f:selectItem itemLabel="Select Difficulty" itemValue="" />
+						<f:selectItems value="#{difficultyTypes}" var="_difficulty" itemValue="#{_difficulty}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="difficultyLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="featureLabel" for="featureSelect" value="Feature:" title="The feature linked to this requirement" />
+					<p:selectOneMenu id="featureSelect" value="#{requirementAction.requirement.feature}" converter="#{featureConverter}" style="width:400px" effect="fade">
+						<f:selectItem itemLabel="Select Feature" itemValue="" />
+						<f:selectItems value="#{projectFeatures}" var="feature" itemLabel="#{feature.name}" itemValue="#{feature}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="featureLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="productReleaseLabel" for="productReleaseSelect" value="Product Release:" title="The product release for which this requirement will be implemented" />
+					<p:selectOneMenu id="productReleaseSelect" value="#{requirementAction.requirement.productRelease}" converter="#{productReleaseConverter}" style="width:160px" effect="fade" required="true" requiredMessage="Product Release is required">
+						<f:selectItem itemLabel="Select Release" itemValue="" />
+						<f:selectItems value="#{productReleases}" var="productRelease" itemLabel="#{productRelease.version}" itemValue="#{productRelease}" />
+					</p:selectOneMenu>
+					<pe:tooltip for="productReleaseLabel" styleClass="customTooltip" />
+
+					<p:outputLabel id="issuesLabel" for="issues" value="Issues:" title="Any outstanding issues associated with this requirement" />
+					<p:inputTextarea id="issues" value="#{requirementAction.requirement.issues}" rows="4" cols="120" />
+					<pe:tooltip for="issuesLabel" styleClass="customTooltip" />
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{requirementAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('requirementDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Edit Business Rule" style="background-color:#F0F0F0" widgetVar="ruleDialog" resizable="true" modal="true">
+			<h:form id="ruleForm">
+				<h:panelGrid id="rulePanel" columns="2" columnClasses="left-120,left">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{requirementAction.requirementRule.artifact}" />
+
+					<p:outputLabel for="ruleName" value="Rule Name:" />
+					<p:inputText id="ruleName" value="#{requirementAction.requirementRule.name}" size="55" maxlength="40" label="Name" required="true" />
+
+					<p:outputLabel for="businessRule" value="Business Rule:" />
+					<p:editor id="businessRule" value="#{requirementAction.requirementRule.rule}" style="width:600px" width="600" height="150" controls="#{editorControls}" label="Business Rule" required="true" />
+
+					<p:outputLabel for="ruleType" value="Rule Type:" />
+					<p:selectOneMenu id="ruleType" value="#{requirementAction.requirementRule.ruleType}" effect="fade" required="true">
+						<f:selectItem itemLabel="Select Rule Type" itemValue="" />
+						<f:selectItems value="#{ruleTypes}" var="_type" itemValue="#{_type}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="ruleStatus" value="Status:" />
+					<p:selectOneMenu id="ruleStatus" value="#{requirementAction.requirementRule.statusType}" effect="fade" required="true">
+						<f:selectItem itemLabel="Select Status" itemValue="" />
+						<f:selectItems value="#{statusTypes}" var="_status" itemValue="#{_status}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="implementation" value="Implementation:" />
+					<p:editor id="implementation" value="#{requirementAction.requirementRule.implementation}" style="width:600px" width="600" height="150" controls="#{editorControls}" />
+
+					<p:outputLabel for="productReleaseSelect" value="Product Release:" />
+					<h:panelGroup>
+						<p:selectOneMenu id="productReleaseSelect" value="#{requirementAction.requirementRule.productRelease}" converter="#{productReleaseConverter}" style="width:160px" effect="fade" required="true">
+							<f:selectItem itemLabel="Select Release" itemValue="" />
+							<f:selectItems value="#{productReleases}" var="productRelease" itemLabel="#{productRelease.version}" itemValue="#{productRelease}" />
+						</p:selectOneMenu>
+						<p:tooltip for="productReleaseSelect" value="The product release for which this requirement will be implemented" rendered="#{authUser.tooltipDisplayed}" />
+					</h:panelGroup>
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{requirementAction.saveBusinessRule}" oncomplete="handleBusinessRuleSave(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('ruleDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{requirementAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" styleClass="center-50" onclick="PF('cd').hide()" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog header="Requirement Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
+			<h:panelGrid id="helpPanel" columns="1">
+				<h:outputText value="Requirement help content:" escape="false" />
+			</h:panelGrid>
+		</p:dialog>
+		
+		
+
+	</ui:define>
+</ui:composition>

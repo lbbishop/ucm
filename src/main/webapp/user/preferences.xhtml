@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">User Preferences</ui:define>
+
+	<ui:define name="content">
+		
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}" />
+
+			<p:layoutUnit position="center">
+			
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>		
+
+				<h:form id="form">
+
+					<p:growl id="messages" life="#{appManager.growlLife}" />
+
+					<p:panel header="User Preferences">
+						<h:panelGrid columns="2" columnClasses="left-100,left" style="margin:10px">
+							<p:outputLabel for="themeSwitcher" value="Site Theme:" />
+							<p:themeSwitcher id="themeSwitcher" value="#{preferencesAction.user.theme}" style="width:165px" effect="fade">
+								<f:selectItem itemLabel="Choose Theme" itemValue="" />
+								<f:selectItems value="#{themes}" />
+								<p:ajax listener="#{preferencesAction.saveTheme}" update="messages"/>
+							</p:themeSwitcher>
+						</h:panelGrid>
+						<h:panelGrid columns="2" columnClasses="right-100,left" style="margin:10px">
+							<p:selectBooleanCheckbox id="tooltipDisplayMode" value="#{preferencesAction.user.tooltipDisplayed}">
+								<p:ajax listener="#{preferencesAction.saveTooltipsDisplayMode}" update="messages"/>
+							</p:selectBooleanCheckbox>
+							<p:outputLabel for="tooltipDisplayMode" value="Display help tooltips" />
+						</h:panelGrid>
+
+						<p:spacer height="100px" />
+					</p:panel>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{preferencesAction.close}" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+		
+		
+
+	</ui:define>
+</ui:composition>

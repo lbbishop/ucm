@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Business Processes</ui:define>
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+		
+		
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}"/>
+					<div style="margin: 6px">
+						<h:outputText value="Business Processes" styleClass="header" />
+					</div>
+
+					<p:dataTable id="table" emptyMessage="No Business Processes Defined" resizableColumns="false" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_process" value="#{processAction.businessProcesses}" selectionMode="single" rowKey="#{_process.id}" selection="#{processAction.businessProcess}">
+						<p:ajax event="rowSelect" listener="#{processAction.onRowSelect}" update="editButton deleteButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+						
+						<f:facet name="header">
+							Business Processes
+						</f:facet>						
+
+						<p:column headerText="Id" style="width:40px" sortBy="#{_process.artifact}">
+							<h:outputText value="#{_process.artifact}" />
+						</p:column>
+
+						<p:column headerText="Process Event" style="width:200px" sortBy="#{_process.event}">
+							<h:outputText value="#{_process.event}" />
+						</p:column>
+
+						<p:column headerText="Process Goal" style="width:240px" sortBy="#{_process.goalAbbrv}">
+							<h:outputText value="#{_process.goalAbbrv}" escape="false" />
+						</p:column>
+						
+						<p:column headerText="Status" style="width:70px" sortBy="#{_process.statusType}">
+							<h:outputText value="#{_process.statusType}" />
+						</p:column>						
+
+						<p:column headerText="Release" style="width:70px" sortBy="#{_process.productRelease.version}">
+							<h:outputText value="#{_process.productRelease.version}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="Add Business Process" disabled="#{not processAction.editable}" update=":editForm:editPanel" action="#{processAction.add}" oncomplete="PF('processDialog').show()" title="Add new Business Process" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not processAction.selected or not processAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('processDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not processAction.selected or not processAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="businessprocesses" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{processAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog header="Edit Business Process" widgetVar="editDialog" minWidth="600" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="editForm">
+
+				<h:panelGrid id="editPanel" columns="2" columnClasses="left-140,left">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:panelGroup>
+						<h:outputText id="identifier" value="#{processAction.businessProcess.artifact}" />
+						<p:tooltip for="identifier" value="The unique business process identifier" rendered="#{authUser.tooltipDisplayed}"/>
+					</h:panelGroup>
+
+					<p:outputLabel for="processEvent" value="Process Event:" />
+					<h:panelGroup>
+						<p:inputText id="processEvent" value="#{processAction.businessProcess.event}" size="90" maxlength="100" label="Event" required="true" />
+						<p:tooltip for="processEvent" value="The triggering event for this business process" rendered="#{authUser.tooltipDisplayed}"/>
+					</h:panelGroup>
+					
+					<p:outputLabel for="processGoal" value="Process Goal:" />
+					<h:panelGroup>
+						<p:inputTextarea id="processGoal" value="#{processAction.businessProcess.goal}" cols="80" rows="4" label="Goal" required="true" />
+						<p:tooltip for="processGoal" value="The goals and objectives of this business process execution" rendered="#{authUser.tooltipDisplayed}"/>
+					</h:panelGroup>					
+
+					<p:outputLabel for="activities" value="Activities:" />
+					<h:panelGroup>
+						<p:editor id="activities" value="#{processAction.businessProcess.activities}" style="width:600px" width="600" height="150" controls="#{editorControls}" widgetVar="activitiesEditorWidget" label="Activities" />
+						<p:tooltip for="activities" value="Describe the activities involved in this business process" rendered="#{authUser.tooltipDisplayed}" />
+					</h:panelGroup>
+					
+					<p:outputLabel for="status" value="Status:" />
+					<h:panelGroup>
+						<p:selectOneMenu id="status" value="#{processAction.businessProcess.statusType}" effect="fade" required="true" style="width:140px">
+							<f:selectItem itemLabel="Select Status" itemValue="" />
+							<f:selectItems value="#{statusTypes}" var="_status" itemValue="#{_status}" />
+						</p:selectOneMenu>
+						<p:tooltip for="status" value="The current status of this business process" rendered="#{authUser.tooltipDisplayed}"  />
+					</h:panelGroup>					
+
+					<p:outputLabel for="productReleaseSelect" value="Product Release:" />
+					<h:panelGroup>
+						<p:selectOneMenu id="productReleaseSelect" value="#{processAction.businessProcess.productRelease}" converter="#{productReleaseConverter}" style="width:160px" effect="fade" title="This feature is to be implemented in this product release">
+							<f:selectItem itemLabel="Select Release" itemValue="" />
+							<f:selectItems value="#{productReleases}" var="productRelease" itemLabel="#{productRelease.version}" itemValue="#{productRelease}" />
+						</p:selectOneMenu>
+						<p:tooltip for="productReleaseSelect" value="The product release where this feature is to be realized" rendered="#{authUser.tooltipDisplayed}"/>
+					</h:panelGroup>
+
+					<p:outputLabel for="issues" value="Issues:" />
+					<h:panelGroup>
+						<p:editor id="issues" value="#{processAction.businessProcess.issues}" style="width:600px" width="600" height="150" controls="#{editorControls}" widgetVar="activitiesEditorWidget" label="Activities" />
+						<p:tooltip for="issues" value="List any outstanding issues impacting this business process" rendered="#{authUser.tooltipDisplayed}" />
+					</h:panelGroup>
+		
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{processAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('processDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{processAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" styleClass="center-50" onclick="PF('cd').hide()" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+
+	</ui:define>
+</ui:composition>

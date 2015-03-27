@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">#{msg.appFullTitle} Users</ui:define>
+
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}" />
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<p:growl id="messages" life="#{appManager.growlLife}" />
+
+					<div style="margin: 10px">
+						<h:outputText value="#{msg.appFullTitle} Users" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No Users Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_user" value="#{userAction.authUsers}" selectionMode="single" rowKey="#{_user.id}" selection="#{userAction.authUser}">
+						<p:ajax event="rowSelect" listener="#{userAction.onRowSelect}" update="editButton deleteButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+						<f:facet name="header">
+							<h:outputText value="Application Users" />
+						</f:facet>
+
+						<p:column style="width:80px" sortBy="#{_user.artifact}">
+							<f:facet name="header">
+								<h:outputText value="Id" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_user.artifact}" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column style="width:125px" sortBy="#{_user.username}">
+							<f:facet name="header">
+								<h:outputText value="User Name" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_user.username}" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column style="width:300px" sortBy="#{_user.name}">
+							<f:facet name="header">
+								<h:outputText value="Full Name" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_user.name}" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column  style="width:80px" sortBy="#{_user.userRoles}">
+							<f:facet name="header">
+								<h:outputText value="User Roles" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_user.userRoles}" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column  style="width:300px" sortBy="#{_user.email}">
+						<f:facet name="header">
+								<h:outputText value="Email Address" style="font-size:0.93em" />
+							</f:facet>						
+							<h:outputText value="#{_user.email}" style="font-size:0.9em"/>
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="New User" update=":editForm:editPanel" action="#{userAction.add}" oncomplete="PF('editDialog').show()" title="New User" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not userAction.selected}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not userAction.selected}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="users" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{userAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog id="dialog" header="Edit User" widgetVar="editDialog" resizable="true" modal="true">
+			<h:form id="editForm">
+				<p:messages severity="error" />
+				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{userAction.authUser.artifact}" />
+
+					<p:outputLabel for="userName" value="User Name:" />
+					<p:inputText id="userName" value="#{userAction.authUser.username}" size="20" maxlength="16" requiredMessage="Name is required" required="true" />
+
+					<p:outputLabel for="password" value="Password:" />
+					<p:inputText id="password" value="#{userAction.authUser.password}" size="24" maxlength="20" required="true" requiredMessage="Password is required" />
+
+					<p:outputLabel for="name" value="Full Name:" />
+					<p:inputText id="name" value="#{userAction.authUser.name}" size="50" maxlength="40" required="true" requiredMessage="Full Name is required" />
+
+					<p:outputLabel for="email" value="Email Address:" />
+					<p:inputText id="email" value="#{userAction.authUser.email}" size="30" maxlength="25" />
+
+					<p:outputLabel for="phoneNumber" value="Phone Number:" />
+					<p:inputText id="phoneNumber" value="#{userAction.authUser.phoneNumber}" size="15" maxlength="12" />
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{userAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update=":form:table,:form:messages" actionListener="#{userAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog header="User Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
+			<h:panelGrid id="helpPanel" columns="1">
+				<h:outputText value="User help content:" escape="false" />
+			</h:panelGrid>
+		</p:dialog>
+		
+		
+
+	</ui:define>
+</ui:composition>

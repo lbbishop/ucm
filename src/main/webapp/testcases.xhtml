@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Project TestCases</ui:define>
+
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+					<div style="margin: 6px">
+						<h:outputText value="#{testCaseAction.testSet.artifact}: TestCases" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No TestCases Defined" resizableColumns="true" var="_testCase" value="#{testCaseAction.testCases}" selectionMode="single" rowKey="#{_testCase.id}" selection="#{testCaseAction.testCase}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}"
+						filteredValue="#{testCaseAction.filteredTestCases}">
+						<p:ajax event="rowSelect" listener="#{testCaseAction.onRowSelect}" update="@(:input) executeButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+						<f:facet name="header">
+							<h:outputText value="Project TestCases" style="font-size:0.93em" />
+						</f:facet>
+
+						<p:column style="width:40px;vertical-align:top" sortBy="#{_testCase.artifact}">
+							<f:facet name="header">
+								<h:outputText value="ID" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_testCase.artifact}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:260px;vertical-align:top" sortBy="#{_testCase.name}">
+							<f:facet name="header">
+								<h:outputText value="TestCase Name" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_testCase.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:80px;vertical-align:top" sortBy="#{_testCase.useCase.primaryActor.name}">
+							<f:facet name="header">
+								<h:outputText value="Actor" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_testCase.useCase.primaryActor.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:90px;vertical-align:top" filterBy="#{_testCase.useCase.statusType}" filterOptions="#{statusSelectItems}" filterMatchMode="exact">
+							<f:facet name="header">
+								<h:outputText value="UseCase Status" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_testCase.useCase.statusType}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:40px;vertical-align:top">
+							<f:facet name="header">
+								<h:outputText value="# Steps" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_testCase.numTestCaseSteps}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:70px;vertical-align:top" sortBy="#{_testCase.testResultType}">
+							<f:facet name="header">
+								<h:outputText value="Result" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_testCase.testResultType}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:70px;vertical-align:top" sortBy="#{_testCase.useCase.productRelease.version}">
+							<f:facet name="header">
+								<h:outputText value="Release" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_testCase.useCase.productRelease.version}" style="font-size:0.9em" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="Update TestCases" disabled="#{not testCaseAction.editable}" update="@(form)" action="#{testCaseAction.updateTestCases}" title="Synchronize TestCases with UseCases" />
+							<p:spacer width="6" />
+							<p:commandButton value="Clear All Results" disabled="#{not testCaseAction.editable}" update=":form:table" action="#{testCaseAction.clearAllTestResults}" title="Clear all testcase results" />
+							<p:spacer width="6" />
+							<p:commandButton id="clearResultsButton" value="Clear Results" disabled="#{not testCaseAction.selected or not testCaseAction.editable}" update=":form:table" action="#{testCaseAction.clearTestResults}" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not testCaseAction.selected or not testCaseAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not testCaseAction.selected or not testCaseAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<p:spacer width="6" />
+							<p:button id="executeButton" value="Run Test" outcome="/testcase" disabled="#{not testCaseAction.selected}" title="Run the TestCase">
+								<f:param name="id" value="#{testCaseAction.testCase.id}" />
+							</p:button>
+							<p:spacer width="10" />
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="testcases" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: left; margin: 5px">
+						<h:outputText value="Items: #{testCaseAction.numItems}" />
+					</div>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{testCaseAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog id="editDlg" header="Edit TestCase" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="editForm">
+				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120, left">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{testCaseAction.testCase.artifact}" />
+
+					<h:outputLabel for="name" value="TestCase Name:" />
+					<h:outputText id="name" value="#{testCaseAction.testCase.name}" required="true" />
+
+					<p:outputLabel for="description" value="Description:" />
+					<p:inputTextarea id="description" value="#{testCaseAction.testCase.description}" rows="4" cols="100" />
+
+					<p:outputLabel for="inputDataEditor" value="Input/Conditions:" />
+					<p:editor id="inputDataEditor" value="#{testCaseAction.testCase.inputData}" style="width:600px" width="600" height="200" controls="#{editorControls}" widgetVar="inputDataEditor" />
+
+					<p:outputLabel for="notesEditor" value="Notes:" />
+					<p:editor id="notesEditor" value="#{testCaseAction.testCase.notes}" style="width:600px" width="600" height="150" controls="#{editorControls}" widgetVar="notesEditor" />
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{testCaseAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" styleClass="center-50" update="@(form)" actionListener="#{testCaseAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" styleClass="center-50" onclick="PF('cd').hide()" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog header="TestCase Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
+			<h:panelGrid id="helpPanel" columns="1">
+				<h:outputText value="TestCase help content:" escape="false" />
+			</h:panelGrid>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

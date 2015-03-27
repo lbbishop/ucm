@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+	<p:outputPanel id="menuOutputPanel">
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:button value="Home" outcome="/home.jsf?faces-redirect=true" rendered="#{authUser.loggedIn}" />
+				<p:spacer width="4" />
+				<p:menuButton value="User" rendered="#{authUser.loggedIn}">
+					<p:menuitem value="My Preferences" url="/user/preferences" helpText="My preferences" />
+					<p:menuitem value="My ViewSets" url="/user/viewset" helpText="My ViewSets" />
+				</p:menuButton>
+				<p:spacer width="4" />
+				<p:menuButton value="Admin" rendered="#{authUser.loggedIn}">
+					<p:menuitem value="Manage Users" url="/admin/users" />
+					<p:separator />
+					<p:menuitem value="Project Settings" url="/admin/settings.jsf" />
+					<p:separator />
+					<p:menuitem value="Rebuild Search Index" actionListener="#{searchManager.rebuildIndex}" />
+				</p:menuButton>
+				<p:spacer width="4" />
+				<p:menuButton value="Reports" rendered="#{authUser.loggedIn}">
+					<p:menuitem value="Requirement Changes" url="/reports/changes" style="width:150px" />
+					<p:separator />
+					<p:menuitem value="Product Backlog" url="/reports/backlog" rendered="true" />
+					<p:separator rendered="false" />
+					<p:menuitem value="TestCase Results" url="/reports/testcaseresults" rendered="false" />
+					<p:separator rendered="false" />
+					<p:menuitem value="Project Activity" url="/reports/activity" rendered="false" />
+					<p:separator rendered="true" />
+					<p:menuitem value="Product Road Map" url="/reports/roadmap" rendered="true" />
+					<p:separator rendered="true" />
+					<p:menuitem value="Test Coverage" url="/reports/testcoverage" rendered="true" />
+					<p:separator rendered="false" />
+					<p:menuitem value="Outstanding Issues" url="/reports/issues" rendered="false" />
+					<p:separator />
+					<p:menuitem value="Traceability Matrix" url="/reports/traceability" />
+					<p:separator />
+					<p:menuitem value="Use Case Estimator" url="/reports/estimator" />
+				</p:menuButton>
+				<p:spacer width="4" />
+				<p:menuButton value="Help" rendered="#{authUser.loggedIn}">
+					<p:menuitem value="About" url="/help/about" />
+				</p:menuButton>
+
+			</p:toolbarGroup>
+
+			<p:toolbarGroup align="right">
+				<p:autoComplete value="#{searchAction.searchField}" completeMethod="#{searchAction.suggester}" size="16" maxlength="20" rendered="#{authUser.loggedIn}" />
+				<p:spacer width="5" />
+				<p:commandButton value="Search" actionListener="#{searchAction.fullTextSearch}" rendered="#{authUser.loggedIn}" />
+				<p:spacer width="20" />
+				<p:outputLabel value="Welcome, #{authUser.name}" rendered="#{authUser.loggedIn}" />
+				<p:spacer width="20" />
+				<p:commandLink value="Log Out" styleClass="center-75" action="#{authenticator.logout}" rendered="#{authUser.loggedIn}" />
+				<p:outputLabel for="userName1" value="Username:" rendered="#{not authUser.loggedIn}" />
+				<p:inputText id="userName1" value="#{authenticator.username}" size="10" maxlength="20" rendered="#{not authUser.loggedIn}" />
+				<p:spacer width="10" />
+				<p:outputLabel for="password1" value="Password:" rendered="#{not authUser.loggedIn}" />
+				<p:password id="password1" value="#{authenticator.password}" size="10" maxlength="20" rendered="#{not authUser.loggedIn}" />
+				<p:spacer width="20" />
+				<p:commandButton id="login1" value="Log In" action="/home.jsf?faces-redirect=true" actionListener="#{authenticator.login}" update="menuOutputPanel,:navigatorForm:treeRoot" rendered="#{not authUser.loggedIn}" />
+			</p:toolbarGroup>
+		</p:toolbar>
+	</p:outputPanel>
+</ui:composition>

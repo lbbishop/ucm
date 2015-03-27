@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Use Case Actors</ui:define>
+
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+		</script>
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
+				<h:form id="navigatorForm">
+					<ui:include src="/includes/sidebar.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+
+					<div style="margin: 6px">
+						<h:outputText value="#{actorAction.project.name}: Use Case Actors" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No Actors Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_actor" value="#{actorAction.actors}" selectionMode="single" rowKey="#{_actor.id}" selection="#{actorAction.actor}">
+						<p:ajax event="rowSelect" listener="#{actorAction.onRowSelect}" update="editButton deleteButton" />
+						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+						<f:facet name="header">
+							<h:outputText value="#{actorAction.project.name}: Actors" />
+						</f:facet>
+
+						<p:column style="width:50px;vertical-align:top" sortBy="#{_actor.artifact}">
+							<f:facet name="header">
+								<h:outputText value="Id" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_actor.artifact}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:125px;vertical-align:top">
+							<f:facet name="header">
+								<h:outputText value="Actor Name" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_actor.name}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:80px;vertical-align:top" sortBy="#{_actor.complexityLabel}">
+							<f:facet name="header">
+								<h:outputText value="Complexity" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_actor.complexityLabel}" style="font-size:0.9em" />
+						</p:column>
+
+						<p:column style="width:400px;vertical-align:top">
+							<f:facet name="header">
+								<h:outputText value="Responsibilities" style="font-size:0.93em" />
+							</f:facet>
+							<h:outputText value="#{_actor.responsibilitiesAbbrv}" style="font-size:0.9em" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="New Actor" disabled="#{not actorAction.editable}" update=":editForm:editPanel" action="#{actorAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
+							<p:spacer width="6" />
+							<p:commandButton id="editButton" value="Edit" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:spacer width="6" />
+							<p:commandButton id="deleteButton" value="Delete" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							<p:spacer width="10" />
+							<p:button id="viewButton" value="View All" outcome="/actorlist" icon="ui-icon-search" title="View or Print Actor List">
+								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+								<f:param name="id" value="#{actorAction.id}" />
+							</p:button>
+							<h:commandLink>
+								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+								<pe:exporter type="xlsx" target="table" fileName="#{actorAction.project.name}_actors" orientation="landscape" />
+							</h:commandLink>
+						</f:facet>
+					</p:dataTable>
+
+					<div style="text-align: right; margin: 10px">
+						<p:commandButton value="Close" action="#{actorAction.close}" styleClass="center-75" title="Close view" />
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+
+		<p:dialog id="dialog" header="Edit Actor" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+			<h:form id="editForm">
+				<p:messages severity="error" />
+				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
+
+					<h:outputLabel for="identifier" value="Identifier:" />
+					<h:outputText id="identifier" value="#{actorAction.actor.artifact}" />
+
+					<p:outputLabel for="name" value="Actor Name:" />
+					<p:inputText id="name" value="#{actorAction.actor.name}" size="80" maxlength="100" label="Name" required="true" requiredMessage="Name is required" />
+
+					<p:outputLabel for="complexity" value="Complexity:" />
+					<p:selectOneMenu id="complexity" value="#{actorAction.actor.complexity}" effect="fade" style="width:160px" required="true" requiredMessage="Complexity is required">
+						<f:selectItem itemLabel="Select Complexity" itemValue="" />
+						<f:selectItems value="#{actorComplexityItems}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="responsibilities" value="Responsibilities:" />
+					<p:inputTextarea id="responsibilities" value="#{actorAction.actor.responsibilities}" rows="4" cols="80" required="true" requiredMessage="Responsibilities is required" />
+
+					<p:outputLabel for="needs" value="Needs:" />
+					<p:inputTextarea id="needs" value="#{actorAction.actor.needs}" rows="4" cols="80" />
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="Save" update="@(form)" actionListener="#{actorAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{actorAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" styleClass="center-50" onclick="PF('cd').hide()" type="button" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:dialog header="Actor Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
+			<h:panelGrid id="helpPanel" columns="1">
+				<h:outputText value="Actor help content:" escape="false" />
+			</h:panelGrid>
+		</p:dialog>
+
+		
+
+	</ui:define>
+</ui:composition>

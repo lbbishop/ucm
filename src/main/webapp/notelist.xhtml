@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Project Notes</ui:define>
+	<ui:define name="content">
+		
+
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}" />
+		
+			<p:layoutUnit position="center">
+			
+				<p:ajaxStatus id="statusComponent" style="position:fixed;left:50%;top:50%">
+					<f:facet name="start">
+						<h:graphicImage value="/images/ajax-loading.gif" width="30" />
+					</f:facet>
+					<f:facet name="complete">
+						<h:outputText value="" />
+					</f:facet>
+				</p:ajaxStatus>
+				
+				<h:form id="form">
+
+					<div style="text-align: right; margin: 10px">
+						<h:link value="Close" outcome="/notes" styleClass="center-75" icon="ui-icon-close" title="Close view">
+							<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+							<f:param name="id" value="#{noteAction.id}" />
+						</h:link>
+						<p:spacer width="10" />
+						<h:commandLink value="Print">
+							<p:printer target=":form:table" />
+						</h:commandLink>
+					</div>
+					<div style="text-align:center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>						
+					
+					<p:growl id="messages" life="#{appManager.growlLife}" />
+					<div style="margin: 6px">
+						<h:outputText value="#{noteAction.project.name}: Project Notes" styleClass="header" />
+					</div>
+					<p:dataTable id="table" emptyMessage="No Notes Defined" resizableColumns="true" var="_note" value="#{noteAction.notes}">
+						
+						<f:facet name="header">
+							#{noteAction.project.name}: Project Notes (#{projectSecurityMarking})
+						</f:facet>						
+
+						<p:column headerText="Id" style="width:40px;vertical-align:top" sortBy="#{_note.artifact}">
+							<h:outputText value="#{_note.artifact}" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column headerText="Title" style="width:160px;vertical-align:top">
+							<h:outputText value="#{_note.title}" styleClass="wordWrap" escape="false" style="font-size:0.9em"/>
+						</p:column>
+
+						<p:column headerText="Description" style="width:220px;vertical-align:top">
+							<h:outputText value="#{_note.description}" styleClass="wordWrap" escape="false" style="font-size:0.9em"/>
+						</p:column>
+						
+						<p:column headerText="Modified" style="width:80px;vertical-align:top">
+							<h:outputText value="#{_note.modifiedDate}">
+								<f:convertDateTime dateStyle="short" timeStyle="short" type="both" style="font-size:0.9em"/>
+							</h:outputText>
+						</p:column>							
+
+					</p:dataTable>
+					<div style="text-align:center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>	
+					<div style="text-align: right; margin: 10px">
+						<h:link value="Close" outcome="/notes" styleClass="center-75" icon="ui-icon-close" title="Close view">
+							<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+							<f:param name="id" value="#{noteAction.id}" />
+						</h:link>
+						<p:spacer width="10" />
+						<h:commandLink value="Print">
+							<p:printer target=":form:table" />
+						</h:commandLink>
+					</div>
+				</h:form>
+
+			</p:layoutUnit>
+		</p:layout>
+		
+		
+
+	</ui:define>
+</ui:composition>

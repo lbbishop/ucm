@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">TestSet Summary</ui:define>
+	<ui:define name="content">
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+				</p:dialog>
+
+				<h:form id="form">
+
+					<p:growl id="messages" showDetail="false" />
+					<div style="text-align: center;">
+						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+					</div>
+					<div style="margin: 6px">
+						<h:outputText value="#{testSetReporter.testSet.name}: TestSet Results" styleClass="header" />
+					</div>
+
+					<p:tabView>
+						<p:tab title="TestCase">
+							<p:dataTable id="testCaseTable" styleClass="dataTable" emptyMessage="No TestSets" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testSetReporter.testCaseResults}">
+
+								<f:facet name="header">
+									<h:outputText value="#{testSetReporter.testSet.name} TestSet Results" />
+								</f:facet>
+
+								<p:column style="width:50px;vertical-align:top" sortBy="#{result.artifact}">
+									<f:facet name="header">
+										<h:outputText value="Artifact" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.artifact}" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:60px;vertical-align:top" sortBy="#{result.testType}">
+									<f:facet name="header">
+										<h:outputText value="Test Type" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testType}" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:240px;vertical-align:top" sortBy="#{result.testName}">
+									<f:facet name="header">
+										<h:outputText value="Test Name" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testName}" styleClass="wordWrap" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:100px;vertical-align:top" sortBy="#{result.tester}">
+									<f:facet name="header">
+										<h:outputText value="Tester" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.tester}" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:90px;vertical-align:top">
+									<f:facet name="header">
+										<h:outputText value="Test Date" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testDate}" style="font-size:0.9em">
+										<f:convertDateTime type="both" dateStyle="short" timeStyle="short" />
+									</h:outputText>
+								</p:column>
+
+								<p:column style="width:70px;vertical-align:top" sortBy="#{result.testResultType}">
+									<f:facet name="header">
+										<h:outputText value="Test Result" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testResultType}" style="font-size:0.9em" />
+								</p:column>
+
+								<f:facet name="footer">
+									<h:commandLink>
+										<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+										<pe:exporter type="xlsx" target="testCaseTable" fileName="#{testSetReporter.testSet.name}_testcase_summary" orientation="landscape" />
+									</h:commandLink>
+								</f:facet>
+							</p:dataTable>
+
+						</p:tab>
+
+						<p:tab title="Requirement Tests">
+
+							<p:dataTable id="reqTestTable" styleClass="dataTable" emptyMessage="No TestSets" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testSetReporter.requirementTestResults}">
+
+								<f:facet name="header">
+									<h:outputText value="#{testSetReporter.testSet.name} TestSet Results" />
+								</f:facet>
+
+								<p:column style="width:50px;vertical-align:top" sortBy="#{result.artifact}">
+									<f:facet name="header">
+										<h:outputText value="Artifact" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.artifact}" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:60px;vertical-align:top" sortBy="#{result.testType}">
+									<f:facet name="header">
+										<h:outputText value="Test Type" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testType}" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:240px;vertical-align:top" sortBy="#{result.testName}">
+									<f:facet name="header">
+										<h:outputText value="Test Name" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testName}" styleClass="wordWrap" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:100px;vertical-align:top" sortBy="#{result.tester}">
+									<f:facet name="header">
+										<h:outputText value="Tester" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.tester}" style="font-size:0.9em" />
+								</p:column>
+
+								<p:column style="width:90px;vertical-align:top">
+									<f:facet name="header">
+										<h:outputText value="Test Date" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testDate}" style="font-size:0.9em">
+										<f:convertDateTime type="both" dateStyle="short" timeStyle="short" />
+									</h:outputText>
+								</p:column>
+
+								<p:column style="width:70px;vertical-align:top" sortBy="#{result.testResultType}">
+									<f:facet name="header">
+										<h:outputText value="Test Result" style="font-size:0.93em" />
+									</f:facet>
+									<h:outputText value="#{result.testResultType}" style="font-size:0.9em" />
+								</p:column>
+
+								<f:facet name="footer">
+									<h:commandLink>
+										<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+										<pe:exporter type="xlsx" target="reqTestTable" fileName="#{testSetReporter.testSet.name}_reqtest_summary" orientation="landscape" />
+									</h:commandLink>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+
+					<div style="text-align: right; margin: 10px">
+						<p:button value="Close" outcome="/home.jsf?faces-redirect=true" style="width:80px" title="Close view" />
+					</div>
+				</h:form>
+			</p:layoutUnit>
+		</p:layout>
+		
+		
+		
+	</ui:define>
+</ui:composition>
