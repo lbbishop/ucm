@@ -25,11 +25,11 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -59,10 +59,8 @@ import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.util.TestPlanUpdated;
 
-//@SessionScoped
-//@Named(value = "treeController")
-@ManagedBean
-@ViewScoped
+@SessionScoped
+@Named(value = "treeController")
 public class TreeController implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -149,11 +147,11 @@ public class TreeController implements Serializable {
 			logger.info("loadTreeNodes root {}", this.root);
 
 			// Projects
-			TreeNode projectsRoot = new DefaultTreeNode(new ModelNode("Projects", null, "projects"), this.root);
+			TreeNode projectsRoot = new DefaultTreeNode(new ModelNode("Projects", 0L, "projects"), this.root);
 			logger.info("loadTreeNodes projectsRoot {}", projectsRoot);
 			projectsRoot.setExpanded(true);
 
-			List<ModelNode> projectNodes = em.createQuery("select new com.sfs.captor.data.ModelNode(p.name, p.id, p.description) from Project p").getResultList();
+			List<ModelNode> projectNodes = em.createQuery("select new com.sfs.ucm.data.ModelNode(p.name, p.id, p.description) from Project p").getResultList();
 
 			for (ModelNode project : projectNodes) {
 				Project theProject = em.find(Project.class, project.getId());
@@ -330,7 +328,6 @@ public class TreeController implements Serializable {
 	 * @return the selectedNode
 	 */
 	public TreeNode getSelectedNode() {
-		logger.info("selected Node {}", selectedNode);
 		return selectedNode;
 	}
 
@@ -465,7 +462,6 @@ public class TreeController implements Serializable {
 	 * @return TreeNode
 	 */
 	public TreeNode getRoot() {
-		logger.info("root {}", root);
 		return root;
 	}
 
