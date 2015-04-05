@@ -82,6 +82,7 @@ public class Authenticator implements Serializable {
 		String outcome = null;
 
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if (request.getSession().getAttribute("User") == null) {
 		try {
 
 			request.login(username, password);
@@ -107,6 +108,10 @@ public class Authenticator implements Serializable {
 			else if (request.isUserInRole("Guest")) {
 				message = "Welcome " + principal.getName() + " (Guest)";
 			}
+			
+            // place username in session attribute User
+            request.getSession().setAttribute("User", principal.getName());
+
 			logger.info(message);
 
 			outcome = Literal.NAV_SUCCESS.toString();
@@ -121,7 +126,7 @@ public class Authenticator implements Serializable {
 			outcome = Literal.NAV_FAILURE.toString();
 
 		}
-
+        }
 		return outcome;
 	}
 

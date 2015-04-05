@@ -23,16 +23,22 @@ package com.sfs.ucm.view;
 
 import javax.faces.event.PhaseId;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.config.Invoke;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.faces.annotation.config.IgnorePostbackOperation;
 import org.ocpsoft.rewrite.faces.config.PhaseBinding;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
+import org.ocpsoft.rewrite.servlet.config.HttpCondition;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * Rewrite configuration provider
@@ -42,21 +48,41 @@ import org.ocpsoft.rewrite.servlet.config.rule.Join;
  */
 public class MyConfigurationProvider extends HttpConfigurationProvider {
 
+	Condition loggedIn = new HttpCondition() {
+		@Override
+		public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context) {
+
+			HttpServletRequest request = event.getRequest();
+			String username = (String) request.getSession().getAttribute("User");
+			return (username != null);
+		}
+	};
+
+	Condition isAdmin = new HttpCondition() {
+		@Override
+		public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context) {
+
+			HttpServletRequest request = event.getRequest();
+			String username = (String) request.getSession().getAttribute("Admin");
+			return (username != null);
+		}
+	};
+
 	@Override
 	public Configuration getConfiguration(ServletContext context) {
 
 		return ConfigurationBuilder.begin()
 
-		/* add your rules here */
-		.addRule(Join.path("/home").to("/home.jsf"))
+		.addRule().when(Direction.isInbound().andNot(loggedIn))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("authenticator.login")))).after(PhaseId.RESTORE_VIEW))
 
-		.addRule(Join.path("/welcome").to("/home.jsf"))
+				.addRule(Join.path("/home").to("/home.jsf"))
 
-		.addRule(Join.path("/logout").to("/logout.jsf"))
+				.addRule(Join.path("/logout").to("/logout.jsf"))
 
-		.addRule(Join.path("/help/about").to("/help/about.jsf"))
+				.addRule(Join.path("/help/about").to("/help/about.jsf"))
 
-		.addRule(Join.path("/admin/users").to("/admin/users.jsf"))
+				.addRule(Join.path("/admin/users").to("/admin/users.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("userAction.load")))).after(PhaseId.RESTORE_VIEW))
 
 				.addRule(Join.path("/admin/settings").to("/admin/settings.jsf"))
@@ -311,7 +337,7 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("useCaseFlowAction.load")))).after(PhaseId.RESTORE_VIEW)).where("id")
 				.bindsTo(PhaseBinding.to(El.property("useCaseFlowAction.id")).after(PhaseId.RESTORE_VIEW))
 
-				;
+		;
 	}
 
 	@Override

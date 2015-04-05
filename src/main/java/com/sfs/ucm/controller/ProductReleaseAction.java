@@ -25,8 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
-import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -60,11 +60,13 @@ import com.sfs.ucm.view.FacesContextMessage;
  * @author lbbishop
  */
 @Stateful
-@ConversationScoped
+@ViewScoped
 @Named("productReleaseAction")
-public class ProductReleaseAction extends ActionBase implements Serializable {
+public class ProductReleaseAction implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	protected Long id;
 
 	@Inject
 	private FacesContextMessage facesContextMessage;
@@ -111,8 +113,6 @@ public class ProductReleaseAction extends ActionBase implements Serializable {
 	public void init() {
 		this.selected = false;
 		this.productRelease = new ProductRelease();
-
-		begin();
 	}
 
 	/**
@@ -144,7 +144,6 @@ public class ProductReleaseAction extends ActionBase implements Serializable {
 	 */
 	public String close() {
 		String outcome = Literal.NAV_HOME.toString();
-		end();
 		return outcome;
 	}
 
@@ -275,6 +274,20 @@ public class ProductReleaseAction extends ActionBase implements Serializable {
 	 */
 	public boolean isEditable() {
 		return editable;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**

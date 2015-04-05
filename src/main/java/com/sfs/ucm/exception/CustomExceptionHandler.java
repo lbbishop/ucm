@@ -23,16 +23,23 @@ package com.sfs.ucm.exception;
 
 import java.util.Iterator;
 
+import javax.enterprise.context.NonexistentConversationException;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
+import javax.faces.application.ViewExpiredException;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CustomExceptionHandler extends ExceptionHandlerWrapper {
+
+	private static Logger logger = LoggerFactory.getLogger(CustomExceptionHandler.class);
 	private ExceptionHandler wrapped;
 
 	public CustomExceptionHandler(ExceptionHandler wrapped) {
@@ -66,7 +73,7 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 						fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, throwable.getCause().getMessage(), null));
 						System.err.println("cause: " + throwable.getCause().getMessage());
 					}
-					String outcome = calcExceptionOutcome(throwable);
+					String outcome = calcExceptionOutcome(fc, throwable);
 					NavigationHandler navigationHandler = fc.getApplication().getNavigationHandler();
 					navigationHandler.handleNavigation(fc, null, outcome);
 
@@ -83,23 +90,43 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 	}
 
 	/**
-	 * Helper method to determine outcome
+	 * Helper method to determine outcome and log messages.
+	 * <p>
+	 * Rules:
+	 * <ul>
+	 * <li>If exception is a WELD NonexistentConversationException, the error logged and outcome is the expired session page.</li>
+	 * <li>If exception is a JSF ViewExpiredException, outcome is the expired session page with no error logged.</li>
+	 * <li>All other errors cause navigation to error page with exception message logged to system logger and FacesContext message queue.</li>
+	 * </ul>
 	 * 
+	 * @param FacesContext
+	 *            the JSF FacesContext
 	 * @param throwable
-	 * @return outcome
+	 *            the handled exception
+	 * @return outcome the navigation outcome (null if no navigation is to be performed)
 	 */
-	private String calcExceptionOutcome(Throwable throwable) {
+	private String calcExceptionOutcome(final FacesContext fc, final Throwable throwable) {
 		String outcome = null;
 
-		if (throwable.toString().indexOf("NonexistentConversationException") != -1) {
-			outcome = "/viewexpired.jsf?faces-redirect=true";
+		if (throwable instanceof NonexistentConversationException) {
+			outcome = "/expired.jsf?nocid=true";
 		}
-		else if (throwable.toString().indexOf("ViewExpiredException") != -1) {
-			outcome = "/viewexpired.jsf?faces-redirect=true";
+		else if (throwable instanceof ViewExpiredException) {
+			outcome = "/expired.jsf?faces-redirect=true";
 		}
 		else {
+
+			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, throwable.getMessage(), null));
+			logger.error("Class: {} Message:{}", throwable.toString(), throwable.getMessage());
+
+			if (throwable.getCause() != null) {
+				fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, throwable.getCause().getMessage(), null));
+				logger.error("Cause: {}", throwable.getCause().getMessage());
+			}
+
 			outcome = "/error.jsf?nocid=true";
 		}
 		return outcome;
 	}
+
 }
