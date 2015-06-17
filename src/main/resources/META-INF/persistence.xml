@@ -15,20 +15,25 @@
 
 			<property name="hibernate.search.default.directory_provider" value="ram" />
 
-<!-- 
+ 
 			<property name="hibernate.search.default.directory_provider" value="filesystem" />
 			<property name="hibernate.search.default.indexBase" value="c:/users/lbbishop/lucene/indexes" />
--->			
+			
 			<property name="org.hibernate.envers.audit_table_suffix" value="_aud"/>
+			<property name="org.hibernate.envers.store_data_at_delete" value="false" />
 
-  <!-- 
-			<property name="hibernate.hbm2ddl.auto" value="update" /> 
-  -->
+						
+			<property name="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
+			<property name="org.hibernate.envers.audit_strategy_validity_store_revend_timestamp" value="true"/>
+			<property name="org.hibernate.envers.track_entities_changed_in_revision" value="true"/>
+			<property name="org.hibernate.envers.global_with_modified_flag" value="true"/>
  
+  <!--  
+			<property name="hibernate.hbm2ddl.auto" value="create" /> 
+   -->
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.show_sql" value="false" />
 
-			<property name="org.hibernate.envers.store_data_at_delete" value="false" />
 		</properties>
 	</persistence-unit>
 </persistence>

@@ -94,7 +94,7 @@ public class TestCase extends EntityBase implements Serializable {
 	@Basic
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "test_date", nullable = true)
-	protected java.util.Date testDate;
+	private java.util.Date testDate;
 
 	@Lob
 	@Column(name = "input_data", columnDefinition = "TEXT NULL", nullable = true)

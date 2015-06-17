@@ -23,7 +23,9 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -94,7 +96,7 @@ public class Flow extends EntityBase implements Serializable {
 
 	// subflows
 	@OneToMany(mappedBy = "flow", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Subflow> subflows;
+	private Collection<Subflow> subflows;
 
 	/**
 	 * Default constructor
@@ -130,7 +132,7 @@ public class Flow extends EntityBase implements Serializable {
 	private void init() {
 		this.basicFlowFlag = false;
 		this.flowSteps = new ArrayList<FlowStep>();
-		this.subflows = new ArrayList<Subflow>();
+		this.subflows = new HashSet<Subflow>();
 	}
 
 	/**
@@ -208,13 +210,6 @@ public class Flow extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the flowSteps
-	 */
-	public List<FlowStep> getFlowSteps() {
-		return flowSteps;
-	}
-
-	/**
 	 * @return the startStep
 	 */
 	public Short getStartStep() {
@@ -283,9 +278,16 @@ public class Flow extends EntityBase implements Serializable {
 	}
 
 	/**
+	 * @return the flowSteps
+	 */
+	public List<FlowStep> getFlowSteps() {
+		return flowSteps;
+	}
+
+	/**
 	 * @return the subflows
 	 */
-	public List<Subflow> getSubflows() {
+	public Collection<Subflow> getSubflows() {
 		return subflows;
 	}
 
@@ -306,9 +308,10 @@ public class Flow extends EntityBase implements Serializable {
 		subflow.setFlow(null);
 		this.subflows.remove(subflow);
 	}
-	
+
 	/**
 	 * Number of flow steps
+	 * 
 	 * @return number of steps
 	 */
 	public int getNumSteps() {

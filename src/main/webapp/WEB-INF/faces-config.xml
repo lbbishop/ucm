@@ -21,7 +21,7 @@
 		 	
 	<lifecycle> <phase-listener>com.sfs.ucm.view.MultiPageMessagesSupport</phase-listener> </lifecycle>
 	    
-    <!-- 
+    
     <component>
 		<component-type>org.primefaces.component.SentinelMenu</component-type>
 		<component-class>org.primefaces.sentinel.component.menu.SentinelMenu</component-class>
@@ -34,5 +34,5 @@
 			<renderer-class>org.primefaces.sentinel.component.menu.SentinelMenuRenderer</renderer-class>
 		</renderer>
     </render-kit>
-    --> 
+     
 </faces-config>

@@ -342,6 +342,7 @@ public class ReferenceDataProducer {
 		themes.put("Rocket", "rocket");
 		// themes.put("Sam", "sam");
 		themes.put("Smoothness", "smoothness");
+		themes.put("Sentinel", "sentinel");
 	}
 
 	private static String editorControls = "bold italic font size style color highlight bullets numbering alignleft center justify undo redo cut copy paste pastetext";

@@ -23,8 +23,8 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -157,11 +157,11 @@ public class UseCase extends EntityBase implements Serializable {
 	private Flow extendedFlow;
 
 	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Flow> alternativeFlows;
+	private Collection<Flow> alternativeFlows;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<UseCaseRule> useCaseRules;
+	private Collection<UseCaseRule> useCaseRules;
 
 	@ManyToOne
 	private Iteration iteration;
@@ -192,8 +192,8 @@ public class UseCase extends EntityBase implements Serializable {
 	private void init() {
 		this.statusType = StatusType.New;
 		this.basicFlow = new Flow(true);
-		this.alternativeFlows = new ArrayList<Flow>();
-		this.useCaseRules = new ArrayList<UseCaseRule>();
+		this.alternativeFlows = new HashSet<Flow>();
+		this.useCaseRules = new HashSet<UseCaseRule>();
 
 	}
 
@@ -504,7 +504,7 @@ public class UseCase extends EntityBase implements Serializable {
 	/**
 	 * @return the alternativeFlows
 	 */
-	public List<Flow> getAlternativeFlows() {
+	public Collection<Flow> getAlternativeFlows() {
 		return alternativeFlows;
 	}
 
@@ -531,7 +531,7 @@ public class UseCase extends EntityBase implements Serializable {
 	/**
 	 * @return the useCaseRules
 	 */
-	public List<UseCaseRule> getUseCaseRules() {
+	public Collection<UseCaseRule> getUseCaseRules() {
 		return useCaseRules;
 	}
 

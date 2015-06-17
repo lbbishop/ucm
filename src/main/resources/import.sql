@@ -1,19 +1,7 @@
---
--- JBoss, Home of Professional Open Source
--- Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
--- contributors by the @authors tag. See the copyright.txt in the
--- distribution for a full listing of individual contributors.
---
--- Licensed under the Apache License, Version 2.0 (the "License");
--- you may not use this file except in compliance with the License.
--- You may obtain a copy of the License at
--- http://www.apache.org/licenses/LICENSE-2.0
--- Unless required by applicable law or agreed to in writing, software
--- distributed under the License is distributed on an "AS IS" BASIS,
--- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
--- See the License for the specific language governing permissions and
--- limitations under the License.
---
+-- load captor seed data
 
--- You can use this file to load seed data into the database using SQL statements
-insert into Member (id, name, email, phone_number) values (0, 'John Smith', 'john.smith@mailinator.com', '2125551212') 
+-- setup admin user
+insert into authuser (id, identifier, user_name, password, name, email, modified_by, modified_date, object_version) values (1, 1, 'admin', 'admin', 'Administrator','admin@gmail.com','captor','2012-12-01',0);
+insert into authrole (id, user_name, role_name, role_group, modified_by, modified_date, object_version, authuser_id) values (1, 'admin', 'Admin', 'Admins','captor','2012-12-01',0, 1);
+insert into preference (id, keyword, strval, modified_by, modified_date, object_version, authuser_id) values (1, 'theme', 'aristo', 'captor','2012-12-01',0, 1);
+insert into preference (id, keyword, blnval, modified_by, modified_date, object_version, authuser_id) values (2, 'DisplayTooltips', true, 'captor','2012-12-01',0, 1);

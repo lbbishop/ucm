@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -71,10 +71,10 @@ public class TestPlan extends EntityBase implements Serializable {
 	private Project project;
 
 	@OneToMany(mappedBy = "testPlan", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<TestSet> testSets;
+	private Collection<TestSet> testSets;
 
 	@OneToMany(mappedBy = "testPlan", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<UnitTest> unitTests;
+	private Collection<UnitTest> unitTests;
 
 	/**
 	 * Default constructor
@@ -97,8 +97,8 @@ public class TestPlan extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.testSets = new ArrayList<TestSet>();
-		this.unitTests = new ArrayList<UnitTest>();
+		this.testSets = new HashSet<TestSet>();
+		this.unitTests = new HashSet<UnitTest>();
 	}
 
 	/**
@@ -178,14 +178,14 @@ public class TestPlan extends EntityBase implements Serializable {
 	/**
 	 * @return the testSets
 	 */
-	public List<TestSet> getTestSets() {
+	public Collection<TestSet> getTestSets() {
 		return testSets;
 	}
 
 	/**
 	 * @return the unitTests
 	 */
-	public List<UnitTest> getUnitTests() {
+	public Collection<UnitTest> getUnitTests() {
 		return unitTests;
 	}
 

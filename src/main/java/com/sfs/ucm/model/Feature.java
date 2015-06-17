@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -122,10 +122,10 @@ public class Feature extends EntityBase implements Serializable {
 	private ProductRelease productRelease;
 
 	@OneToMany(mappedBy = "feature", cascade = { CascadeType.PERSIST })
-	private List<Requirement> requirements;
+	private Collection<Requirement> requirements;
 
 	@OneToMany(mappedBy = "feature", cascade = { CascadeType.PERSIST })
-	private List<UseCase> useCases;
+	private Collection<UseCase> useCases;
 
 	/**
 	 * Default constructor
@@ -148,8 +148,8 @@ public class Feature extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.requirements = new ArrayList<Requirement>();
-		this.useCases = new ArrayList<UseCase>();
+		this.requirements = new HashSet<Requirement>();
+		this.useCases = new HashSet<UseCase>();
 	}
 
 	/**
@@ -318,12 +318,7 @@ public class Feature extends EntityBase implements Serializable {
 		this.stakeholderRequest = stakeholderRequest;
 	}
 
-	/**
-	 * @return the requirements
-	 */
-	public List<Requirement> getRequirements() {
-		return requirements;
-	}
+	
 
 	/**
 	 * add requirement
@@ -382,10 +377,19 @@ public class Feature extends EntityBase implements Serializable {
 		this.useCases.remove(useCase);
 	}
 
+	
+
+	/**
+	 * @return the requirements
+	 */
+	public Collection<Requirement> getRequirements() {
+		return requirements;
+	}
+
 	/**
 	 * @return the useCases
 	 */
-	public List<UseCase> getUseCases() {
+	public Collection<UseCase> getUseCases() {
 		return useCases;
 	}
 

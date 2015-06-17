@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -94,7 +94,7 @@ public class StakeholderRequest extends EntityBase implements Serializable {
 	private Project project;
 
 	@OneToMany(mappedBy = "stakeholderRequest", cascade = { CascadeType.PERSIST })
-	private List<Feature> features;
+	private Collection<Feature> features;
 
 	/**
 	 * Default constructor
@@ -117,7 +117,7 @@ public class StakeholderRequest extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.features = new ArrayList<Feature>();
+		this.features = new HashSet<Feature>();
 		this.stakeholder = new Stakeholder();
 	}
 
@@ -213,7 +213,7 @@ public class StakeholderRequest extends EntityBase implements Serializable {
 	/**
 	 * @return the features
 	 */
-	public List<Feature> getFeatures() {
+	public Collection<Feature> getFeatures() {
 		return features;
 	}
 

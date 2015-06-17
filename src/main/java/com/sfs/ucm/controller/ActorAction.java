@@ -116,6 +116,7 @@ public class ActorAction extends ActionBase implements Serializable {
 			this.project = em.find(Project.class, id);
 
 			loadList();
+			logger.info("load called");
 
 			// update producers
 			this.projectSecurityMarkingSrc.fire(this.project);

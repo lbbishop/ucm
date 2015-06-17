@@ -59,7 +59,7 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name="designconstraint")
+@Table(name = "designconstraint")
 public class DesignConstraint extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;

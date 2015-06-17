@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -82,7 +82,7 @@ public class FlowStep extends EntityBase implements Serializable {
 	private Resource resource;
 
 	@OneToMany(mappedBy = "flowStep", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<FlowStepRule> flowStepRules;
+	private Collection<FlowStepRule> flowStepRules;
 
 	@ManyToOne(optional = false)
 	private Flow flow;
@@ -107,7 +107,7 @@ public class FlowStep extends EntityBase implements Serializable {
 	}
 	
 	private void init() {
-		this.flowStepRules = new ArrayList<FlowStepRule>();
+		this.flowStepRules = new HashSet<FlowStepRule>();
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class FlowStep extends EntityBase implements Serializable {
 	/**
 	 * @return the flowStepRules
 	 */
-	public List<FlowStepRule> getFlowStepRules() {
+	public Collection<FlowStepRule> getFlowStepRules() {
 		return flowStepRules;
 	}
 

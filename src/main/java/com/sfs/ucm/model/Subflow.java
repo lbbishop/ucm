@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -71,7 +71,7 @@ public class Subflow extends EntityBase implements Serializable {
 
 	// subflow steps
 	@OneToMany(mappedBy = "subflow", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<SubflowStep> subflowSteps;
+	private Collection<SubflowStep> subflowSteps;
 
 	/**
 	 * Default constructor
@@ -96,7 +96,7 @@ public class Subflow extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.subflowSteps = new ArrayList<SubflowStep>();
+		this.subflowSteps = new HashSet<SubflowStep>();
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class Subflow extends EntityBase implements Serializable {
 	/**
 	 * @return the subflowSteps
 	 */
-	public List<SubflowStep> getSubflowSteps() {
+	public Collection<SubflowStep> getSubflowSteps() {
 		return subflowSteps;
 	}
 

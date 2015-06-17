@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -81,7 +81,7 @@ public class AuthUser extends EntityBase implements Serializable {
 	@Pattern(regexp = "[A-Za-z ]*", message = "must contain only letters and spaces")
 	private String name;
 
-	@Size(max=255)
+	@Size(max = 255)
 	@Column(name = "email", length = 255, nullable = true)
 	private String email;
 
@@ -89,13 +89,13 @@ public class AuthUser extends EntityBase implements Serializable {
 	private String phoneNumber;
 
 	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL })
-	private List<AuthRole> authRoles;
+	private Collection<AuthRole> authRoles;
 
 	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL })
-	private List<ViewSet> viewSets;
+	private Collection<ViewSet> viewSets;
 
 	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL })
-	private List<Preference> preferences;
+	private Collection<Preference> preferences;
 
 	@Transient
 	private boolean loggedIn;
@@ -164,10 +164,10 @@ public class AuthUser extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.viewSets = new ArrayList<ViewSet>();
+		this.viewSets = new HashSet<ViewSet>();
 		this.loggedIn = false;
-		this.authRoles = new ArrayList<AuthRole>();
-		this.preferences = new ArrayList<Preference>();
+		this.authRoles = new HashSet<AuthRole>();
+		this.preferences = new HashSet<Preference>();
 		this.theme = Literal.THEME_DEFAULT.toString();
 	}
 
@@ -214,7 +214,7 @@ public class AuthUser extends EntityBase implements Serializable {
 	 * @return string with delimited roles
 	 */
 	public String getUserRoles() {
-		List<String> roles = new ArrayList<String>();
+		Collection<String> roles = new HashSet<String>();
 		for (AuthRole authRole : this.authRoles) {
 			roles.add(authRole.getRoleName());
 		}
@@ -314,7 +314,7 @@ public class AuthUser extends EntityBase implements Serializable {
 	/**
 	 * @return the viewSets
 	 */
-	public List<ViewSet> getViewSets() {
+	public Collection<ViewSet> getViewSets() {
 		return viewSets;
 	}
 
@@ -359,13 +359,6 @@ public class AuthUser extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the roles
-	 */
-	public List<AuthRole> getAuthRoles() {
-		return authRoles;
-	}
-
-	/**
 	 * @param role
 	 *            the role to add
 	 */
@@ -401,9 +394,16 @@ public class AuthUser extends EntityBase implements Serializable {
 	}
 
 	/**
+	 * @return the authRoles
+	 */
+	public Collection<AuthRole> getAuthRoles() {
+		return authRoles;
+	}
+
+	/**
 	 * @return the preferences
 	 */
-	public List<Preference> getPreferences() {
+	public Collection<Preference> getPreferences() {
 		return preferences;
 	}
 

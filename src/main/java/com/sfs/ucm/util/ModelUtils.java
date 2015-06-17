@@ -21,7 +21,7 @@
  */
 package com.sfs.ucm.util;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.sfs.ucm.model.EntityBase;
 
@@ -33,7 +33,7 @@ public class ModelUtils {
 	 * @param list
 	 * @return next id value
 	 */
-	public static int getNextIdentifier(List<?> list) {
+	public static int getNextIdentifier(Collection<?> list) {
 		int id = 0;
 		if (list != null) {
 			for (Object obj : list) {

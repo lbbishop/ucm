@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -118,29 +118,29 @@ public class Project extends EntityBase implements Serializable {
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Actor> actors;
+	private Collection<Actor> actors;
 
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<ProjectMember> projectMembers;
+	private Collection<ProjectMember> projectMembers;
 
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<ProjectPackage> projectPackages;
-
-	@IndexedEmbedded
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<DesignConstraint> designConstraints;
+	private Collection<ProjectPackage> projectPackages;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Feature> features;
+	private Collection<DesignConstraint> designConstraints;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Setting> settings;
+	private Collection<Feature> features;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<GlossaryTerm> glossaryTerms;
+	private Collection<Setting> settings;
+
+	@IndexedEmbedded
+	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<GlossaryTerm> glossaryTerms;
 
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	@JoinColumn(name = "productvision_id")
@@ -156,51 +156,51 @@ public class Project extends EntityBase implements Serializable {
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Requirement> requirements;
+	private Collection<Requirement> requirements;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Risk> risks;
+	private Collection<Risk> risks;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<UserStory> userStories;
+	private Collection<UserStory> userStories;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Estimate> estimates;
+	private Collection<Estimate> estimates;
 
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Stakeholder> stakeholders;
-
-	@IndexedEmbedded
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<StakeholderRequest> stakeholderRequests;
+	private Collection<Stakeholder> stakeholders;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<UseCase> useCases;
-
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<ProductRelease> productReleases;
+	private Collection<StakeholderRequest> stakeholderRequests;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<BusinessProcess> businessProcesses;
+	private Collection<UseCase> useCases;
 
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Iteration> iterations;
-
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Resource> resources;
+	private Collection<ProductRelease> productReleases;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Task> tasks;
+	private Collection<BusinessProcess> businessProcesses;
+
+	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<Iteration> iterations;
+
+	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<Resource> resources;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Note> notes;
+	private Collection<Task> tasks;
+
+	@IndexedEmbedded
+	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<Note> notes;
 
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	@JoinColumn(name = "testplan_id")
@@ -236,25 +236,25 @@ public class Project extends EntityBase implements Serializable {
 		this.projectStatusType = ProjectStatusType.Proposed;
 		this.visibleToPublic = false;
 
-		this.projectMembers = new ArrayList<ProjectMember>();
-		this.projectPackages = new ArrayList<ProjectPackage>();
-		this.actors = new ArrayList<Actor>();
-		this.designConstraints = new ArrayList<DesignConstraint>();
-		this.features = new ArrayList<Feature>();
-		this.glossaryTerms = new ArrayList<GlossaryTerm>();
-		this.requirements = new ArrayList<Requirement>();
-		this.productReleases = new ArrayList<ProductRelease>();
-		this.risks = new ArrayList<Risk>();
-		this.userStories = new ArrayList<UserStory>();
-		this.estimates = new ArrayList<Estimate>();
-		this.stakeholders = new ArrayList<Stakeholder>();
-		this.stakeholderRequests = new ArrayList<StakeholderRequest>();
-		this.useCases = new ArrayList<UseCase>();
-		this.businessProcesses = new ArrayList<BusinessProcess>();
-		this.iterations = new ArrayList<Iteration>();
-		this.tasks = new ArrayList<Task>();
-		this.resources = new ArrayList<Resource>();
-		this.settings = new ArrayList<Setting>();
+		this.projectMembers = new HashSet<ProjectMember>();
+		this.projectPackages = new HashSet<ProjectPackage>();
+		this.actors = new HashSet<Actor>();
+		this.designConstraints = new HashSet<DesignConstraint>();
+		this.features = new HashSet<Feature>();
+		this.glossaryTerms = new HashSet<GlossaryTerm>();
+		this.requirements = new HashSet<Requirement>();
+		this.productReleases = new HashSet<ProductRelease>();
+		this.risks = new HashSet<Risk>();
+		this.userStories = new HashSet<UserStory>();
+		this.estimates = new HashSet<Estimate>();
+		this.stakeholders = new HashSet<Stakeholder>();
+		this.stakeholderRequests = new HashSet<StakeholderRequest>();
+		this.useCases = new HashSet<UseCase>();
+		this.businessProcesses = new HashSet<BusinessProcess>();
+		this.iterations = new HashSet<Iteration>();
+		this.tasks = new HashSet<Task>();
+		this.resources = new HashSet<Resource>();
+		this.settings = new HashSet<Setting>();
 		this.open = true;
 	}
 
@@ -320,7 +320,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the projectMembers
 	 */
-	public List<ProjectMember> getProjectMembers() {
+	public Collection<ProjectMember> getProjectMembers() {
 		return projectMembers;
 	}
 
@@ -349,7 +349,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the projectPackage
 	 */
-	public List<ProjectPackage> getProjectPackages() {
+	public Collection<ProjectPackage> getProjectPackages() {
 		return projectPackages;
 	}
 
@@ -477,7 +477,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the settings
 	 */
-	public List<Setting> getSettings() {
+	public Collection<Setting> getSettings() {
 		return settings;
 	}
 
@@ -506,7 +506,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the userStories
 	 */
-	public List<UserStory> getUserStories() {
+	public Collection<UserStory> getUserStories() {
 		return userStories;
 	}
 
@@ -531,28 +531,28 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the risks
 	 */
-	public List<Risk> getRisks() {
+	public Collection<Risk> getRisks() {
 		return risks;
 	}
 
 	/**
 	 * @return the features
 	 */
-	public List<Feature> getFeatures() {
+	public Collection<Feature> getFeatures() {
 		return features;
 	}
 
 	/**
 	 * @return the requirements
 	 */
-	public List<Requirement> getRequirements() {
+	public Collection<Requirement> getRequirements() {
 		return requirements;
 	}
 
 	/**
 	 * @return the stakeholders
 	 */
-	public List<Stakeholder> getStakeholders() {
+	public Collection<Stakeholder> getStakeholders() {
 		return stakeholders;
 	}
 
@@ -581,7 +581,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the stakeholderRequests
 	 */
-	public List<StakeholderRequest> getStakeholderRequests() {
+	public Collection<StakeholderRequest> getStakeholderRequests() {
 		return stakeholderRequests;
 	}
 
@@ -632,7 +632,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the designConstraints
 	 */
-	public List<DesignConstraint> getDesignConstraints() {
+	public Collection<DesignConstraint> getDesignConstraints() {
 		return designConstraints;
 	}
 
@@ -734,7 +734,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the actors
 	 */
-	public List<Actor> getActors() {
+	public Collection<Actor> getActors() {
 		return actors;
 	}
 
@@ -763,7 +763,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the businessProcesses
 	 */
-	public List<BusinessProcess> getBusinessProcesses() {
+	public Collection<BusinessProcess> getBusinessProcesses() {
 		return businessProcesses;
 	}
 
@@ -810,7 +810,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the iterations
 	 */
-	public List<Iteration> getIterations() {
+	public Collection<Iteration> getIterations() {
 		return iterations;
 	}
 
@@ -852,14 +852,14 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the tasks
 	 */
-	public List<Task> getTasks() {
+	public Collection<Task> getTasks() {
 		return tasks;
 	}
 
 	/**
 	 * @return the resources
 	 */
-	public List<Resource> getResources() {
+	public Collection<Resource> getResources() {
 		return resources;
 	}
 
@@ -886,7 +886,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the productReleases
 	 */
-	public List<ProductRelease> getProductReleases() {
+	public Collection<ProductRelease> getProductReleases() {
 		return productReleases;
 	}
 
@@ -913,14 +913,14 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the useCases
 	 */
-	public List<UseCase> getUseCases() {
+	public Collection<UseCase> getUseCases() {
 		return useCases;
 	}
 
 	/**
 	 * @return the estimates
 	 */
-	public List<Estimate> getEstimates() {
+	public Collection<Estimate> getEstimates() {
 		return estimates;
 	}
 
@@ -1005,7 +1005,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the glossary
 	 */
-	public List<GlossaryTerm> getGlossaryTerms() {
+	public Collection<GlossaryTerm> getGlossaryTerms() {
 		return glossaryTerms;
 	}
 
@@ -1037,7 +1037,7 @@ public class Project extends EntityBase implements Serializable {
 	/**
 	 * @return the notes
 	 */
-	public List<Note> getNotes() {
+	public Collection<Note> getNotes() {
 		return notes;
 	}
 

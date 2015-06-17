@@ -27,21 +27,21 @@
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 
 		<!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
-		<version.jboss.bom>8.2.1.Final</version.jboss.bom>
+		<version.jboss.bom>8.2.2.Final</version.jboss.bom>
 
 		<!-- other plugin versions -->
 		<version.compiler.plugin>3.1</version.compiler.plugin>
 		<version.surefire.plugin>2.16</version.surefire.plugin>
-		<version.war.plugin>2.5</version.war.plugin>
+		<version.war.plugin>2.6</version.war.plugin>
 
 		<!-- maven-compiler-plugin -->
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.compiler.source>1.7</maven.compiler.source>
 
 		<!-- third-party versions -->
-		<hibernate-search.version>4.3.0.Final</hibernate-search.version>
-		<primefaces.version>5.1.3</primefaces.version>
-		<primefaces-extensions.version>2.1.0</primefaces-extensions.version>
+		<hibernate-search.version>5.2.0.Final</hibernate-search.version>
+		<primefaces.version>5.2.4</primefaces.version>
+		<primefaces-extensions.version>3.1.0</primefaces-extensions.version>
 		<themes.version>1.0.10</themes.version>
 		<org.springframework.version>3.0.6.RELEASE</org.springframework.version>
 		<rewrite.version>2.0.12.Final</rewrite.version>
@@ -55,7 +55,6 @@
 		<logback-classic.version>1.0.6</logback-classic.version>
 	</properties>
 
-
 	<dependencyManagement>
 		<dependencies>
 			<!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) of artifacts. We use this here so that we always get the correct versions of artifacts. Here we use 
@@ -63,18 +62,12 @@
 				the Java EE 7 APIs, with extras from the Hibernate family of projects) -->
 			<dependency>
 				<groupId>org.wildfly.bom</groupId>
-				<artifactId>jboss-javaee-7.0-with-tools</artifactId>
+				<artifactId>jboss-javaee-7.0-with-all</artifactId>
 				<version>${version.jboss.bom}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.wildfly.bom</groupId>
-				<artifactId>jboss-javaee-7.0-with-hibernate</artifactId>
-				<version>${version.jboss.bom}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+	
 		</dependencies>
 	</dependencyManagement>
 
@@ -138,12 +131,12 @@
 			<artifactId>jboss-jsf-api_2.2_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
-	<groupId>javax.servlet</groupId>
-	<artifactId>javax.servlet-api</artifactId>
-	<version>3.1.0</version>
-</dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
 
 		<!-- Now we declare any tools needed -->
 
@@ -161,10 +154,15 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Third party libraries -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-envers</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -178,7 +176,8 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
-		
+
+		<!-- Third party libraries -->
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
@@ -190,26 +189,20 @@
 			<artifactId>primefaces-extensions</artifactId>
 			<version>${primefaces-extensions.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.primefaces.extensions</groupId>
 			<artifactId>resources-ckeditor</artifactId>
 			<version>${primefaces-extensions.version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.primefaces.themes</groupId>
-			<artifactId>metro</artifactId>
-			<version>1.0.10</version>
-		</dependency>		
-		
-		<!-- 
+
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
 			<artifactId>sentinel</artifactId>
 			<version>1.1.0</version>
 		</dependency>
- -->
+
+		<!-- <dependency> <groupId>org.primefaces.themes</groupId> <artifactId>sentinel</artifactId> <version>1.1.0</version> </dependency> -->
 		<!-- Core utilities used by other modules. Define this if you use Spring Utility APIs (org.springframework.core.*/org.springframework.util.*) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -250,7 +243,6 @@
 		<dependency>
 			<groupId>org.jboss.logging</groupId>
 			<artifactId>jboss-logging</artifactId>
-			<version>3.1.0.GA</version>
 		</dependency>
 
 		<dependency>
@@ -317,14 +309,7 @@
 		<!-- Maven will append the version to the finalName (which is the name given to the generated war, and hence the context root) -->
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>${version.war.plugin}</version>
-				<configuration>
-					<!-- Java EE 7 doesn't require web.xml, Maven needs to catch up! -->
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
+
 			<!-- The WildFly plugin deploys your war to a local WildFly container -->
 			<!-- To use, run: mvn package wildfly:deploy -->
 			<plugin>

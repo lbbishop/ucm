@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -106,10 +106,10 @@ public class Iteration extends EntityBase implements Serializable {
 	private StatusType statusType;
 
 	@OneToMany(mappedBy = "iteration")
-	private List<UseCase> useCases;
+	private Collection<UseCase> useCases;
 
 	@OneToMany(mappedBy = "iteration", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Activity> activities;
+	private Collection<Activity> activities;
 
 	@ManyToOne
 	private Project project;
@@ -135,8 +135,8 @@ public class Iteration extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.useCases = new ArrayList<UseCase>();
-		this.activities = new ArrayList<Activity>();
+		this.useCases = new HashSet<UseCase>();
+		this.activities = new HashSet<Activity>();
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class Iteration extends EntityBase implements Serializable {
 	/**
 	 * @return the useCases
 	 */
-	public List<UseCase> getUseCases() {
+	public Collection<UseCase> getUseCases() {
 		return useCases;
 	}
 
@@ -337,7 +337,7 @@ public class Iteration extends EntityBase implements Serializable {
 	/**
 	 * @return the activities
 	 */
-	public List<Activity> getActivities() {
+	public Collection<Activity> getActivities() {
 		return activities;
 	}
 

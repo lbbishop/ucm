@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -134,7 +134,7 @@ public class Requirement extends EntityBase implements Serializable {
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "requirement", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<RequirementRule> requirementRules;
+	private Collection<RequirementRule> requirementRules;
 
 	/**
 	 * Default constructor
@@ -158,7 +158,7 @@ public class Requirement extends EntityBase implements Serializable {
 	 */
 	private void init() {
 		this.statusType = StatusType.New;
-		this.requirementRules = new ArrayList<RequirementRule>();
+		this.requirementRules = new HashSet<RequirementRule>();
 	}
 
 	/**
@@ -238,7 +238,7 @@ public class Requirement extends EntityBase implements Serializable {
 	/**
 	 * @return the requirementRules
 	 */
-	public List<RequirementRule> getRequirementRules() {
+	public Collection<RequirementRule> getRequirementRules() {
 		return requirementRules;
 	}
 

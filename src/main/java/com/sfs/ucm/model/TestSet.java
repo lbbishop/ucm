@@ -22,9 +22,9 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -82,18 +82,18 @@ public class TestSet extends EntityBase implements Serializable {
 	private TestPlan testPlan;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<RequirementTest> requirementTests;
+	private Collection<RequirementTest> requirementTests;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	@NotAudited
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-	private List<TestCase> testCases;
+	private Collection<TestCase> testCases;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<RequirementRuleTest> requirementRuleTests;
+	private Collection<RequirementRuleTest> requirementRuleTests;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<UseCaseRuleTest> useCaseRuleTests;
+	private Collection<UseCaseRuleTest> useCaseRuleTests;
 
 	/**
 	 * Default constructor
@@ -147,10 +147,10 @@ public class TestSet extends EntityBase implements Serializable {
 	 */
 	private void init() {
 		this.tester = new ProjectMember();
-		this.requirementTests = new ArrayList<RequirementTest>();
-		this.testCases = new ArrayList<TestCase>();
-		this.requirementRuleTests = new ArrayList<RequirementRuleTest>();
-		this.useCaseRuleTests = new ArrayList<UseCaseRuleTest>();
+		this.requirementTests = new HashSet<RequirementTest>();
+		this.testCases = new HashSet<TestCase>();
+		this.requirementRuleTests = new HashSet<RequirementRuleTest>();
+		this.useCaseRuleTests = new HashSet<UseCaseRuleTest>();
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class TestSet extends EntityBase implements Serializable {
 	/**
 	 * @return the testCases
 	 */
-	public List<TestCase> getTestCases() {
+	public Collection<TestCase> getTestCases() {
 		return testCases;
 	}
 
@@ -288,7 +288,7 @@ public class TestSet extends EntityBase implements Serializable {
 	/**
 	 * @return the requirementRuleTests
 	 */
-	public List<RequirementRuleTest> getRequirementRuleTests() {
+	public Collection<RequirementRuleTest> getRequirementRuleTests() {
 		return requirementRuleTests;
 	}
 
@@ -317,7 +317,7 @@ public class TestSet extends EntityBase implements Serializable {
 	/**
 	 * @return the useCaseRuleTests
 	 */
-	public List<UseCaseRuleTest> getUseCaseRuleTests() {
+	public Collection<UseCaseRuleTest> getUseCaseRuleTests() {
 		return useCaseRuleTests;
 	}
 
@@ -346,7 +346,7 @@ public class TestSet extends EntityBase implements Serializable {
 	/**
 	 * @return the requirementTests
 	 */
-	public List<RequirementTest> getRequirementTests() {
+	public Collection<RequirementTest> getRequirementTests() {
 		return requirementTests;
 	}
 
