@@ -9,7 +9,7 @@
 	<name>UCM</name>
 	<description>Use Case Manager</description>
 
-	<url>http://wildfly.org</url>
+	<url>http://www.rhinocorps.com</url>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -35,17 +35,15 @@
 		<version.war.plugin>2.6</version.war.plugin>
 
 		<!-- maven-compiler-plugin -->
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
 
 		<!-- third-party versions -->
-		<hibernate-search.version>5.2.0.Final</hibernate-search.version>
-		<primefaces.version>5.2.4</primefaces.version>
-		<primefaces-extensions.version>3.1.0</primefaces-extensions.version>
-		<themes.version>1.0.10</themes.version>
+		<primefaces.version>5.2.7</primefaces.version>
+		<primefaces-extensions.version>3.2.0</primefaces-extensions.version>
 		<org.springframework.version>3.0.6.RELEASE</org.springframework.version>
 		<rewrite.version>2.0.12.Final</rewrite.version>
-		<poi-ooxml.version>3.8</poi-ooxml.version>
+		<poi-ooxml.version>3.9</poi-ooxml.version>
 		<itext.version>2.1.7</itext.version>
 		<joda-time.version>1.6</joda-time.version>
 		<mysql-connector.version>5.1.21</mysql-connector.version>
@@ -183,7 +181,13 @@
 			<artifactId>primefaces</artifactId>
 			<version>${primefaces.version}</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>ronin-theme</artifactId>
+			<version>1.1</version>
+		</dependency>		
+	
 		<dependency>
 			<groupId>org.primefaces.extensions</groupId>
 			<artifactId>primefaces-extensions</artifactId>
@@ -196,13 +200,6 @@
 			<version>${primefaces-extensions.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.primefaces.themes</groupId>
-			<artifactId>sentinel</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-
-		<!-- <dependency> <groupId>org.primefaces.themes</groupId> <artifactId>sentinel</artifactId> <version>1.1.0</version> </dependency> -->
 		<!-- Core utilities used by other modules. Define this if you use Spring Utility APIs (org.springframework.core.*/org.springframework.util.*) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -280,7 +277,11 @@
 			<version>${joda-time.version}</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
 
 		<!-- Needed for running tests (you may also use TestNG) -->
 		<dependency>

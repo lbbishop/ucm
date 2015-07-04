@@ -1,46 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">#{msg.appFullTitle}</ui:define>
-	<ui:define name="content">
 	
+	<ui:define name="content">
+		<h:outputScript name="jquery/jquery.js" library="primefaces" target="head" />
 
-		<p:layout fullPage="true">
+		<h3 class="hardblue TexAlCenter">Use Case Manager</h3>
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-					
-				</h:form>
-			</p:layoutUnit>
+		<h:form>
+			<div class="Container100">
+				<div class="ContainerIndent">
+					<div class="Container30 Responsive">
+						<div class="ContainerIndent">
+							<ui:include src="/includes/sidebar.xhtml" />
+						</div>
+					</div>
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
-
-			<p:layoutUnit position="center">
-				<p:ajaxStatus id="statusComponent" style="position:fixed;left:50%;top:50%">
-					<f:facet name="start">
-						<h:graphicImage value="/images/ajax-loading.gif" width="30" />
-					</f:facet>
-					<f:facet name="complete">
-						<h:outputText value="" />
-					</f:facet>
-				</p:ajaxStatus>
-
-				<h:form id="homeForm">
-					<p:growl id="messages" life="#{appManager.growlLife}" />
-					<p:panel header="Welcome To #{msg.appFullTitle}">
-						<p:spacer height="20" />
-						<p:galleria value="#{galleriaManager.images}" var="image" panelHeight="450" frameWidth="120" frameHeight="90" transitionInterval="20000">
-							<p:graphicImage value="/images/#{image}" />
-						</p:galleria>
-					</p:panel>
-				</h:form>
-			</p:layoutUnit>
-		</p:layout>
+					<div class="Container70 Responsive">
+						<div class="ContainerIndent">
+							<p:galleria value="#{galleriaManager.images}" var="image" panelHeight="450" frameWidth="120" frameHeight="90" transitionInterval="20000">
+								<p:graphicImage value="/images/#{image}" />
+							</p:galleria>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
 
 	</ui:define>
 </ui:composition>

@@ -36,8 +36,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import org.slf4j.Logger;
-
 import com.sfs.ucm.model.ProductRelease;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.util.ProductReleaseInit;
@@ -54,9 +52,6 @@ import com.sfs.ucm.util.ProductReleaseUpdated;
 public class ProductReleaseProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	private Logger logger;
 
 	@PersistenceContext
 	private EntityManager em;

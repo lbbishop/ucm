@@ -23,17 +23,12 @@ package com.sfs.ucm.security;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Iterator;
-import java.util.List;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -41,11 +36,11 @@ import org.slf4j.Logger;
 
 import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.model.AuthUser;
-import com.sfs.ucm.model.Preference;
+import com.sfs.ucm.service.AuthUserService;
 import com.sfs.ucm.util.Authenticated;
+import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
-@Stateful
 @Named
 @RequestScoped
 public class Authenticator implements Serializable {
@@ -56,17 +51,15 @@ public class Authenticator implements Serializable {
 	private Logger logger;
 
 	@Inject
-	private EntityManager em;
-
-	@Inject
 	private FacesContextMessage facesContextMessage;
 
 	@Inject
-	@Authenticated
-	private Event<AuthUser> loginEventSrc;
+	@Service
+	private AuthUserService authUserService;
 
-	private String username;
-	private String password;
+	@Inject
+	@Authenticated
+	private Event<AuthUser> authUserSrc;
 
 	public Authenticator() {
 
@@ -82,51 +75,31 @@ public class Authenticator implements Serializable {
 		String outcome = null;
 
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        if (request.getSession().getAttribute("User") == null) {
-		try {
+		if (request.getSession().getAttribute("AuthUser") == null) {
+			try {
 
-			request.login(username, password);
+				// Retrieve the Principal
+				Principal principal = request.getUserPrincipal();
+				logger.info("Remote user {}", principal.getName());
 
-			// Retrieve the Principal
-			Principal principal = request.getUserPrincipal();
-			//this.username = "lbbisho";
+				// configure the user
+				configure(request);
 
-			// configure the user
-			configure();
+				// Display a message based on the User role
+				if (request.isUserInRole("Admin")) {
+					logger.info("Welcome {} (Administrator)", principal.getName());
+				}
 
-			// Display a message based on the User role
-			String message = null;
-			if (request.isUserInRole("Admin")) {
-				message = "Welcome " + principal.getName() + " (Administrator)";
+				outcome = Literal.NAV_SUCCESS.toString();
+
+				return outcome;
 			}
-			else if (request.isUserInRole("Manager")) {
-				message = "Welcome " + principal.getName() + " (Manager)";
+			catch (Exception e) {
+				logger.info("Authenticator error occurred: {}", e.getMessage());
+				this.facesContextMessage.fatalMessage("An Error Occurred: Login failed");
+				outcome = Literal.NAV_FAILURE.toString();
 			}
-			else if (request.isUserInRole("User")) {
-				message = "Welcome " + principal.getName() + " (User)";
-			}
-			else if (request.isUserInRole("Guest")) {
-				message = "Welcome " + principal.getName() + " (Guest)";
-			}
-			
-            // place username in session attribute User
-            request.getSession().setAttribute("User", principal.getName());
-
-			logger.info(message);
-
-			outcome = Literal.NAV_SUCCESS.toString();
-
-			return outcome;
 		}
-		catch (ServletException e) {
-
-			logger.info("Authenticator error occurred: {}", e.getMessage());
-
-			this.facesContextMessage.fatalMessage("An Error Occurred: Login failed");
-			outcome = Literal.NAV_FAILURE.toString();
-
-		}
-        }
 		return outcome;
 	}
 
@@ -144,55 +117,23 @@ public class Authenticator implements Serializable {
 	/**
 	 * configure the authenticated user
 	 */
-	private void configure() {
+	private void configure(HttpServletRequest request) {
 
-		// query user
-		List<AuthUser> list = em.createQuery("from AuthUser user left join fetch user.authRoles where user.username = :username", AuthUser.class).setParameter("username", username).getResultList();
-		Iterator<AuthUser> iter = list.iterator();
-		if (iter.hasNext()) {
-			AuthUser user = iter.next();
-			user.setLoggedIn(true);
+		// find or persist user
+		String username = request.getRemoteUser();
+		AuthUser authUser = this.authUserService.findUserByName(username);
 
-			// store default theme
-			if (!user.isPreferenceSet(Literal.PREF_THEME.toString())) {
-				user.addPreference(new Preference(Literal.PREF_THEME.toString(), Literal.THEME_DEFAULT.toString()));
-				em.persist(user);
-			}
+		if (authUser == null) {
+
+			authUser = new AuthUser(username, username, username);
+			this.authUserService.store(authUser);
+
+			// place authUser in session attribute AuthUser
+			request.getSession().setAttribute("AuthUser", authUser);
 
 			// fire update events
-			loginEventSrc.fire(user);
+			authUserSrc.fire(authUser);
 		}
 
 	}
-
-	/**
-	 * @return the username
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-	/**
-	 * @param username
-	 *            the username to set
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @param password
-	 *            the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 }

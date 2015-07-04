@@ -115,7 +115,6 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 			outcome = "/expired.jsf?faces-redirect=true";
 		}
 		else {
-
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, throwable.getMessage(), null));
 			logger.error("Class: {} Message:{}", throwable.toString(), throwable.getMessage());
 

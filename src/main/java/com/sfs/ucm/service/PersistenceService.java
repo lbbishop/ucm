@@ -1,16 +1,15 @@
 package com.sfs.ucm.service;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 
 import com.sfs.ucm.util.Service;
 
 @Service
-@Stateful
+@Stateless
 public class PersistenceService {
-	@PersistenceContext(type = PersistenceContextType.EXTENDED)
+	@PersistenceContext
 	private EntityManager em;
 
 	/**
@@ -46,4 +45,5 @@ public class PersistenceService {
 	public <T> void update(final T entity) {
 		em.merge(entity);
 	}
+	
 }

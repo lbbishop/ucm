@@ -40,6 +40,8 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
+import com.sfs.ucm.model.AuthUser;
+
 /**
  * Rewrite configuration provider
  * 
@@ -53,18 +55,8 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 		public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context) {
 
 			HttpServletRequest request = event.getRequest();
-			String username = (String) request.getSession().getAttribute("User");
-			return (username != null);
-		}
-	};
-
-	Condition isAdmin = new HttpCondition() {
-		@Override
-		public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context) {
-
-			HttpServletRequest request = event.getRequest();
-			String username = (String) request.getSession().getAttribute("Admin");
-			return (username != null);
+			AuthUser authUser = (AuthUser) request.getSession().getAttribute("AuthUser");
+			return (authUser != null);
 		}
 	};
 

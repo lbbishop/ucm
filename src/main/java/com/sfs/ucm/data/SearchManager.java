@@ -23,8 +23,7 @@ package com.sfs.ucm.data;
 
 import java.io.Serializable;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -33,8 +32,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.slf4j.Logger;
 
-@Stateful
-@ApplicationScoped
+@Stateless
 @Named("searchManager")
 public class SearchManager implements Serializable {
 

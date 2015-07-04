@@ -24,17 +24,14 @@ package com.sfs.ucm.security;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import org.slf4j.Logger;
 
 import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.model.AuthUser;
@@ -47,17 +44,14 @@ import com.sfs.ucm.util.Authenticated;
  * 
  * @author lbbishop
  */
-@RequestScoped
+@Stateless
 @Named("accessManager")
 public class AccessManager implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@PersistenceContext(type = PersistenceContextType.EXTENDED)
+	@PersistenceContext
 	private EntityManager em;
-
-	@Inject
-	private Logger logger;
 
 	@Inject
 	@Authenticated
