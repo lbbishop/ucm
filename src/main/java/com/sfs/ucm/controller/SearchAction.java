@@ -101,24 +101,25 @@ public class SearchAction implements Serializable {
 	 */
 	public List<String> suggester(final String searchString) throws UCMException {
 		Set<String> suggestionSet = new HashSet<String>();
-
-		// create native Lucene query using the query DSL
-		FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
-		SearchFactory searchFactory = fullTextEntityManager.getSearchFactory();
-		IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor();
-		IndexReader reader = ira.open(Project.class);
-		IndexSearcher searcher = new IndexSearcher(reader);
-
-		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
+		IndexReaderAccessor ira = null;
+		IndexReader reader = null;
 		try {
+			// create native Lucene query using the query DSL
+			FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+			SearchFactory searchFactory = fullTextEntityManager.getSearchFactory();
+			ira = searchFactory.getIndexReaderAccessor();
+			reader = ira.open(Project.class);
+			IndexSearcher searcher = new IndexSearcher(reader);
+
+			Analyzer analyzer = new StandardAnalyzer();
 
 			suggestionSet.addAll(this.searchService.findSuggestionTokens(searcher, "name", searchString, analyzer));
 			suggestionSet.addAll(this.searchService.findSuggestionTokens(searcher, "description", searchString, analyzer));
 
-			searcher.close();
+			// searcher.close();
 
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			throw new UCMException(e);
 		}
 		finally {

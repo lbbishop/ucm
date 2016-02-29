@@ -27,7 +27,7 @@
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 
 		<!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
-		<version.jboss.bom>8.2.2.Final</version.jboss.bom>
+		<version.jboss.bom>9.0.0.Beta2</version.jboss.bom>
 
 		<!-- other plugin versions -->
 		<version.compiler.plugin>3.1</version.compiler.plugin>
@@ -39,14 +39,13 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 
 		<!-- third-party versions -->
-		<primefaces.version>5.2.7</primefaces.version>
-		<primefaces-extensions.version>3.2.0</primefaces-extensions.version>
-		<org.springframework.version>3.0.6.RELEASE</org.springframework.version>
+		<primefaces.version>5.3.7</primefaces.version>
+		<primefaces-extensions.version>4.0.0</primefaces-extensions.version>
 		<rewrite.version>2.0.12.Final</rewrite.version>
 		<poi-ooxml.version>3.9</poi-ooxml.version>
 		<itext.version>2.1.7</itext.version>
 		<joda-time.version>1.6</joda-time.version>
-		<mysql-connector.version>5.1.21</mysql-connector.version>
+		<h2.version>1.4.191</h2.version>
 		<commons-fileupload.version>1.2.2</commons-fileupload.version>
 		<commons-io.version>1.3.2</commons-io.version>
 		<commons-lang.version>2.3</commons-lang.version>
@@ -65,7 +64,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-	
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -181,13 +180,13 @@
 			<artifactId>primefaces</artifactId>
 			<version>${primefaces.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
-			<artifactId>ronin-theme</artifactId>
-			<version>1.1</version>
-		</dependency>		
-	
+			<artifactId>sentinel</artifactId>
+			<version>2.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.primefaces.extensions</groupId>
 			<artifactId>primefaces-extensions</artifactId>
@@ -201,12 +200,7 @@
 		</dependency>
 
 		<!-- Core utilities used by other modules. Define this if you use Spring Utility APIs (org.springframework.core.*/org.springframework.util.*) -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${org.springframework.version}</version>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -232,9 +226,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql-connector.version}</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
 		</dependency>
 
 		<dependency>
@@ -324,7 +318,7 @@
 	<profiles>
 		<profile>
 			<!-- The default profile skips all tests, though you can tune it to run just unit tests based on a custom pattern -->
-			<!-- Seperate profiles are provided for running all tests, including Arquillian tests that execute in the specified container -->
+			<!-- Separate profiles are provided for running all tests, including Arquillian tests that execute in the specified container -->
 			<id>default</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>

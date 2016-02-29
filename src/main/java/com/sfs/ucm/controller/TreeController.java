@@ -31,9 +31,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
@@ -42,7 +39,6 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 
-import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.data.ModelNode;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
@@ -140,7 +136,7 @@ public class TreeController implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unused")
 	public void loadTreeNodes() throws UCMException {
 		try {
 			this.root = new DefaultTreeNode("root", null);
@@ -151,7 +147,7 @@ public class TreeController implements Serializable {
 			logger.info("loadTreeNodes projectsRoot {}", projectsRoot);
 			projectsRoot.setExpanded(true);
 
-			List<ModelNode> projectNodes = em.createQuery("select new com.sfs.ucm.data.ModelNode(p.name, p.id, p.description) from Project p").getResultList();
+			List<ModelNode> projectNodes = this.projectService.findMemberProjects(authUser);
 
 			for (ModelNode project : projectNodes) {
 				Project theProject = em.find(Project.class, project.getId());
@@ -159,140 +155,141 @@ public class TreeController implements Serializable {
 
 				// verify user is a project member of the project or has manager role
 				ProjectMember theProjectMember = this.projectService.findProjectMember(project.getId(), this.authUser);
-				if (this.authUser.hasRole(Literal.ROLE_MANAGER.toString()) || theProjectMember != null) {
 
-					// create a transient project member until one is created
-					if (theProjectMember == null) {
-						theProjectMember = new ProjectMember();
-					}
-
-					TreeNode projectNode = new DefaultTreeNode("project", new ModelNode(project.getName(), project.getId(), "project", theProject.getOpen()), projectsRoot);
-
-					projectNode.setExpanded(true);
-					logger.info("PM {}", theProjectMember);
-
-					// project node collapse state
-					if (theProjectMember.getProjectOpen()) {
-						projectNode.setExpanded(true);
-					}
-					else {
-						projectNode.setExpanded(false);
-					}
-
-					// Product Vision
-					TreeNode productVision = new DefaultTreeNode("document", new ModelNode("Product Vision", project.getId(), "productvision"), projectNode);
-
-					// Product Releases
-					TreeNode productReleasesNode = new DefaultTreeNode(new ModelNode("Product Releases", project.getId(), "productreleases"), projectNode);
-
-					// Project members
-					TreeNode projectMembersNode = new DefaultTreeNode(new ModelNode("Project Members", project.getId(), "members"), projectNode);
-
-					// User Stories
-					TreeNode userStoryRoot = new DefaultTreeNode(new ModelNode("User Stories", project.getId(), "userstories"), projectNode);
-
-					// Stakeholders
-					TreeNode stakeholdersRoot = new DefaultTreeNode(new ModelNode("Stakeholders", project.getId(), "stakeholders"), projectNode);
-
-					// StakeholderRequests
-					TreeNode stakeholderRequestsRoot = new DefaultTreeNode(new ModelNode("Stakeholder Requests", project.getId(), "stakeholderrequests"), projectNode);
-
-					// Risks
-					TreeNode risksRoot = new DefaultTreeNode(new ModelNode("Risks", project.getId(), "risks"), projectNode);
-
-					// Constraints
-					TreeNode constraintsRoot = new DefaultTreeNode(new ModelNode("Design Constraints", project.getId(), "constraints"), projectNode);
-
-					// Glossary Terms
-					TreeNode glossaryRoot = new DefaultTreeNode(new ModelNode("Glossary", project.getId(), "glossary"), projectNode);
-
-					// Packages
-					TreeNode packagesNode = new DefaultTreeNode(new ModelNode("Packages", project.getId(), "packages"), projectNode);
-
-					// Features
-					TreeNode featuresRoot = new DefaultTreeNode(new ModelNode("Features", project.getId(), "features"), projectNode);
-
-					// Resources
-					TreeNode resourceModelNode = new DefaultTreeNode(new ModelNode("Resources", project.getId(), "resources"), projectNode);
-
-					// Supplementary Requirement Specifications
-					TreeNode requirementsRoot = new DefaultTreeNode(new ModelNode("Requirement Specifications", project.getId(), "requirements"), projectNode);
-					requirementsRoot.setExpanded(!theProjectMember.getRequirementsCollapsed());
-
-					// Requirement Business Rules
-					TreeNode requirementRules = new DefaultTreeNode(new ModelNode("Business Rules", project.getId(), "requirementrules"), requirementsRoot);
-
-					// Project Actors
-					TreeNode actorsRoot = new DefaultTreeNode(new ModelNode("Actors", project.getId(), "actors"), projectNode);
-
-					// Project use cases and flows
-					TreeNode useCasesRoot = new DefaultTreeNode("useCases", new ModelNode("Use Cases", project.getId(), "usecases"), projectNode);
-					useCasesRoot.setExpanded(!theProjectMember.getUseCasesCollapsed());
-					List<UseCase> useCases = em.createQuery("from UseCase uc where uc.project.id = :id order by uc.name asc", UseCase.class).setParameter("id", project.getId()).getResultList();
-					for (UseCase useCase : useCases) {
-						TreeNode basicFlowNode = new DefaultTreeNode("document", new ModelNode(useCase.getIdentifierName(), useCase.getId(), "basicflow"), useCasesRoot);
-						basicFlowNode.setExpanded(false);
-						TreeNode alternativesFlowNode = new DefaultTreeNode(new ModelNode("Alternative Flows", useCase.getId(), "alternativeflows"), basicFlowNode);
-					}
-
-					// UseCase Business Rules
-					TreeNode useCaseRules = new DefaultTreeNode(new ModelNode("Business Rules", project.getId(), "usecaserules"), useCasesRoot);
-
-					// BusinessProcess
-					// TreeNode businessProcessRoot = new DefaultTreeNode(new ModelNode("Business Processes", project.getId(), "businessprocesses"),
-					// projectNode);
-
-					// Test Plan
-					this.testPlanNode = new DefaultTreeNode("document", new ModelNode("Test Plan", project.getId(), "testplan"), projectNode);
-					this.testPlanNode.setExpanded(!theProjectMember.getTestPlanCollapsed());
-					TestPlan testPlan = theProject.getTestPlan();
-
-					// UnitTests node
-					TreeNode unitTestRoot = new DefaultTreeNode(new ModelNode("Unit Tests", testPlan.getId(), "unittests"), this.testPlanNode);
-
-					// TestSets node
-					TreeNode testSetsRoot = new DefaultTreeNode("testSets", new ModelNode("Test Sets", testPlan.getId(), "testsets"), this.testPlanNode);
-					testSetsRoot.setExpanded(!theProjectMember.getTestSetsCollapsed());
-					List<TestSet> testSets = em.createQuery("from TestSet ts where ts.testPlan.id = :testPlanId", TestSet.class).setParameter("testPlanId", testPlan.getId()).getResultList();
-					for (TestSet testSet : testSets) {
-						TreeNode testSetNode = new DefaultTreeNode(new ModelNode(testSet.getIdentifierName(), testSet.getId(), "testset"), testSetsRoot);
-
-						// requirement tests
-						TreeNode reqTestsNode = new DefaultTreeNode(new ModelNode("Requirement Tests", testSet.getId(), "requirementtests"), testSetNode);
-
-						// requirement rule tests
-						TreeNode reqRuleTestsNode = new DefaultTreeNode(new ModelNode("Requirement Rule Tests", testSet.getId(), "requirementruletests"), testSetNode);
-
-						// test cases
-						TreeNode testCasesNode = new DefaultTreeNode(new ModelNode("Test Cases", testSet.getId(), "testcases"), testSetNode);
-						List<TestCase> testCases = em.createQuery("from TestCase tc where tc.testSet.id = :id order by tc.identifier asc", TestCase.class).setParameter("id", testSet.getId())
-								.getResultList();
-						for (TestCase testCase : testCases) {
-							TreeNode testCaseNode = new DefaultTreeNode("document", new ModelNode(testCase.getIdentifierName(), testCase.getId(), "testcase"), testCasesNode);
-							testCaseNode.setExpanded(false);
-						}
-					}
-
-					// Project Tasks
-					TreeNode tasksNode = new DefaultTreeNode(new ModelNode("Tasks", project.getId(), "tasks"), projectNode);
-
-					// Project Iterations
-					TreeNode iterationsRoot = new DefaultTreeNode(new ModelNode("Iterations", project.getId(), "iterations"), projectNode);
-					List<Iteration> iterations = em.createQuery("from Iteration iter where iter.project.id = :projectId", Iteration.class).setParameter("projectId", project.getId()).getResultList();
-					for (Iteration iteration : iterations) {
-						TreeNode iterationNode = new DefaultTreeNode(new ModelNode(iteration.getArtifact(), iteration.getId(), "activities"), iterationsRoot);
-					}
-
-					// Project Estimation
-					TreeNode estimationNode = new DefaultTreeNode(new ModelNode("Project Estimation", project.getId(), "projects", false), projectNode);
-					estimationNode.setExpanded(!theProjectMember.getProjectEstimationCollapsed());
-					TreeNode estimatesNode = new DefaultTreeNode("document", new ModelNode("Estimates", project.getId(), "estimates"), estimationNode);
-					TreeNode techFactorsNode = new DefaultTreeNode("document", new ModelNode("Technical Factors", project.getId(), "techfactors"), estimationNode);
-					TreeNode envFactorsNode = new DefaultTreeNode("document", new ModelNode("Environmental Factors", project.getId(), "envfactors"), estimationNode);
-
-					// Project Notes
-					TreeNode notesRoot = new DefaultTreeNode(new ModelNode("Notes", project.getId(), "notes"), projectNode);
+				// create a transient project member until one is created
+				if (theProjectMember == null) {
+					theProjectMember = new ProjectMember();
 				}
+
+				TreeNode projectNode = new DefaultTreeNode("project", new ModelNode(project.getName(), project.getId(), "project", theProject.getOpen()), projectsRoot);
+
+				projectNode.setExpanded(true);
+				logger.info("PM {}", theProjectMember);
+
+				// project node collapse state
+				if (theProjectMember.getProjectOpen()) {
+					projectNode.setExpanded(true);
+				}
+				else {
+					projectNode.setExpanded(false);
+				}
+
+				// Product Vision
+				TreeNode productVision = new DefaultTreeNode("document", new ModelNode("Product Vision", project.getId(), "productvision"), projectNode);
+
+				// Product Releases
+				TreeNode productReleasesNode = new DefaultTreeNode(new ModelNode("Product Releases", project.getId(), "productreleases"), projectNode);
+
+				// Project members
+				TreeNode projectMembersNode = new DefaultTreeNode(new ModelNode("Project Members", project.getId(), "members"), projectNode);
+
+				// User Stories
+				TreeNode userStoryRoot = new DefaultTreeNode(new ModelNode("User Stories", project.getId(), "userstories"), projectNode);
+
+				// Stakeholders
+				TreeNode stakeholdersRoot = new DefaultTreeNode(new ModelNode("Stakeholders", project.getId(), "stakeholders"), projectNode);
+
+				// StakeholderRequests
+				TreeNode stakeholderRequestsRoot = new DefaultTreeNode(new ModelNode("Stakeholder Requests", project.getId(), "stakeholderrequests"), projectNode);
+
+				// Risks
+				TreeNode risksRoot = new DefaultTreeNode(new ModelNode("Risks", project.getId(), "risks"), projectNode);
+
+				// Constraints
+				TreeNode constraintsRoot = new DefaultTreeNode(new ModelNode("Design Constraints", project.getId(), "constraints"), projectNode);
+
+				// Glossary Terms
+				TreeNode glossaryRoot = new DefaultTreeNode(new ModelNode("Glossary", project.getId(), "glossary"), projectNode);
+
+				// Packages
+				TreeNode packagesNode = new DefaultTreeNode(new ModelNode("Packages", project.getId(), "packages"), projectNode);
+
+				// Features
+				TreeNode featuresRoot = new DefaultTreeNode(new ModelNode("Features", project.getId(), "features"), projectNode);
+
+				// Resources
+				TreeNode resourceModelNode = new DefaultTreeNode(new ModelNode("Resources", project.getId(), "resources"), projectNode);
+
+				// Supplementary Requirement Specifications
+				TreeNode requirementsRoot = new DefaultTreeNode(new ModelNode("Requirement Specifications", project.getId(), "requirements"), projectNode);
+				requirementsRoot.setExpanded(!theProjectMember.getRequirementsCollapsed());
+
+				// Requirement Business Rules
+				TreeNode requirementRules = new DefaultTreeNode(new ModelNode("Business Rules", project.getId(), "requirementrules"), requirementsRoot);
+
+				// Project Actors
+				TreeNode actorsRoot = new DefaultTreeNode(new ModelNode("Actors", project.getId(), "actors"), projectNode);
+
+				// Project use cases and flows
+				TreeNode useCasesRoot = new DefaultTreeNode("useCases", new ModelNode("Use Cases", project.getId(), "usecases"), projectNode);
+				useCasesRoot.setExpanded(!theProjectMember.getUseCasesCollapsed());
+				
+				List<UseCase> useCases = em.createQuery("from UseCase uc where uc.project.id = :id order by uc.name asc", UseCase.class).setParameter("id", project.getId()).getResultList();
+				for (UseCase useCase : useCases) {
+					TreeNode basicFlowNode = new DefaultTreeNode("document", new ModelNode(useCase.getIdentifierName(), useCase.getId(), "basicflow"), useCasesRoot);
+					basicFlowNode.setExpanded(false);
+					TreeNode alternativesFlowNode = new DefaultTreeNode(new ModelNode("Alternative Flows", useCase.getId(), "alternativeflows"), basicFlowNode);
+				}
+
+				// UseCase Business Rules
+				TreeNode useCaseRules = new DefaultTreeNode(new ModelNode("Business Rules", project.getId(), "usecaserules"), useCasesRoot);
+
+				// BusinessProcess
+				// TreeNode businessProcessRoot = new DefaultTreeNode(new ModelNode("Business Processes", project.getId(), "businessprocesses"),
+				// projectNode);
+
+				// Test Plan
+				this.testPlanNode = new DefaultTreeNode("document", new ModelNode("Test Plan", project.getId(), "testplan"), projectNode);
+				this.testPlanNode.setExpanded(!theProjectMember.getTestPlanCollapsed());
+				TestPlan testPlan = theProject.getTestPlan();
+
+				// UnitTests node
+				TreeNode unitTestRoot = new DefaultTreeNode(new ModelNode("Unit Tests", testPlan.getId(), "unittests"), this.testPlanNode);
+
+				// TestSets node
+				TreeNode testSetsRoot = new DefaultTreeNode("testSets", new ModelNode("Test Sets", testPlan.getId(), "testsets"), this.testPlanNode);
+				testSetsRoot.setExpanded(!theProjectMember.getTestSetsCollapsed());
+
+				List<TestSet> testSets = em.createQuery("from TestSet ts where ts.testPlan.id = :testPlanId", TestSet.class).setParameter("testPlanId", testPlan.getId()).getResultList();
+				for (TestSet testSet : testSets) {
+					TreeNode testSetNode = new DefaultTreeNode(new ModelNode(testSet.getIdentifierName(), testSet.getId(), "testset"), testSetsRoot);
+
+					// requirement tests
+					TreeNode reqTestsNode = new DefaultTreeNode(new ModelNode("Requirement Tests", testSet.getId(), "requirementtests"), testSetNode);
+
+					// requirement rule tests
+					TreeNode reqRuleTestsNode = new DefaultTreeNode(new ModelNode("Requirement Rule Tests", testSet.getId(), "requirementruletests"), testSetNode);
+
+					// test cases
+					TreeNode testCasesNode = new DefaultTreeNode(new ModelNode("Test Cases", testSet.getId(), "testcases"), testSetNode);
+
+					List<TestCase> testCases = em.createQuery("from TestCase tc where tc.testSet.id = :id order by tc.identifier asc", TestCase.class).setParameter("id", testSet.getId())
+							.getResultList();
+					for (TestCase testCase : testCases) {
+						TreeNode testCaseNode = new DefaultTreeNode("document", new ModelNode(testCase.getIdentifierName(), testCase.getId(), "testcase"), testCasesNode);
+						testCaseNode.setExpanded(false);
+					}
+				}
+
+				// Project Tasks
+				TreeNode tasksNode = new DefaultTreeNode(new ModelNode("Tasks", project.getId(), "tasks"), projectNode);
+
+				// Project Iterations
+				TreeNode iterationsRoot = new DefaultTreeNode(new ModelNode("Iterations", project.getId(), "iterations"), projectNode);
+				List<Iteration> iterations = em.createQuery("from Iteration iter where iter.project.id = :projectId", Iteration.class).setParameter("projectId", project.getId()).getResultList();
+				for (Iteration iteration : iterations) {
+					TreeNode iterationNode = new DefaultTreeNode(new ModelNode(iteration.getArtifact(), iteration.getId(), "activities"), iterationsRoot);
+				}
+
+				// Project Estimation
+				TreeNode estimationNode = new DefaultTreeNode(new ModelNode("Project Estimation", project.getId(), "projects", false), projectNode);
+				estimationNode.setExpanded(!theProjectMember.getProjectEstimationCollapsed());
+				TreeNode estimatesNode = new DefaultTreeNode("document", new ModelNode("Estimates", project.getId(), "estimates"), estimationNode);
+				TreeNode techFactorsNode = new DefaultTreeNode("document", new ModelNode("Technical Factors", project.getId(), "techfactors"), estimationNode);
+				TreeNode envFactorsNode = new DefaultTreeNode("document", new ModelNode("Environmental Factors", project.getId(), "envfactors"), estimationNode);
+
+				// Project Notes
+				TreeNode notesRoot = new DefaultTreeNode(new ModelNode("Notes", project.getId(), "notes"), projectNode);
 			}
 		}
 		catch (Exception e) {
@@ -463,29 +460,6 @@ public class TreeController implements Serializable {
 	 */
 	public TreeNode getRoot() {
 		return root;
-	}
-
-	/**
-	 * Helper method to determine if user is a project member
-	 * 
-	 * @param theProject
-	 * @return flag
-	 */
-	private boolean userIsProjectMember(Project theProject) {
-		boolean userIsMember = false;
-
-		if (this.authUser != null) {
-
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<ProjectMember> c = cb.createQuery(ProjectMember.class);
-			Root<ProjectMember> obj = c.from(ProjectMember.class);
-			c.select(obj).where(cb.equal(obj.get("project"), theProject), cb.equal(obj.get("authUser"), this.authUser));
-			List<ProjectMember> list = em.createQuery(c).getResultList();
-
-			userIsMember = (list.size() > 0);
-			logger.info("useris Member {}", userIsMember);
-		}
-		return userIsMember;
 	}
 
 }

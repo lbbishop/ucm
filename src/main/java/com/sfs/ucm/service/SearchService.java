@@ -1,25 +1,14 @@
 package com.sfs.ucm.service;
 
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.util.Version;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.slf4j.Logger;
@@ -73,66 +62,66 @@ public class SearchService {
 	public Set<String> findSuggestionTokens(final IndexSearcher indexSearcher, final String field, final String searchString, final Analyzer analyzer) throws UCMException {
 
 		Set<String> suggestionSet = new HashSet<String>();
-		try {
-
-			// tokenize the search string selecting last token to analyze
-
-			// lucene wildcard search does not invoke the analyzer
-			String qstr = searchString.trim().concat("*");
-
-			if (!qstr.startsWith("?") && !qstr.startsWith("*")) {
-				QueryParser queryParser = new QueryParser(Version.LUCENE_35, field, analyzer);
-				queryParser.setDefaultOperator(Operator.AND);
-				Query query = queryParser.parse(qstr);
-
-				TopDocs topDocs = indexSearcher.search(query, null, 20);
-
-				// log message
-				if (topDocs.scoreDocs.length > 0) {
-					Object[] params = new Object[4];
-					params[0] = searchString;
-					params[1] = field;
-					params[2] = qstr;
-					params[3] = topDocs.scoreDocs.length;
-					logger.info("findSuggestionTokens: searchString:[{}]field:[{}]qstr:[{}]hits:[{}]", params);
-				}
-
-				for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-					Document doc = indexSearcher.doc(scoreDoc.doc);
-					String docvalue = doc.get(field);
-
-					if (docvalue != null) {
-						StringTokenizer st = new StringTokenizer(docvalue, ", .;:\"");
-						while (st.hasMoreTokens()) {
-							String token = st.nextToken();
-							if (token.toLowerCase().startsWith(searchString)) {
-								// we have a suggestion token
-								suggestionSet.add(token);
-							}
-						}
-
-						// apply StandardAnalyzer to suggestion tokens
-						Iterator<String> iter = suggestionSet.iterator();
-						while (iter.hasNext()) {
-							String token = iter.next();
-							query = new QueryParser(Version.LUCENE_35, field, analyzer).parse(token);
-							topDocs = indexSearcher.search(query, null, 20);
-
-							if (topDocs.scoreDocs.length == 0) {
-								iter.remove();
-							}
-						}
-					}
-				}
-
-			}
-		}
-		catch (ParseException e) {
-			throw new UCMException(e);
-		}
-		catch (IOException e) {
-			throw new UCMException(e);
-		}
+//		try {
+//
+//			// tokenize the search string selecting last token to analyze
+//
+//			// lucene wildcard search does not invoke the analyzer
+//			String qstr = searchString.trim().concat("*");
+//
+//			if (!qstr.startsWith("?") && !qstr.startsWith("*")) {
+//				QueryParser queryParser = new QueryParser(Version.LUCENE_35, field, analyzer);
+//				queryParser.setDefaultOperator(Operator.AND);
+//				Query query = queryParser.parse(qstr);
+//
+//				TopDocs topDocs = indexSearcher.search(query, null, 20);
+//
+//				// log message
+//				if (topDocs.scoreDocs.length > 0) {
+//					Object[] params = new Object[4];
+//					params[0] = searchString;
+//					params[1] = field;
+//					params[2] = qstr;
+//					params[3] = topDocs.scoreDocs.length;
+//					logger.info("findSuggestionTokens: searchString:[{}]field:[{}]qstr:[{}]hits:[{}]", params);
+//				}
+//
+//				for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+//					Document doc = indexSearcher.doc(scoreDoc.doc);
+//					String docvalue = doc.get(field);
+//
+//					if (docvalue != null) {
+//						StringTokenizer st = new StringTokenizer(docvalue, ", .;:\"");
+//						while (st.hasMoreTokens()) {
+//							String token = st.nextToken();
+//							if (token.toLowerCase().startsWith(searchString)) {
+//								// we have a suggestion token
+//								suggestionSet.add(token);
+//							}
+//						}
+//
+//						// apply StandardAnalyzer to suggestion tokens
+//						Iterator<String> iter = suggestionSet.iterator();
+//						while (iter.hasNext()) {
+//							String token = iter.next();
+//							query = new QueryParser(field, analyzer).parse(token);
+//							topDocs = indexSearcher.search(query, null, 20);
+//
+//							if (topDocs.scoreDocs.length == 0) {
+//								iter.remove();
+//							}
+//						}
+//					}
+//				}
+//
+//			}
+//		}
+//		catch (ParseException e) {
+//			throw new UCMException(e);
+//		}
+//		catch (IOException e) {
+//			throw new UCMException(e);
+//		}
 
 		return suggestionSet;
 

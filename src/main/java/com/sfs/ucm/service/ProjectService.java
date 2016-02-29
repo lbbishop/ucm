@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 
+import com.sfs.ucm.data.ModelNode;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.Actor;
 import com.sfs.ucm.model.AuthUser;
@@ -38,6 +39,47 @@ public class ProjectService {
 
 	@Inject
 	private Logger logger;
+
+	public List<ModelNode> findMemberProjects(final AuthUser authUser) throws UCMException {
+		List<ModelNode> list = null;
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<ModelNode> cq = cb.createQuery(ModelNode.class);
+			Root<ProjectMember> pm = cq.from(ProjectMember.class);
+			cq.select(cb.construct(ModelNode.class, pm.get("project").get("name"), pm.get("project").get("id"), pm.get("project").get("description"))).orderBy(cb.asc(pm.get("project").get("id")));
+			cq.where(cb.equal(pm.get("authUser"), authUser));
+			list = em.createQuery(cq).getResultList();
+		}
+		catch (Exception e) {
+			logger.error("Error occurred in findMemberProjects: {}", e.getMessage());
+			throw new UCMException(e);
+		}
+		return list;
+	}
+	
+	/**
+	 * is user is a project member
+	 * 
+	 * @param authUser
+	 * @param theProject
+	 * @return flag true if user is project member
+	 */
+	public boolean userIsProjectMember(final AuthUser authUser, final Project theProject) {
+		boolean userIsMember = false;
+
+		if (authUser != null) {
+
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<ProjectMember> c = cb.createQuery(ProjectMember.class);
+			Root<ProjectMember> obj = c.from(ProjectMember.class);
+			c.select(obj).where(cb.equal(obj.get("project"), theProject), cb.equal(obj.get("authUser"), authUser));
+			List<ProjectMember> list = em.createQuery(c).getResultList();
+
+			userIsMember = (list.size() > 0);
+			logger.info("useris Member {}", userIsMember);
+		}
+		return userIsMember;
+	}
 
 	/**
 	 * Update the project member state

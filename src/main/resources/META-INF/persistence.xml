@@ -11,9 +11,7 @@
 
 		<properties>
 			<!-- Properties for Hibernate -->
-			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
-
-			<property name="hibernate.search.default.directory_provider" value="ram" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 
  
 			<property name="hibernate.search.default.directory_provider" value="filesystem" />
@@ -28,8 +26,8 @@
 			<property name="org.hibernate.envers.track_entities_changed_in_revision" value="true"/>
 			<property name="org.hibernate.envers.global_with_modified_flag" value="true"/>
  
-  <!--  
-			<property name="hibernate.hbm2ddl.auto" value="create" /> 
+  <!-- 
+			<property name="hibernate.hbm2ddl.auto" value="update" /> 
    -->
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.show_sql" value="false" />

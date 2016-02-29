@@ -21,17 +21,5 @@
 		 	
 	<lifecycle> <phase-listener>com.sfs.ucm.view.MultiPageMessagesSupport</phase-listener> </lifecycle>	    
     
- 	<component>
-        <component-type>org.primefaces.component.RoninMenu</component-type>
-        <component-class>org.primefaces.ronin.component.menu.RoninMenu</component-class>
-    </component>
-    
-    <render-kit>
-        <renderer>
-            <component-family>org.primefaces.component</component-family>
-            <renderer-type>org.primefaces.component.RoninMenuRenderer</renderer-type>
-            <renderer-class>org.primefaces.ronin.component.menu.RoninMenuRenderer</renderer-class>
-        </renderer>
-    </render-kit>
      
 </faces-config>

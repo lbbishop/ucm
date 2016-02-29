@@ -42,8 +42,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
-import org.springframework.util.StringUtils;
 
 import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.util.ModelUtils;
@@ -218,7 +218,7 @@ public class AuthUser extends EntityBase implements Serializable {
 		for (AuthRole authRole : this.authRoles) {
 			roles.add(authRole.getRoleName());
 		}
-		return StringUtils.collectionToDelimitedString(roles, ",");
+		return StringUtils.join(roles, ",");		
 	}
 
 	/**
