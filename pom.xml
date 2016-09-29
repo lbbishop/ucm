@@ -39,8 +39,9 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 
 		<!-- third-party versions -->
-		<primefaces.version>5.3.7</primefaces.version>
-		<primefaces-extensions.version>4.0.0</primefaces-extensions.version>
+		<primefaces.version>6.0.4</primefaces.version>
+		<primefaces-extensions.version>6.0.0</primefaces-extensions.version>
+		<primefaces-theme.version>1.0.4</primefaces-theme.version>
 		<rewrite.version>2.0.12.Final</rewrite.version>
 		<poi-ooxml.version>3.9</poi-ooxml.version>
 		<itext.version>2.1.7</itext.version>
@@ -182,9 +183,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.primefaces.themes</groupId>
-			<artifactId>sentinel</artifactId>
-			<version>2.0</version>
+			<groupId>org.primefaces</groupId>
+			<artifactId>ultima-theme</artifactId>
+			<version>${primefaces-theme.version}</version>
 		</dependency>
 
 		<dependency>
