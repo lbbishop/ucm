@@ -26,9 +26,9 @@
 			<property name="org.hibernate.envers.track_entities_changed_in_revision" value="true"/>
 			<property name="org.hibernate.envers.global_with_modified_flag" value="true"/>
  
-  <!-- 
-			<property name="hibernate.hbm2ddl.auto" value="update" /> 
-   -->
+  
+			<property name="hibernate.hbm2ddl.auto" value="create" /> 
+  
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.show_sql" value="false" />
 

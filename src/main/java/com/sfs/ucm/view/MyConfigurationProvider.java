@@ -55,8 +55,8 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 		public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context) {
 
 			HttpServletRequest request = event.getRequest();
-			AuthUser authUser = (AuthUser) request.getSession().getAttribute("AuthUser");
-			return (authUser != null);
+			String userId = (String) request.getSession().getAttribute("USERID");
+			return (userId != null);
 		}
 	};
 
@@ -71,6 +71,7 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.addRule(Join.path("/home").to("/home.jsf"))
 
 				.addRule(Join.path("/logout").to("/logout.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("authenticator.logout")))).after(PhaseId.RESTORE_VIEW))
 
 				.addRule(Join.path("/help/about").to("/help/about.jsf"))
 

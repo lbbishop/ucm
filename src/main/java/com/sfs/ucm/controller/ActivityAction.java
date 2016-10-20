@@ -49,6 +49,7 @@ import com.sfs.ucm.model.Iteration;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.util.Authenticated;
+import com.sfs.ucm.util.Log;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectTaskInit;
 import com.sfs.ucm.util.ProjectUpdated;
@@ -158,6 +159,7 @@ public class ActivityAction extends ActionBase implements Serializable {
 	/**
 	 * Add action
 	 */
+	@Log
 	public void add() {
 		this.activity = new Activity(ModelUtils.getNextIdentifier(this.activities), authUser);
 		this.activity.setStatusType(StatusType.New);
@@ -168,6 +170,7 @@ public class ActivityAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@Log
 	public void remove() throws UCMException {
 		try {
 			this.iteration.removeActivity(this.activity);
@@ -192,6 +195,7 @@ public class ActivityAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@Log
 	public void save() throws UCMException {
 		try {
 			if (validate()) {

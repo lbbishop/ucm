@@ -25,6 +25,7 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,6 +34,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.envers.Audited;
+
+import com.sfs.ucm.data.PersistenceContextListener;
 
 /**
  * Entity base class. Must have persistent subclass.
@@ -44,6 +47,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @MappedSuperclass
+@EntityListeners(PersistenceContextListener.class)
 public class EntityBase implements Serializable {
 
 	protected static final long serialVersionUID = 1L;

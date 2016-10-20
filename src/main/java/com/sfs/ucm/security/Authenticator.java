@@ -22,19 +22,19 @@
 package com.sfs.ucm.security;
 
 import java.io.Serializable;
-import java.security.Principal;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 
-import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.service.AuthUserService;
 import com.sfs.ucm.util.Authenticated;
@@ -65,42 +65,30 @@ public class Authenticator implements Serializable {
 
 	}
 
-	/**
-	 * login
-	 * 
-	 * @return outcome
-	 */
-	public String login() {
+	public void login() {
 
-		String outcome = null;
+		try {
+			// if remote user is not null then process
+			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+			String principal = context.getRemoteUser();
+			logger.info("Incoming principal: {} ", principal);
+			if (StringUtils.isNotBlank(principal)) {
 
-		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		if (request.getSession().getAttribute("AuthUser") == null) {
-			try {
-
-				// Retrieve the Principal
-				Principal principal = request.getUserPrincipal();
-				logger.info("Remote user {}", principal.getName());
+				// get http request object
+				HttpServletRequest request = (HttpServletRequest) context.getRequest();
 
 				// configure the user
-				configure(request);
+				AuthUser authUser = configure(principal, request);
 
-				// Display a message based on the User role
-				if (request.isUserInRole("Admin")) {
-					logger.info("Welcome {} (Administrator)", principal.getName());
-				}
-
-				outcome = Literal.NAV_SUCCESS.toString();
-
-				return outcome;
-			}
-			catch (Exception e) {
-				logger.info("Authenticator error occurred: {}", e.getMessage());
-				this.facesContextMessage.fatalMessage("An Error Occurred: Login failed");
-				outcome = Literal.NAV_FAILURE.toString();
+				// raise update event
+				this.authUserSrc.fire(authUser);
 			}
 		}
-		return outcome;
+		catch (Exception e) {
+			String msg = "Login Failure: " + e.getMessage();
+			logger.error(msg);
+			facesContextMessage.fatalMessage(null, msg);
+		}
 	}
 
 	/**
@@ -109,18 +97,19 @@ public class Authenticator implements Serializable {
 	public void logout() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		if (session != null) {
+			session.setAttribute("USERID", null);
 			session.invalidate();
 		}
-		FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "/logout");
 	}
 
 	/**
 	 * configure the authenticated user
+	 * 
+	 * @return AuthUser
 	 */
-	private void configure(HttpServletRequest request) {
+	private AuthUser configure(final String username, final HttpServletRequest request) {
 
 		// find or persist user
-		String username = request.getRemoteUser();
 		AuthUser authUser = this.authUserService.findUserByName(username);
 
 		if (authUser == null) {
@@ -128,12 +117,12 @@ public class Authenticator implements Serializable {
 			authUser = new AuthUser(username, username, username);
 			this.authUserService.store(authUser);
 
-			// place authUser in session attribute AuthUser
-			request.getSession().setAttribute("AuthUser", authUser);
-
-			// fire update events
-			authUserSrc.fire(authUser);
 		}
+
+		// put userid in session scope context
+		request.getSession().setAttribute("USERID", username);
+
+		return authUser;
 
 	}
 }

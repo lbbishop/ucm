@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -40,8 +39,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -158,6 +155,9 @@ public class UseCase extends EntityBase implements Serializable {
 
 	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<Flow> alternativeFlows;
+	
+	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<UseCaseAttachment> attachments;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
@@ -197,27 +197,6 @@ public class UseCase extends EntityBase implements Serializable {
 
 	}
 
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Timestamp(System.currentTimeMillis());
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Timestamp(System.currentTimeMillis());
-	}
 
 	/**
 	 * Post load
@@ -527,6 +506,34 @@ public class UseCase extends EntityBase implements Serializable {
 		flow.setUseCase(null);
 		this.alternativeFlows.remove(flow);
 	}
+	
+	
+
+	/**
+	 * @return the attachments
+	 */
+	public Collection<UseCaseAttachment> getAttachments() {
+		return attachments;
+	}
+
+	/**
+	 * Add attachment
+	 * @param attachment the attachment to add
+	 */
+	public void addAttachment(UseCaseAttachment attachment) {
+		attachment.setUseCase(this);
+		this.attachments.add(attachment);
+	}
+	
+	/**
+	 * Remove attachment
+	 * @param attachment the attachment to remove
+	 */
+	public void removeAttachment(UseCaseAttachment attachment) {
+		attachment.setUseCase(null);
+		this.attachments.remove(attachment);
+	}
+
 
 	/**
 	 * @return the useCaseRules

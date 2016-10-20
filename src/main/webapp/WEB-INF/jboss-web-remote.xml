@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+<!--  ====== Required for deployment to Rostra Platform using Shibboleth authentication ======= -->
+	<security-domain>mySecurityDomain</security-domain>
+</jboss-web>

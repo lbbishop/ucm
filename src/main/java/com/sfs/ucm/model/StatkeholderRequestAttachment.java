@@ -19,50 +19,48 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.sfs.ucm.data;
+package com.sfs.ucm.model;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import org.slf4j.Logger;
+import org.hibernate.envers.Audited;
 
-import com.sfs.ucm.model.AuthUser;
-import com.sfs.ucm.util.Authenticated;
-
-@SessionScoped
-public class AuthenticatedUserProducer implements Serializable {
+@Audited
+@Entity
+@DiscriminatorValue("StakeholderRequest")
+public class StatkeholderRequestAttachment extends AbstractAttachment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private Logger logger;
+	@ManyToOne
+	@JoinColumn(name = "stakeholderrequest_id")
+	protected StakeholderRequest stakeholderRequest;
 
-	private AuthUser authUser;
-
-	@Inject
-	public void init() {
-		this.authUser = new AuthUser();
+	/**
+	 * Constructor
+	 */
+	public StatkeholderRequestAttachment() {
+		super();
 	}
 
 	/**
-	 * user change event
-	 * 
-	 * @param user
+	 * @return the stakeholderRequest
 	 */
-	public void onAuthenticatedUserChange(@Observes @Authenticated final AuthUser authUser) {
-		logger.info("onAuthenticatedUserChange {}", authUser);
-		this.authUser = authUser;
+	public StakeholderRequest getStakeholderRequest() {
+		return stakeholderRequest;
 	}
 
-	@Produces
-	@Authenticated
-	@Named
-	public AuthUser getAuthUser() {
-		return this.authUser;
+	/**
+	 * @param stakeholderRequest
+	 *            the stakeholderRequest to set
+	 */
+	public void setStakeholderRequest(StakeholderRequest stakeholderRequest) {
+		this.stakeholderRequest = stakeholderRequest;
 	}
+
 }
