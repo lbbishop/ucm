@@ -1,116 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">TestCase Flow</ui:define>
 	<ui:define name="content">
-		
 
-		<p:layout fullPage="true">
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-			<p:layoutUnit position="center">
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
-
-				<h:form id="form">
-
-					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
-
-					<div style="text-align: right; margin: 10px">
-						<h:link value="#{msg.buttonClose}" outcome="testcases" title="Close view and return to test cases list">
-							<f:param name="id" value="#{testCaseFlowAction.testCase.testSet.id}" />
-						</h:link>
-						<p:spacer width="20" />
-						<h:commandLink value="Save" action="#{testCaseFlowAction.save}" title="Save TestCase Results" />
-						<p:spacer width="20" />
-						<h:commandLink value="Print">
-							<p:printer target=":form:flowPanel" />
-						</h:commandLink>
-					</div>
-
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
-					</div>
-
-					<p:panel id="flowPanel" header="#{testCaseFlowAction.testCase.identifierName} (#{projectSecurityMarking})">
-						<p:panelGrid columns="2" columnClasses="left-160,left-600">
-
-							<h:outputLabel for="name" value="TestCase Name:" style="font-weight:bold" />
-							<h:outputText id="name" value="#{testCaseFlowAction.testCase.name}" style="font-weight:bold" />
-
-							<h:outputLabel for="useCaseRelease" value="Use Case Release: " />
-							<h:outputText id="useCaseRelease" value="#{testCaseFlowAction.testCase.useCase.productRelease.version}" />
-
-							<h:outputLabel for="primaryActor" value="Primary Actor: " />
-							<h:outputText id="primaryActor" value="#{testCaseFlowAction.testCase.useCase.primaryActor.name}" />
-
-							<h:outputLabel for="triggerEvent" value="Trigger Event: " />
-							<h:outputText id="triggerEvent" value="#{testCaseFlowAction.testCase.useCase.triggerEvent}" />
-
-							<h:outputLabel for="description" value="Description:" />
-							<h:outputText id="description" value="#{testCaseFlowAction.testCase.description}" escape="false" />
-
-							<h:outputLabel for="inputData" value="Input Data/Conditions:" />
-							<h:outputText id="inputData" value="#{testCaseFlowAction.testCase.inputData}" styleClass="wordWrap" escape="false" />
-
-							<h:outputLabel for="tester" value="Designated Tester:" />
-							<h:outputText id="tester" value="#{testCaseFlowAction.testCase.tester.authUser.name}" styleClass="wordWrap" escape="false" />
-
-						</p:panelGrid>
-
-						<p:dataTable id="table" emptyMessage="No Flow Steps Defined" resizableColumns="true" var="_step" value="#{testCaseFlowAction.testCase.testCaseSteps}">
-
-							<f:facet name="header">
-								TestCase Flow (#{projectSecurityMarking})
-							</f:facet>
-
-							<p:column headerText="Step" style="width:30px;vertical-align: top;" sortBy="#{_step.stepNumber}">
-								<h:outputText value="#{_step.stepNumber}" />
-							</p:column>
-
-							<p:column headerText="Actor" style="width:60px;vertical-align: top;">
-								<h:outputText value="#{_step.actor.name}" />
-							</p:column>
-
-							<p:column headerText="Action Description" style="width:300px;vertical-align: top;">
-								<h:outputText id="actionDescription" value="#{_step.actionDescription}" styleClass="wordWrap" escape="false" />
-							</p:column>
-
-							<p:column headerText="Result" style="width:120px;vertical-align: top;">
-								<p:selectOneRadio layout="pageDirection" id="result" value="#{_step.testResultType}" plain="true">
-									<f:selectItems value="#{testResultTypes}" />
-								</p:selectOneRadio>
-							</p:column>
-
-							<f:facet name="footer">
-							</f:facet>
-						</p:dataTable>
+						<div style="text-align: right; margin: 10px">
+							<h:link value="#{msg.buttonClose}" outcome="testcases" title="Close view and return to test cases list">
+								<f:param name="id" value="#{testCaseFlowAction.testCase.testSet.id}" />
+							</h:link>
+							<p:spacer width="20" />
+							<h:commandLink value="Save" action="#{testCaseFlowAction.save}" title="Save TestCase Results" />
+							<p:spacer width="20" />
+							<h:commandLink value="Print">
+								<p:printer target=":form:flowPanel" />
+							</h:commandLink>
+						</div>
 
 						<div style="text-align: center;">
 							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
 						</div>
-					</p:panel>
 
-					<div style="text-align: right; margin: 10px">
-						<h:link value="#{msg.buttonClose}" outcome="testcases" title="Close view and return to test cases list">
-							<f:param name="id" value="#{testCaseFlowAction.testCase.testSet.id}" />
-						</h:link>
-						<p:spacer width="20" />					
-						<h:commandLink value="Save" action="#{testCaseFlowAction.save}" title="Save TestCase Results" />
-						<p:spacer width="20" />
-						<h:commandLink value="Print">
-							<p:printer target=":form:flowPanel" />
-						</h:commandLink>
+						<p:panel id="flowPanel" header="#{testCaseFlowAction.testCase.identifierName} (#{projectSecurityMarking})">
+							<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
+
+								<h:outputLabel for="name" value="TestCase Name:" style="font-weight:bold" />
+								<h:outputText id="name" value="#{testCaseFlowAction.testCase.name}" style="font-weight:bold" />
+
+								<h:outputLabel for="primaryActor" value="Primary Actor: " />
+								<h:outputText id="primaryActor" value="#{testCaseFlowAction.testCase.useCase.primaryActor.name}" />
+
+								<h:outputLabel for="triggerEvent" value="Trigger Event: " />
+								<h:outputText id="triggerEvent" value="#{testCaseFlowAction.testCase.useCase.triggerEvent}" />
+
+								<h:outputLabel for="description" value="Description:" />
+								<h:outputText id="description" value="#{testCaseFlowAction.testCase.description}" escape="false" />
+
+								<h:outputLabel for="inputData" value="Input Data/Conditions:" />
+								<h:outputText id="inputData" value="#{testCaseFlowAction.testCase.inputData}" styleClass="wordWrap" escape="false" />
+
+								<h:outputLabel for="tester" value="Designated Tester:" />
+								<h:outputText id="tester" value="#{testCaseFlowAction.testCase.tester.authUser.name}" styleClass="wordWrap" escape="false" />
+
+							</p:panelGrid>
+
+							<p:dataTable id="table" emptyMessage="No Flow Steps Defined" resizableColumns="true" var="_step" value="#{testCaseFlowAction.testCase.testCaseSteps}" reflow="true">
+
+								<f:facet name="header">
+								TestCase Flow (#{projectSecurityMarking})
+							</f:facet>
+
+								<p:column headerText="Step" style="width:30px;vertical-align: top;" sortBy="#{_step.stepNumber}">
+									<h:outputText value="#{_step.stepNumber}" />
+								</p:column>
+
+								<p:column headerText="Actor" style="width:60px;vertical-align: top;">
+									<h:outputText value="#{_step.actor.name}" />
+								</p:column>
+
+								<p:column headerText="Action Description" style="width:300px;vertical-align: top;">
+									<h:outputText id="actionDescription" value="#{_step.actionDescription}" styleClass="wordWrap" escape="false" />
+								</p:column>
+
+								<p:column headerText="Result" style="width:120px;vertical-align: top;">
+									<p:selectOneRadio layout="pageDirection" id="result" value="#{_step.testResultType}">
+										<f:selectItems value="#{testResultTypes}" />
+									</p:selectOneRadio>
+								</p:column>
+
+								<f:facet name="footer">
+								</f:facet>
+							</p:dataTable>
+
+							<div style="text-align: center;">
+								<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+							</div>
+						</p:panel>
+
+						<div style="text-align: right; margin: 10px">
+							<h:link value="#{msg.buttonClose}" outcome="testcases" title="Close view and return to test cases list">
+								<f:param name="id" value="#{testCaseFlowAction.testCase.testSet.id}" />
+							</h:link>
+							<p:spacer width="20" />
+							<h:commandLink value="Save" action="#{testCaseFlowAction.save}" title="Save TestCase Results" />
+							<p:spacer width="20" />
+							<h:commandLink value="Print">
+								<p:printer target=":form:flowPanel" />
+							</h:commandLink>
+						</div>
+
 					</div>
-
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
-		
-		
-
+				</div>
+			</div>
+		</h:form>
 	</ui:define>
 </ui:composition>

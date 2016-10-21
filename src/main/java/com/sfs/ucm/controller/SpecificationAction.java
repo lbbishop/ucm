@@ -24,7 +24,6 @@ package com.sfs.ucm.controller;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
@@ -57,11 +56,7 @@ import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProductReleaseInit;
-import com.sfs.ucm.util.ProjectFeatureInit;
-import com.sfs.ucm.util.ProjectPackageInit;
 import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.util.ProjectUserInit;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
@@ -73,8 +68,8 @@ import com.sfs.ucm.view.FacesContextMessage;
  */
 @Stateful
 @ConversationScoped
-@Named("requirementAction")
-public class RequirementAction extends ActionBase implements Serializable {
+@Named("specificationAction")
+public class SpecificationAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -84,22 +79,7 @@ public class RequirementAction extends ActionBase implements Serializable {
 	@PersistenceContext(type = PersistenceContextType.EXTENDED)
 	private EntityManager em;
 
-	@Inject
-	@ProjectUpdated
-	private Event<Project> projectEvent;
-
-	@Inject
-	@ProjectPackageInit
-	private Event<Project> projectPackageSrc;
-
-	@Inject
-	@ProductReleaseInit
-	private Event<Project> productReleaseSrc;
-
-	@Inject
-	@ProjectFeatureInit
-	private Event<Project> projectFeatureSrc;
-
+	
 	@Inject
 	private AccessManager accessManager;
 
@@ -129,6 +109,8 @@ public class RequirementAction extends ActionBase implements Serializable {
 	private RequirementRule requirementRule;
 
 	private List<Requirement> requirements;
+	
+	private List<Feature> features;
 
 	private Project project;
 
@@ -142,8 +124,6 @@ public class RequirementAction extends ActionBase implements Serializable {
 		this.requirement = new Requirement();
 		this.requirementRule = new RequirementRule();
 		this.selected = false;
-
-		begin();
 	}
 
 	/**
@@ -153,16 +133,13 @@ public class RequirementAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
+			// begin work unit
+			begin();
+			
 			this.project = em.find(Project.class, id);
 
-			// update reference data producers
-			this.projectPackageSrc.fire(project);
-			this.projectUserSrc.fire(this.project);
-			this.productReleaseSrc.fire(this.project);
-			this.projectFeatureSrc.fire(this.project);
-			this.projectSecurityMarkingSrc.fire(this.project);
-
 			loadList();
+			loadFeatures(this.project);
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 		}
@@ -243,7 +220,7 @@ public class RequirementAction extends ActionBase implements Serializable {
 
 			// refresh list
 			loadList();
-			projectEvent.fire(project);
+			
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -263,7 +240,7 @@ public class RequirementAction extends ActionBase implements Serializable {
 				}
 
 				em.persist(this.project);
-				projectEvent.fire(project);
+				
 				logger.info("saved {}", this.requirement.getArtifact());
 				this.facesContextMessage.infoMessage("{0} saved successfully", this.requirement.getArtifact());
 
@@ -298,6 +275,20 @@ public class RequirementAction extends ActionBase implements Serializable {
 		catch (Exception e) {
 			throw new UCMException(e);
 		}
+	}
+
+	/**
+	 * @return the features
+	 */
+	public List<Feature> getFeatures() {
+		return features;
+	}
+
+	/**
+	 * @param features the features to set
+	 */
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 
 	/**
@@ -451,6 +442,22 @@ public class RequirementAction extends ActionBase implements Serializable {
 		CriteriaQuery<Long> c = cb.createQuery(Long.class);
 		c.select(cb.count(c.from(RequirementRule.class)));
 		return em.createQuery(c).getSingleResult();
+	}
+	
+	/**
+	 * Load resources
+	 * 
+	 * @param project
+	 */
+	private void loadFeatures(final Project project) {
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Feature> c = cb.createQuery(Feature.class);
+		Root<Feature> obj = c.from(Feature.class);
+		c.select(obj);
+		c.where(cb.equal(obj.get("project"), project));
+		c.orderBy(cb.asc(obj.get("id")));
+		this.features = em.createQuery(c).getResultList();
 	}
 
 }

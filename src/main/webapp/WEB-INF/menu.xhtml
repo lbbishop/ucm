@@ -28,7 +28,7 @@
 							<p:menuitem id="um_proj_techfactors" value="Technical Factors" icon="search" outcome="/project/techfactors" />
 						</p:submenu>
 
-						<p:submenu id="um_req" label="Requirements" icon="create" expanded="true">
+						<p:submenu id="um_req" label="Requirements" icon="create">
 							<p:menuitem id="um_req_productvision" value="Product Vision" icon="search" outcome="/requirement/productvision" />
 							<p:menuitem id="um_req_stakeholders" value="Stakeholders" icon="search" outcome="/requirement/stakeholders" />
 							<p:menuitem id="um_req_stakeholders" value="Stakeholder Requests" icon="search" outcome="/requirement/stakeholderrequests" />
@@ -43,11 +43,11 @@
 
 						<p:submenu id="um_testplan" label="Tests" icon="create" expanded="false">
 							<p:menuitem id="um_test_plan" value="Test Plan" icon="search" outcome="/test/testplan" />
-							<p:menuitem id="um_test_unit" value="Unit Tests" icon="search" outcome="/test/unittest" />
 							<p:menuitem id="um_test_sets" value="Test Sets" icon="search" outcome="/test/testsets" />
+							<p:menuitem id="um_test_unit" value="Unit Tests" icon="search" outcome="/test/unittest" />							
 							<p:menuitem id="um_test_cases" value="Test Cases" icon="search" outcome="/test/testcases" />
-							<p:menuitem id="um_test_cases" value="Requirement Tests" icon="search" outcome="/test/requirementtests" />
-							<p:menuitem id="um_test_cases" value="Business Rule Tests" icon="search" outcome="/test/businessruletests" />
+							<p:menuitem id="um_spec_tests" value="Specification Tests" icon="search" outcome="/test/specificationtests" />
+							<p:menuitem id="um_rule_tests" value="Business Rule Tests" icon="search" outcome="/test/businessruletests" />
 						</p:submenu>
 
 						<p:menuitem id="um_issues" value="Issues" icon="search" outcome="/issue/issues" />
@@ -60,6 +60,7 @@
 							<p:menuitem id="um_admin_user" value="Manage Users" url="/admin/users" icon="contacts" />
 							<p:menuitem id="um_admin_logger" value="Application Logger" url="/admin/logger" icon="folder" />
 							<p:menuitem id="um_admin_settings" value="Settings" url="/admin/settings" icon="folder" />
+							<p:menuitem id="um_search_reindex" value="Rebuild Search Index" actionListener="#{searchManager.rebuildIndex}" />
 						</p:submenu>
 
 						<p:submenu id="um_help" label="Help" icon="book" expanded="false">

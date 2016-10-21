@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Project TestSets</ui:define>
 
@@ -12,114 +12,101 @@
 		}
 		</script>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-		<p:layout fullPage="true">
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<div style="margin: 6px">
+							<h:outputText value="#{testSetAction.testPlan.project.name}: TestSets" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No TestSets Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_testSet" value="#{testSetAction.testSets}" selectionMode="single" rowKey="#{_testSet.id}" selection="#{testSetAction.testSet}">
+							<p:ajax event="rowSelect" listener="#{testSetAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<f:facet name="header">
+								<h:outputText value="#{testSetAction.testPlan.project.name}: TestSets" />
+							</f:facet>
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+							<p:column style="width:50px" sortBy="#{_testSet.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_testSet.artifact}" style="font-size:0.9em" />
+							</p:column>
 
-			<p:layoutUnit position="center">
+							<p:column style="width:160px">
+								<f:facet name="header">
+									<h:outputText value="TestSet Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_testSet.name}" style="font-size:0.9em" />
+							</p:column>
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
+							<p:column style="width:140px">
+								<f:facet name="header">
+									<h:outputText value="Tester Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_testSet.tester.authUser.name}" style="font-size:0.9em" />
+							</p:column>
 
-				<h:form id="form">
+							<p:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="# TestCases" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_testSet.testCases.size()}" style="font-size:0.9em" />
+							</p:column>
 
-					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+							<p:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="# UseCase Rules" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_testSet.useCaseRuleTests.size()}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="# Requirements" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_testSet.requirementTests.size()}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="# Req Rules" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_testSet.requirementRuleTests.size()}" style="font-size:0.9em" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton value="New TestSet" disabled="#{not testSetAction.editable}" update=":editForm:editPanel" action="#{testSetAction.add}" oncomplete="PF('editDialog').show()" title="New TestSet" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not testSetAction.selected or not testSetAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not testSetAction.selected or not testSetAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+							</f:facet>
+						</p:dataTable>
+
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{testSetAction.close}" icon="ui-icon-cancel" title="Close view" />
+						</div>
 					</div>
-					<div style="margin: 6px">
-						<h:outputText value="#{testSetAction.testPlan.project.name}: TestSets" styleClass="header" />
-					</div>
-					<p:dataTable id="table" emptyMessage="No TestSets Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_testSet" value="#{testSetAction.testSets}" selectionMode="single" rowKey="#{_testSet.id}" selection="#{testSetAction.testSet}">
-						<p:ajax event="rowSelect" listener="#{testSetAction.onRowSelect}" update="editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-						<f:facet name="header">
-							<h:outputText value="#{testSetAction.testPlan.project.name}: TestSets" />
-						</f:facet>
+				</div>
+			</div>
+		</h:form>
 
-						<p:column style="width:50px" sortBy="#{_testSet.artifact}">
-							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_testSet.artifact}" style="font-size:0.9em"/>
-						</p:column>
 
-						<p:column style="width:160px">
-							<f:facet name="header">
-								<h:outputText value="TestSet Name" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_testSet.name}" style="font-size:0.9em"/>
-						</p:column>
-
-						<p:column style="width:140px">
-							<f:facet name="header">
-								<h:outputText value="Tester Name" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_testSet.tester.authUser.name}" style="font-size:0.9em"/>
-						</p:column>
-
-						<p:column style="width:100px">
-							<f:facet name="header">
-								<h:outputText value="# TestCases" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_testSet.testCases.size()}" style="font-size:0.9em"/>
-						</p:column>
-
-						<p:column style="width:100px">
-							<f:facet name="header">
-								<h:outputText value="# UseCase Rules" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_testSet.useCaseRuleTests.size()}" style="font-size:0.9em"/>
-						</p:column>
-
-						<p:column style="width:100px">
-							<f:facet name="header">
-								<h:outputText value="# Requirements" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_testSet.requirementTests.size()}" style="font-size:0.9em"/>
-						</p:column>
-
-						<p:column style="width:100px">
-							<f:facet name="header">
-								<h:outputText value="# Req Rules" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_testSet.requirementRuleTests.size()}" style="font-size:0.9em"/>
-						</p:column>
-
-						<f:facet name="footer">
-							<p:commandButton value="New TestSet" disabled="#{not testSetAction.editable}" update=":editForm:editPanel" action="#{testSetAction.add}" oncomplete="PF('editDialog').show()" title="New TestSet" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not testSetAction.selected or not testSetAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not testSetAction.selected or not testSetAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-						</f:facet>
-					</p:dataTable>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{testSetAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
-					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
-
-		<p:dialog header="Edit TestSet" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+		<p:dialog header="Edit TestSet" widgetVar="editDialog" resizable="true" modal="true" responsive="true">
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
 					<h:outputText id="identifier" value="#{testSetAction.testSet.artifact}" />
@@ -141,7 +128,7 @@
 							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
@@ -153,8 +140,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-		
-		
 
 	</ui:define>
 </ui:composition>

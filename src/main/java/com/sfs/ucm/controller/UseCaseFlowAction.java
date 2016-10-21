@@ -50,7 +50,6 @@ import com.sfs.ucm.model.Actor;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Flow;
 import com.sfs.ucm.model.FlowStep;
-import com.sfs.ucm.model.FlowStepRule;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.UseCase;
 import com.sfs.ucm.model.UseCaseRule;
@@ -102,7 +101,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	@Inject
 	@Service
 	private ProjectService projectService;
-	
+
 	@Inject
 	@Service
 	private UseCaseService useCaseService;
@@ -121,8 +120,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 
 	private UseCaseRule useCaseRule;
 
-	private FlowStepRule flowStepRule;
-
 	private FlowStep basicFlowStep;
 
 	private Flow basicFlow;
@@ -130,7 +127,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	private Flow alternativeFlow;
 
 	private Flow selectedAlternativeFlow;
-	
+
 	private List<Flow> alternativeFlows;
 
 	private Project project;
@@ -145,7 +142,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 
 		begin();
 
-		this.flowStepRule = new FlowStepRule();
 		this.basicFlowStep = new FlowStep();
 		this.basicStepSelected = false;
 	}
@@ -158,7 +154,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	public void load() throws UCMException {
 		try {
 			loadUseCase();
-			
+
 			loadAlternativeFlows();
 
 			// update project actor producer
@@ -288,18 +284,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * Add business rule action
-	 */
-	public void addBusinessRule() {
-		Long cnt = getFlowStepRuleCount();
-
-		this.flowStepRule = new FlowStepRule(cnt.intValue() + 1);
-
-		// product release is inherited
-		this.flowStepRule.setProductRelease(this.useCase.getProductRelease());
-	}
-
-	/**
 	 * save basic flow action
 	 * 
 	 * @throws UCMException
@@ -325,35 +309,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 				// resort steps
 				Collections.sort(this.useCase.getBasicFlow().getFlowSteps(), FLOWSTEP_ORDER);
 
-			}
-		}
-		catch (Exception e) {
-			throw new UCMException(e);
-		}
-	}
-
-	/**
-	 * save business rule action
-	 * 
-	 * @throws UCMException
-	 */
-	public void saveBusinessRule() throws UCMException {
-		try {
-			if (validateBusinessRule()) {
-				this.flowStepRule.setModifiedBy(this.authUser.getUsername());
-				if (this.flowStepRule.getId() == null) {
-					this.basicFlowStep.addFlowStepRule(this.flowStepRule);
-				}
-
-				em.persist(this.basicFlow);
-
-				// force testcase update
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				this.useCase.setModifiedDate(now);
-
-				em.persist(this.useCase);
-				logger.info("Saved Business Rule {}", this.flowStepRule.getArtifact());
-				this.facesContextMessage.infoMessage("Business Rule {0} saved successfully", this.flowStepRule.getArtifact());
 			}
 		}
 		catch (Exception e) {
@@ -397,7 +352,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 
 				logger.info("Saved {}", this.alternativeFlow.getName());
 				this.facesContextMessage.infoMessage("{0} saved successfully", this.alternativeFlow.getName());
-				
+
 				// refresh list of alternative flows
 				loadAlternativeFlows();
 			}
@@ -548,21 +503,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * @return the flowStepRule
-	 */
-	public FlowStepRule getFlowStepRule() {
-		return flowStepRule;
-	}
-
-	/**
-	 * @param flowStepRule
-	 *            the flowStepRule to set
-	 */
-	public void setFlowStepRule(FlowStepRule flowStepRule) {
-		this.flowStepRule = flowStepRule;
-	}
-
-	/**
 	 * @return the selectedAlternativeFlow
 	 */
 	public Flow getSelectedAlternativeFlow() {
@@ -585,7 +525,8 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * @param alternativeFlows the alternativeFlows to set
+	 * @param alternativeFlows
+	 *            the alternativeFlows to set
 	 */
 	public void setAlternativeFlows(List<Flow> alternativeFlows) {
 		this.alternativeFlows = alternativeFlows;
@@ -655,41 +596,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * Validate business rule
-	 * <ul>
-	 * <li>Check for duplicate business rule</li>
-	 * </ul>
-	 * 
-	 * @return flag true if validation is successful
-	 */
-	private boolean validateBusinessRule() {
-		boolean isvalid = true;
-
-		if (this.flowStepRule.getId() == null) {
-			if (checkForDuplicateBusinessRule(this.flowStepRule.getName())) {
-				this.facesContextMessage.errorMessage("{0} already exists", StringUtils.abbreviate(this.flowStepRule.getName(), 25));
-				logger.error("{} already exists", this.flowStepRule.getName());
-				isvalid = false;
-				RequestContext requestContext = RequestContext.getCurrentInstance();
-				requestContext.addCallbackParam("validationFailed", !isvalid);
-			}
-		}
-		return isvalid;
-	}
-
-	/**
-	 * check for duplicate alternative flow
-	 */
-	private boolean checkForDuplicateBusinessRule(String name) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<FlowStepRule> c = cb.createQuery(FlowStepRule.class);
-		Root<FlowStepRule> obj = c.from(FlowStepRule.class);
-		c.select(obj).where(cb.equal(obj.get("name"), name));
-		List<FlowStepRule> list = em.createQuery(c).getResultList();
-		return (list.size() > 0);
-	}
-
-	/**
 	 * helper method renumbers basic flow steps
 	 * 
 	 * @param starting
@@ -727,24 +633,12 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 
 		Collections.sort(this.basicFlow.getFlowSteps(), FLOWSTEP_ORDER);
 	}
-	
+
 	/**
 	 * load alternative flows
 	 */
 	private void loadAlternativeFlows() {
 		this.alternativeFlows = this.useCaseService.findUseCaseAlternativeFlows(this.useCase);
-	}
-
-	/**
-	 * Get count of flowstep rules
-	 * 
-	 * @return count
-	 */
-	private Long getFlowStepRuleCount() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> c = cb.createQuery(Long.class);
-		c.select(cb.count(c.from(FlowStepRule.class)));
-		return em.createQuery(c).getSingleResult();
 	}
 
 }

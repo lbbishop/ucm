@@ -88,9 +88,12 @@ public class AuthUser extends EntityBase implements Serializable {
 
 	@Transient
 	private boolean loggedIn;
-	
+
 	@Transient
-	private String selectedProject;
+	private Project selectedProject;
+
+	@Transient
+	private TestSet selectedTestSet;
 
 	/**
 	 * Default constructor
@@ -153,7 +156,7 @@ public class AuthUser extends EntityBase implements Serializable {
 		for (AuthRole authRole : this.authRoles) {
 			roles.add(authRole.getRoleName());
 		}
-		return StringUtils.join(roles, ",");		
+		return StringUtils.join(roles, ",");
 	}
 
 	/**
@@ -186,7 +189,6 @@ public class AuthUser extends EntityBase implements Serializable {
 		this.username = username;
 	}
 
-	
 	/**
 	 * @return the name
 	 */
@@ -322,6 +324,36 @@ public class AuthUser extends EntityBase implements Serializable {
 	}
 
 	// ================= preference mappings ==================
+
+	/**
+	 * @return the selectedProject
+	 */
+	public Project getSelectedProject() {
+		return selectedProject;
+	}
+
+	/**
+	 * @param selectedProject
+	 *            the selectedProject to set
+	 */
+	public void setSelectedProject(Project selectedProject) {
+		this.selectedProject = selectedProject;
+	}
+
+	/**
+	 * @return the selectedTestSet
+	 */
+	public TestSet getSelectedTestSet() {
+		return selectedTestSet;
+	}
+
+	/**
+	 * @param selectedTestSet
+	 *            the selectedTestSet to set
+	 */
+	public void setSelectedTestSet(TestSet selectedTestSet) {
+		this.selectedTestSet = selectedTestSet;
+	}
 
 	/**
 	 * check for a preference setting

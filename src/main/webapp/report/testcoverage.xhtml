@@ -1,202 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Test Coverage Report</ui:define>
 	<ui:define name="content">
 
-		<p:layout fullPage="true">
+		<p:ajaxStatus id="statusComponent" style="position:fixed;left:50%;top:50%">
+			<f:facet name="start">
+				<h:graphicImage value="/images/ajax-loading.gif" width="30" />
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="center">
+						<p:growl id="messages" showDetail="false" />
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<div style="margin: 6px">
+							<h:outputText value="Project Test Coverage" styleClass="header" />
+						</div>
+						<div style="margin: 6px">
+							<h:outputText value="Lists most recent TestSet test results" styleClass="subheader" />
+						</div>
+						<p:spacer height="10" />
 
-				<p:ajaxStatus id="statusComponent" style="position:fixed;left:50%;top:50%">
-					<f:facet name="start">
-						<h:graphicImage value="/images/ajax-loading.gif" width="30" />
-					</f:facet>
-					<f:facet name="complete">
-						<h:outputText value="" />
-					</f:facet>
-				</p:ajaxStatus>
+						<h:panelGrid id="editPanel" columns="3" columnClasses="left-120,left,left">
+							<p:outputLabel id="projectLabel" for="project" value="Select Project:" title="The project to generate Test Coverage Report" />
+							<p:selectOneMenu id="project" value="#{testCoverageAction.project}" effect="fade" style="width:160px" converter="#{projectConverter}" valueChangeListener="#{testCoverageAction.onProjectChange}" required="true" requiredMessage="Project is required">
+								<f:selectItem itemLabel="Select Project" itemValue="" />
+								<f:selectItems value="#{testCoverageAction.projects}" var="project" itemLabel="#{project.name}" itemValue="#{project}" />
+								<p:ajax event="change" update="@(form)" />
+							</p:selectOneMenu>
+							<pe:tooltip for="projectLabel" />
+						</h:panelGrid>
 
-				<h:form id="form">
+						<p:tabView>
+							<p:tab title="TestCase">
 
-					<p:growl id="messages" showDetail="false" />
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+								<p:dataTable id="testCaseTable" styleClass="dataTable" emptyMessage="No TestCase Results" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testCoverageAction.testCaseResults}">
+
+									<f:facet name="header">
+										<h:outputText value="TestCase Coverage Report" />
+									</f:facet>
+
+									<p:column style="width:50px;vertical-align:top" sortBy="#{result.artifact}">
+										<f:facet name="header">
+											<h:outputText value="Artifact" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.artifact}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:60px;vertical-align:top">
+										<f:facet name="header">
+											<h:outputText value="Test Type" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testType}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:80px;vertical-align:top" sortBy="#{result.testSet}">
+										<f:facet name="header">
+											<h:outputText value="TestSet" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testSet}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:240px;vertical-align:top" sortBy="#{result.testName}">
+										<f:facet name="header">
+											<h:outputText value="Test Name" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testName}" styleClass="wordWrap" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:100px;vertical-align:top" sortBy="#{result.tester}">
+										<f:facet name="header">
+											<h:outputText value="Tester" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.tester}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:90px;vertical-align:top">
+										<f:facet name="header">
+											<h:outputText value="Test Date" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testDate}">
+											<f:convertDateTime type="both" dateStyle="short" timeStyle="short" style="font-size:0.9em" />
+										</h:outputText>
+									</p:column>
+
+									<p:column style="width:70px;vertical-align:top" sortBy="#{result.testResultType}">
+										<f:facet name="header">
+											<h:outputText value="Test Result" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testResultType}" style="font-size:0.9em" />
+									</p:column>
+
+									<f:facet name="footer">
+										<h:commandLink>
+											<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+											<pe:exporter type="xlsx" target="testCaseTable" fileName="#{testCoverageAction.project.name}_testcase_coverage" orientation="landscape" />
+										</h:commandLink>
+									</f:facet>
+								</p:dataTable>
+							</p:tab>
+
+							<p:tab title="Requirement Tests">
+								<p:dataTable id="requirementTestTable" styleClass="dataTable" emptyMessage="No Requirement Test Results" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testCoverageAction.requirementTestResults}">
+
+									<f:facet name="header">
+										<h:outputText value="Requirement Test Coverage Report" />
+									</f:facet>
+
+									<p:column style="width:50px;vertical-align:top" sortBy="#{result.artifact}">
+										<f:facet name="header">
+											<h:outputText value="Artifact" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.artifact}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:60px;vertical-align:top">
+										<f:facet name="header">
+											<h:outputText value="Test Type" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testType}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:80px;vertical-align:top" sortBy="#{result.testSet}">
+										<f:facet name="header">
+											<h:outputText value="TestSet" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testSet}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:240px;vertical-align:top" sortBy="#{result.testName}">
+										<f:facet name="header">
+											<h:outputText value="Test Name" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testName}" styleClass="wordWrap" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:100px;vertical-align:top" sortBy="#{result.tester}">
+										<f:facet name="header">
+											<h:outputText value="Tester" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.tester}" style="font-size:0.9em" />
+									</p:column>
+
+									<p:column style="width:90px;vertical-align:top">
+										<f:facet name="header">
+											<h:outputText value="Test Date" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testDate}">
+											<f:convertDateTime type="both" dateStyle="short" timeStyle="short" style="font-size:0.9em" />
+										</h:outputText>
+									</p:column>
+
+									<p:column style="width:70px;vertical-align:top" sortBy="#{result.testResultType}">
+										<f:facet name="header">
+											<h:outputText value="Test Result" style="font-size:0.93em" />
+										</f:facet>
+										<h:outputText value="#{result.testResultType}" style="font-size:0.9em" />
+									</p:column>
+
+									<f:facet name="footer">
+										<h:commandLink>
+											<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+											<pe:exporter type="xlsx" target="requirementTestTable" fileName="#{testCoverageAction.project.name}_reqtest_coverage" orientation="landscape" />
+										</h:commandLink>
+									</f:facet>
+								</p:dataTable>
+							</p:tab>
+						</p:tabView>
+
+						<div style="text-align: left; margin: 5px">
+							<h:outputText value="Results: #{testCoverageAction.testCaseResultCount}" />
+						</div>
+
+						<div style="text-align: right; margin: 10px">
+							<p:button value="Close" outcome="/home.jsf?faces-redirect=true" icon="ui-icon-cancel" title="Close view" />
+						</div>
 					</div>
-					<div style="margin: 6px">
-						<h:outputText value="Project Test Coverage" styleClass="header" />						
-					</div>
-					<div style="margin: 6px">
-						<h:outputText value="Lists most recent TestSet test results" styleClass="subheader" />
-					</div>	
-					<p:spacer height="10"/>				
+				</div>
+			</div>
+		</h:form>
 
-					<h:panelGrid id="editPanel" columns="3" columnClasses="left-120,left,left">
-						<p:outputLabel id="projectLabel" for="project" value="Select Project:" title="The project to generate Test Coverage Report" />
-						<p:selectOneMenu id="project" value="#{testCoverageAction.project}" effect="fade" style="width:160px" converter="#{projectConverter}" valueChangeListener="#{testCoverageAction.onProjectChange}" required="true" requiredMessage="Project is required">
-							<f:selectItem itemLabel="Select Project" itemValue="" />
-							<f:selectItems value="#{testCoverageAction.projects}" var="project" itemLabel="#{project.name}" itemValue="#{project}" />
-							<p:ajax event="change" update="@(form)" />
-						</p:selectOneMenu>
-						<pe:tooltip for="projectLabel" />
-					</h:panelGrid>
-
-					<p:tabView>
-						<p:tab title="TestCase">
-
-							<p:dataTable id="testCaseTable" styleClass="dataTable" emptyMessage="No TestCase Results" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testCoverageAction.testCaseResults}">
-
-								<f:facet name="header">
-									<h:outputText value="TestCase Coverage Report" />
-								</f:facet>
-
-								<p:column style="width:50px;vertical-align:top" sortBy="#{result.artifact}">
-									<f:facet name="header">
-										<h:outputText value="Artifact" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.artifact}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:60px;vertical-align:top">
-									<f:facet name="header">
-										<h:outputText value="Test Type" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testType}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:80px;vertical-align:top" sortBy="#{result.testSet}">
-									<f:facet name="header">
-										<h:outputText value="TestSet" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testSet}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:240px;vertical-align:top" sortBy="#{result.testName}">
-									<f:facet name="header">
-										<h:outputText value="Test Name" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testName}" styleClass="wordWrap" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:100px;vertical-align:top" sortBy="#{result.tester}">
-									<f:facet name="header">
-										<h:outputText value="Tester" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.tester}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:90px;vertical-align:top">
-									<f:facet name="header">
-										<h:outputText value="Test Date" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testDate}">
-										<f:convertDateTime type="both" dateStyle="short" timeStyle="short" style="font-size:0.9em" />
-									</h:outputText>
-								</p:column>
-
-								<p:column style="width:70px;vertical-align:top" sortBy="#{result.testResultType}">
-									<f:facet name="header">
-										<h:outputText value="Test Result" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testResultType}" style="font-size:0.9em" />
-								</p:column>
-
-								<f:facet name="footer">
-									<h:commandLink>
-										<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-										<pe:exporter type="xlsx" target="testCaseTable" fileName="#{testCoverageAction.project.name}_testcase_coverage" orientation="landscape" />
-									</h:commandLink>
-								</f:facet>
-							</p:dataTable>
-						</p:tab>
-						
-						<p:tab title="Requirement Tests">
-							<p:dataTable id="requirementTestTable" styleClass="dataTable" emptyMessage="No Requirement Test Results" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testCoverageAction.requirementTestResults}">
-
-								<f:facet name="header">
-									<h:outputText value="Requirement Test Coverage Report" />
-								</f:facet>
-
-								<p:column style="width:50px;vertical-align:top" sortBy="#{result.artifact}">
-									<f:facet name="header">
-										<h:outputText value="Artifact" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.artifact}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:60px;vertical-align:top">
-									<f:facet name="header">
-										<h:outputText value="Test Type" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testType}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:80px;vertical-align:top" sortBy="#{result.testSet}">
-									<f:facet name="header">
-										<h:outputText value="TestSet" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testSet}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:240px;vertical-align:top" sortBy="#{result.testName}">
-									<f:facet name="header">
-										<h:outputText value="Test Name" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testName}" styleClass="wordWrap" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:100px;vertical-align:top" sortBy="#{result.tester}">
-									<f:facet name="header">
-										<h:outputText value="Tester" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.tester}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="width:90px;vertical-align:top">
-									<f:facet name="header">
-										<h:outputText value="Test Date" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testDate}">
-										<f:convertDateTime type="both" dateStyle="short" timeStyle="short" style="font-size:0.9em" />
-									</h:outputText>
-								</p:column>
-
-								<p:column style="width:70px;vertical-align:top" sortBy="#{result.testResultType}">
-									<f:facet name="header">
-										<h:outputText value="Test Result" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{result.testResultType}" style="font-size:0.9em" />
-								</p:column>
-
-								<f:facet name="footer">
-									<h:commandLink>
-										<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-										<pe:exporter type="xlsx" target="requirementTestTable" fileName="#{testCoverageAction.project.name}_reqtest_coverage" orientation="landscape" />
-									</h:commandLink>
-								</f:facet>
-							</p:dataTable>
-
-						</p:tab>
-					</p:tabView>
-					
-					<div style="text-align: left; margin: 5px">
-						<h:outputText value="Results: #{testCoverageAction.testCaseResultCount}"/>
-					</div>					
-
-					<div style="text-align: right; margin: 10px">
-						<p:button value="Close" outcome="/home.jsf?faces-redirect=true" style="width:80px" title="Close view" />
-					</div>
-
-				</h:form>
-			</p:layoutUnit>
-		</p:layout>
-		
-		
 	</ui:define>
 </ui:composition>

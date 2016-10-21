@@ -1,232 +1,206 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Project Tasks</ui:define>
+	<ui:define name="title">Project Issues</ui:define>
 	<ui:define name="content">
 
 		<script type="text/javascript">
 		function handleComplete(xhr, status, args) {
 			if(!args.validationFailed)
-				PF('taskDialog').hide();
+				PF('issueDialog').hide();
 		}
 
 		</script>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-		<p:layout fullPage="true">
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+						<p:growl id="growl" showDetail="false" life="#{appManager.growlLife}" />
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
 
-			<p:layoutUnit position="center">
+						<div style="margin: 6px">
+							<h:outputText value="#{issueAction.project.name}: Project Issues" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No Issues Defined" resizableColumns="false" var="_issue" value="#{issueAction.issues}" selectionMode="single" rowKey="#{_issue.id}" selection="#{issueAction.issue}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}"
+							filteredValue="#{issueAction.filteredIssues}">
+							<p:ajax event="rowSelect" listener="#{issueAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('issueDialog').show()" />
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
-				<h:form id="form">
+							<f:facet name="header">
+								<h:outputText value="#{issueAction.project.name} Project Issues" />
+							</f:facet>
 
-					<p:growl id="growl" showDetail="false" life="#{appManager.growlLife}" />
+							<p:column style="vertical-align:top" sortBy="#{_issue.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_issue.artifact}" style="font-size:0.9em" />
+							</p:column>
 
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+							<p:column headerText="Type" style="vertical-align:top" filterBy="#{_issue.issueType}" filterOptions="#{issueTypeSelectItems}" filterMatchMode="exact">
+								<f:facet name="header">
+									<h:outputText value="Type" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_issue.issueType}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Issue Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_issue.nameAbbrv}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="vertical-align:top" filterBy="#{_issue.statusType}" filterOptions="#{statusSelectItems}" filterMatchMode="exact">
+								<f:facet name="header">
+									<h:outputText value="Status" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_issue.statusType}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Hours" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_issue.estimatedEffort}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Assignee" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_issue.assignee.authUser.name}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="vertical-align:top" sortBy="#{_issue.productRelease.version}">
+								<f:facet name="header">
+									<h:outputText value="Release" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_issue.productRelease.version}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column colspan="4" footerText="Total Estimated New Issue Hours:" style="text-align:right" />
+									<p:column footerText="#{issueAction.totalHours} (#{issueAction.newIssueCount})" style="text-align:left" />
+								</p:row>
+							</p:columnGroup>
+
+							<f:facet name="footer">
+								<p:commandButton value="Add Issue" disabled="#{not issueAction.editable}" update=":editForm:editPanel" action="#{issueAction.add}" oncomplete="PF('issueDialog').show()" title="Add new Issue" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not issueAction.selected or not issueAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('issueDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not issueAction.selected or not issueAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:spacer width="10" />
+								<p:button id="viewButton" value="View All" outcome="/issuelist" icon="ui-icon-search" title="View or Print Issue List">
+									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+									<f:param name="id" value="#{issueAction.id}" />
+								</p:button>
+								<p:spacer width="6" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="#{issueAction.project.name}_issues" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
+
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{issueAction.close}" styleClass="center-75" title="Close view" />
+						</div>
 					</div>
+				</div>
+			</div>
+		</h:form>
 
-					<div style="margin: 6px">
-						<h:outputText value="#{taskAction.project.name}: Project Tasks" styleClass="header" />
-					</div>
-					<p:dataTable id="table" emptyMessage="No Tasks Defined" resizableColumns="false" var="_task" value="#{taskAction.tasks}" selectionMode="single" rowKey="#{_task.id}" selection="#{taskAction.task}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}"
-						filteredValue="#{taskAction.filteredTasks}">
-						<p:ajax event="rowSelect" listener="#{taskAction.onRowSelect}" update="editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('taskDialog').show()" />
-
-						<f:facet name="header">
-							<h:outputText value="#{taskAction.project.name} Project Tasks" />
-						</f:facet>
-
-						<p:column style="width:50px;vertical-align:top" sortBy="#{_task.artifact}">
-							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_task.artifact}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column headerText="Type" style="width:95px;vertical-align:top" filterBy="#{_task.issueType}" filterOptions="#{issueTypeSelectItems}" filterMatchMode="exact">
-							<f:facet name="header">
-								<h:outputText value="Type" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_task.issueType}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:220px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="Task Name" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_task.nameAbbrv}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:100px;vertical-align:top" filterBy="#{_task.statusType}" filterOptions="#{statusSelectItems}" filterMatchMode="exact">
-							<f:facet name="header">
-								<h:outputText value="Status" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_task.statusType}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:40px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="Hours" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_task.estimatedEffort}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:80px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="Assignee" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_task.assignee.authUser.name}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:70px;vertical-align:top" sortBy="#{_task.productRelease.version}">
-							<f:facet name="header">
-								<h:outputText value="Release" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_task.productRelease.version}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:columnGroup type="footer">
-							<p:row>
-								<p:column colspan="4" footerText="Total Estimated New Task Hours:" style="text-align:right" />
-								<p:column footerText="#{taskAction.totalHours} (#{taskAction.newTaskCount})" style="text-align:left" />
-							</p:row>
-						</p:columnGroup>
-
-						<f:facet name="footer">
-							<p:commandButton value="Add Task" disabled="#{not taskAction.editable}" update=":editForm:editPanel" action="#{taskAction.add}" oncomplete="PF('taskDialog').show()" title="Add new Task" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not taskAction.selected or not taskAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('taskDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not taskAction.selected or not taskAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<p:spacer width="10" />
-							<p:button id="viewButton" value="View All" outcome="/tasklist" icon="ui-icon-search" title="View or Print Task List">
-								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
-								<f:param name="id" value="#{taskAction.id}" />
-							</p:button>
-							<p:spacer width="6" />
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="#{taskAction.project.name}_tasks" orientation="landscape" />
-							</h:commandLink>
-						</f:facet>
-					</p:dataTable>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{taskAction.close}" styleClass="center-75" title="Close view" />
-					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
-
-		<p:dialog header="Edit Task" widgetVar="taskDialog" resizable="true" modal="true" styleClass="modalDialog" position="25,25">
+		<p:dialog header="Edit Issue" widgetVar="issueDialog" resizable="true" modal="true" styleClass="modalDialog" position="25,25" responsive="true">
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<h:panelGrid id="editPanel" columns="3" columnClasses="left-120,left-600,left">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
-					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="The unique Task identifier" />
-					<h:outputText id="identifier" value="#{taskAction.task.artifact}" />
-					<pe:tooltip for="identifierLabel" styleClass="customTooltip" />
+					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="The unique Issue identifier" />
+					<h:outputText id="identifier" value="#{issueAction.issue.artifact}" />
 
-					<p:outputLabel id="issueTypeLabel" for="issueType" value="Issue Type:" title="The type of task to assign." />
-					<p:selectOneMenu id="issueType" value="#{taskAction.task.issueType}" effect="fade" style="width:160px" required="true" requiredMessage="IssueType is required">
+					<p:outputLabel id="issueTypeLabel" for="issueType" value="Issue Type:" title="The type of issue to assign." />
+					<p:selectOneMenu id="issueType" value="#{issueAction.issue.issueType}" effect="fade" style="width:160px" required="true" requiredMessage="IssueType is required">
 						<f:selectItem itemLabel="Select Type" itemValue="" />
 						<f:selectItems value="#{issueTypes}" var="_issue" itemValue="#{_issue}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="issueTypeLabel" styleClass="customTooltip" />
 
-					<p:outputLabel id="taskNameLabel" for="taskName" value="Task Name:" title="A brief descriptive title for the Task" />
-					<p:inputText id="taskName" value="#{taskAction.task.name}" size="80" maxlength="100" label="Name" required="true" requiredMessage="Task Name is required" />
-					<pe:tooltip for="taskNameLabel" styleClass="customTooltip" />
+					<p:outputLabel id="issueNameLabel" for="issueName" value="Issue Name:" title="A brief descriptive title for the Issue" />
+					<p:inputText id="issueName" value="#{issueAction.issue.name}" size="80" maxlength="100" label="Name" required="true" requiredMessage="Issue Name is required" />
 
-					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="A detailed description of the Task" />
+					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="A detailed description of the Issue" />
 
-					<pe:ckEditor id="description" value="#{taskAction.task.description}" width="800px" height="250px" toolbar="#{toolbarControls}" label="Action Description" required="true" requiredMessage="Action is required">
-						<p:ajax event="save" listener="#{taskAction.save}" update=":form:growl" />
+					<pe:ckEditor id="description" value="#{issueAction.issue.description}" width="800px" height="250px" toolbar="#{toolbarControls}" label="Action Description" required="true" requiredMessage="Action is required">
+						<p:ajax event="save" listener="#{issueAction.save}" update=":form:growl" />
 					</pe:ckEditor>
-					<pe:tooltip for="descriptionLabel" styleClass="customTooltip" />
 
-					<p:outputLabel id="statusLabel" for="status" value="Status:" title="The current status of the task" />
-					<p:selectOneMenu id="status" value="#{taskAction.task.statusType}" effect="fade" required="true" requiredMessage="Status is required">
+					<p:outputLabel id="statusLabel" for="status" value="Status:" title="The current status of the issue" />
+					<p:selectOneMenu id="status" value="#{issueAction.issue.statusType}" effect="fade" required="true" requiredMessage="Status is required">
 						<f:selectItem itemLabel="Select Status" itemValue="" />
 						<f:selectItems value="#{statusTypes}" var="_status" itemValue="#{_status}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="statusLabel" styleClass="customTooltip" />
 
-					<p:outputLabel id="priorityLabel" for="priority" value="Priority:" title="The relative priority of this task compared to other tasks" />
-					<p:selectOneMenu id="priority" value="#{taskAction.task.priorityType}" effect="fade" style="width:160px" required="true" requiredMessage="Priority is required">
+					<p:outputLabel id="priorityLabel" for="priority" value="Priority:" title="The relative priority of this issue compared to other issues" />
+					<p:selectOneMenu id="priority" value="#{issueAction.issue.priorityType}" effect="fade" style="width:160px" required="true" requiredMessage="Priority is required">
 						<f:selectItem itemLabel="Select Priority" itemValue="" />
 						<f:selectItems value="#{priorityTypes}" var="_priority" itemValue="#{_priority}" />
 					</p:selectOneMenu>
-					<p:tooltip for="priorityLabel" styleClass="customTooltip" />
 
-					<p:outputLabel id="assignedToLabel" for="assignedToSelect" value="Assigned To:" title="Person assigned this task" />
-					<p:selectOneMenu id="assignedToSelect" value="#{taskAction.projectUser}" style="width:200px" valueChangeListener="#{taskAction.onAssignedToChange}" converter="#{authUserConverter}" effect="fade" required="true" requiredMessage="Assignee is required">
+					<p:outputLabel id="assignedToLabel" for="assignedToSelect" value="Assigned To:" title="Person assigned this issue" />
+					<p:selectOneMenu id="assignedToSelect" value="#{issueAction.projectUser}" style="width:200px" valueChangeListener="#{issueAction.onAssignedToChange}" converter="#{authUserConverter}" effect="fade" required="true" requiredMessage="Assignee is required">
 						<f:selectItem itemLabel="Select User" itemValue="" />
 						<f:selectItems value="#{projectUsers}" var="user" itemLabel="#{user.name}" itemValue="#{user}" />
 						<p:ajax event="change" />
 					</p:selectOneMenu>
-					<pe:tooltip for="assignedToLabel" styleClass="customTooltip" />
 
-					<p:outputLabel id="sendCheckboxLabel" for="sendCheckbox" value="Send Notification?" title="Check if assignee should be notified of the newly created task" />
-					<p:selectBooleanCheckbox id="sendCheckbox" value="#{taskAction.task.sendNotification}" />
-					<pe:tooltip for="sendCheckboxLabel" styleClass="customTooltip" />
+					<p:outputLabel id="sendCheckboxLabel" for="sendCheckbox" value="Send Notification?" title="Check if assignee should be notified of the newly created issue" />
+					<p:selectBooleanCheckbox id="sendCheckbox" value="#{issueAction.issue.sendNotification}" />
 
-					<p:outputLabel id="estimatedEffortLabel" for="estimatedEffort" value="Estimated Effort:" title="The estimated effort of this task in hours" />
-					<p:inputText id="estimatedEffort" value="#{taskAction.task.estimatedEffort}" size="10" maxlength="10" />
-					<p:tooltip for="estimatedEffortLabel" styleClass="customTooltip" />
-
-					<p:outputLabel id="productReleaseLabel" for="productReleaseSelect" value="Product Release:" title="The product release where this task is to be performed" />
-					<p:selectOneMenu id="productReleaseSelect" value="#{taskAction.task.productRelease}" converter="#{productReleaseConverter}" style="width:160px" effect="fade" required="true" requiredMessage="Product Release is required">
-						<f:selectItem itemLabel="Select Release" itemValue="" />
-						<f:selectItems value="#{productReleases}" var="productRelease" itemLabel="#{productRelease.version}" itemValue="#{productRelease}" />
-					</p:selectOneMenu>
-					<pe:tooltip for="productReleaseLabel" styleClass="customTooltip" />
+					<p:outputLabel id="estimatedEffortLabel" for="estimatedEffort" value="Estimated Effort:" title="The estimated effort of this issue in hours" />
+					<p:inputText id="estimatedEffort" value="#{issueAction.issue.estimatedEffort}" size="10" maxlength="10" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
-							<p:commandButton value="Save" update=":editForm :form:table :form:growl" actionListener="#{taskAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:commandButton value="Save" update=":editForm :form:table :form:growl" actionListener="#{issueAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
 							<p:spacer width="6" />
-							<p:commandButton value="Cancel" onclick="PF('taskDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+							<p:commandButton value="Cancel" onclick="PF('issueDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
+				<pe:tooltip for="identifierLabel" styleClass="customTooltip" />
+				<pe:tooltip for="issueType" styleClass="customTooltip" />
+				<pe:tooltip for="issueNameLabel" styleClass="customTooltip" />
+				<pe:tooltip for="issueNameLabel" styleClass="customTooltip" />
+				<pe:tooltip for="description" styleClass="customTooltip" />
+				<pe:tooltip for="status" styleClass="customTooltip" />
+				<pe:tooltip for="priority" styleClass="customTooltip" />
+				<pe:tooltip for="assignedToSelect" styleClass="customTooltip" />
+				<pe:tooltip for="sendCheckbox" styleClass="customTooltip" />
+				<pe:tooltip for="estimatedEffort" styleClass="customTooltip" />
+
 			</h:form>
 		</p:dialog>
 
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{taskAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="center-50" type="button" />
+					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{issueAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>
-
-		<p:dialog header="Task Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
-			<h:panelGrid id="helpPanel" columns="1">
-				<h:outputText value="Task help content:" escape="false" />
-			</h:panelGrid>
-		</p:dialog>
-
-		
 
 	</ui:define>
 </ui:composition>

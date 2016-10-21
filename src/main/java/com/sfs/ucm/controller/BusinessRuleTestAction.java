@@ -63,7 +63,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("useCaseRuleTestAction")
-public class UseCaseRuleTestAction extends ActionBase implements Serializable {
+public class BusinessRuleTestAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Project Members</ui:define>
 	<ui:define name="content">
@@ -10,92 +10,81 @@
 				PF('editDialog').hide();
 		}
 		</script>
-		
 
-		<p:layout fullPage="true">
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-			<p:layoutUnit position="center">
+		<h:form id="form">
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-				<h:form id="form">
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<p:messages id="messages" severity="info" />
+						<div style="margin: 6px">
+							<h:outputText value="#{memberAction.project.name}: Project Members" styleClass="header" />
+						</div>
 
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
-					</div>
-					<p:messages id="messages" severity="info" />
-					<div style="margin: 6px">
-						<h:outputText value="#{memberAction.project.name}: Project Members" styleClass="header" />
-					</div>
+						<p:dataTable id="table" emptyMessage="No Members Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_member" value="#{memberAction.projectMembers}" selectionMode="single" rowKey="#{_member.id}" selection="#{memberAction.projectMember}" reflow="true">
+							<p:ajax event="rowSelect" listener="#{memberAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
-					<p:dataTable id="table" emptyMessage="No Members Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_member" value="#{memberAction.projectMembers}" selectionMode="single" rowKey="#{_member.id}" selection="#{memberAction.projectMember}">
-						<p:ajax event="rowSelect" listener="#{memberAction.onRowSelect}" update="editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-
-						<f:facet name="header">
-							<h:outputText value="Project Members"/>
-						</f:facet>
-
-						<p:column style="width:50px" sortBy="#{_member.artifact}">
 							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
-							</f:facet>						
-							<h:outputText value="#{_member.artifact}" style="font-size:0.9em"/>
-						</p:column>
+								<h:outputText value="Project Members" />
+							</f:facet>
 
-						<p:column  style="width:250px" sortBy="#{_member.authUser.name}">
-							<f:facet name="header">
-								<h:outputText value="Member Name" style="font-size:0.93em" />
-							</f:facet>						
-							<h:outputText value="#{_member.authUser.name}" style="font-size:0.9em"/>
-						</p:column>
+							<p:column style="width:50px" sortBy="#{_member.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_member.artifact}" style="font-size:0.9em" />
+							</p:column>
 
-						<p:column  style="width:150px" sortBy="#{_member.primaryRole}">
-							<f:facet name="header">
-								<h:outputText value="Primary Role" style="font-size:0.93em" />
-							</f:facet>						
-							<h:outputText value="#{_member.primaryRole}" style="font-size:0.9em"/>
-						</p:column>
+							<p:column style="width:250px" sortBy="#{_member.authUser.name}">
+								<f:facet name="header">
+									<h:outputText value="Member Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_member.authUser.name}" style="font-size:0.9em" />
+							</p:column>
 
-						<f:facet name="footer">
-							<p:commandButton value="New Member" disabled="#{not authUser.hasRole('Manager')}" update=":editForm:editPanel" action="#{memberAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not memberAction.selected or not memberAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not memberAction.selected or not memberAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="#{memberAction.project.name}_members" orientation="landscape" />
-							</h:commandLink>
-						</f:facet>
-					</p:dataTable>
+							<p:column style="width:150px" sortBy="#{_member.primaryRole}">
+								<f:facet name="header">
+									<h:outputText value="Primary Role" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_member.primaryRole}" style="font-size:0.9em" />
+							</p:column>
 
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{memberAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+							<f:facet name="footer">
+								<p:commandButton value="New Member" disabled="#{not authUser.hasRole('Manager')}" update=":editForm:editPanel" action="#{memberAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not memberAction.selected or not memberAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not memberAction.selected or not memberAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="#{memberAction.project.name}_members" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
+
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{memberAction.close}" icon="ui-icon-cancel" title="Close view" />
+						</div>
 					</div>
-				</h:form>
+				</div>
+			</div>
+		</h:form>
 
-			</p:layoutUnit>
-		</p:layout>
-
-		<p:dialog id="dialog" header="Edit Project Member" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+		<p:dialog id="dialog" header="Edit Project Member" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog" responsive="true">
 			<h:form id="editForm">
-				<p:messages id="dialogMessages" severity="error"/>
+				<p:messages id="dialogMessages" severity="error" />
 				<h:panelGrid id="editPanel" columns="2">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
@@ -132,14 +121,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-
-		<p:dialog header="Member Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
-			<h:panelGrid id="helpPanel" columns="1">
-				<h:outputText value="Member help content:" escape="false" />
-			</h:panelGrid>
-		</p:dialog>
-		
-		
 
 	</ui:define>
 </ui:composition>

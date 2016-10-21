@@ -23,7 +23,6 @@ package com.sfs.ucm.controller;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
@@ -50,10 +49,6 @@ import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProductReleaseInit;
-import com.sfs.ucm.util.ProjectFeatureUpdated;
-import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectStakeholderRequestInit;
 import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
@@ -79,22 +74,6 @@ public class FeatureAction extends ActionBase implements Serializable {
 	@Inject
 	@ProjectUpdated
 	private Event<Project> projectEvent;
-
-	@Inject
-	@ProductReleaseInit
-	private Event<Project> productReleaseSrc;
-
-	@Inject
-	@ProjectStakeholderRequestInit
-	private Event<Project> stakeholderRequestSrc;
-
-	@Inject
-	@ProjectSecurityInit
-	private Event<Project> projectSecurityMarkingSrc;
-
-	@Inject
-	@ProjectFeatureUpdated
-	private Event<Project> projectFeatureEvent;
 
 	@Inject
 	@Service
@@ -127,8 +106,6 @@ public class FeatureAction extends ActionBase implements Serializable {
 	public void init() {
 		this.feature = new Feature();
 		this.selected = false;
-
-		begin();
 	}
 
 	/**
@@ -138,13 +115,10 @@ public class FeatureAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
+			// begin work unit
+			begin();
+			
 			this.project = em.find(Project.class, id);
-
-			// load reference data
-			this.productReleaseSrc.fire(this.project);
-
-			this.stakeholderRequestSrc.fire(project);
-			this.projectSecurityMarkingSrc.fire(this.project);
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 
@@ -177,10 +151,6 @@ public class FeatureAction extends ActionBase implements Serializable {
 			// refresh list
 			loadList();
 
-			// raise project updated event
-			projectEvent.fire(project);
-			this.projectFeatureEvent.fire(project);
-
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -208,10 +178,6 @@ public class FeatureAction extends ActionBase implements Serializable {
 
 				// refresh list
 				loadList();
-
-				// raise project updated event
-				this.projectEvent.fire(project);
-				this.projectFeatureEvent.fire(project);
 
 				this.selected = true;
 			}

@@ -1,97 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Project Environmental Factors</ui:define>
 	<ui:define name="content">
-		
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+						<div style="margin: 6px">
+							<h:outputText value="#{environmentalFactorsAction.project.name}: Environmental Factors" styleClass="header" />
+						</div>
 
-		<p:layout fullPage="true">
+						<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
+							<f:facet name="header">
+								<h:outputText value="Environmental Factors" styleClass="header" />
+							</f:facet>
+							<p:outputLabel for="ef1" value="Familiarity With UML:" />
+							<p:selectOneMenu id="ef1" value="#{environmentalFactorsAction.environmentalFactors.ef1}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+							<p:outputLabel for="ef2" value="Part-Time Workers:" />
+							<p:selectOneMenu id="ef2" value="#{environmentalFactorsAction.environmentalFactors.ef2}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+							<p:outputLabel for="ef3" value="Analyst Capability:" />
+							<p:selectOneMenu id="ef3" value="#{environmentalFactorsAction.environmentalFactors.ef3}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
 
-			<p:layoutUnit position="center">
-				<h:form id="form">
-					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}"/>
-					<div style="margin: 6px">
-						<h:outputText value="#{environmentalFactorsAction.project.name}: Environmental Factors" styleClass="header" />
+							<p:outputLabel for="ef4" value="Application Experience:" />
+							<p:selectOneMenu id="ef4" value="#{environmentalFactorsAction.environmentalFactors.ef4}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="ef5" value="Object-Oriented Experience:" />
+							<p:selectOneMenu id="ef5" value="#{environmentalFactorsAction.environmentalFactors.ef5}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="ef6" value="Motivation:" />
+							<p:selectOneMenu id="ef6" value="#{environmentalFactorsAction.environmentalFactors.ef6}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="ef7" value="Programming Language Experience:" />
+							<p:selectOneMenu id="ef7" value="#{environmentalFactorsAction.environmentalFactors.ef7}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="ef8" value="Stable Requirements:" />
+							<p:selectOneMenu id="ef8" value="#{environmentalFactorsAction.environmentalFactors.ef8}" effect="fade" style="width:170px" required="true">
+								<f:selectItem itemLabel="Select Impact" itemValue="" />
+								<f:selectItems value="#{ecfImpactItems}" />
+							</p:selectOneMenu>
+							<f:facet name="footer">
+								<div style="text-align: right">
+									<p:commandButton value="OK" ajax="false" action="#{environmentalFactorsAction.okay}" icon="ui-icon-check" title="Apply settings and close form" />								
+									<p:commandButton value="Cancel" action="#{environmentalFactorsAction.close}" icon="ui-icon-cancel" title="Cancel form changes and close form" />								
+									<p:commandButton value="Apply" action="#{environmentalFactorsAction.apply}" icon="ui-icon-check" title="Apply form settings" />
+								</div>
+							</f:facet>
+						</p:panelGrid>
+
 					</div>
-
-					<p:panelGrid id="editPanel" styleClas="panelGrid" columns="2" columnClasses="left-300,left-300">
-						<f:facet name="header">
-							<h:outputText value="Environmental Factors" styleClass="header" />
-						</f:facet>
-						<p:outputLabel for="ef1" value="Familiarity With UML:" />
-						<p:selectOneMenu id="ef1" value="#{environmentalFactorsAction.environmentalFactors.ef1}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-
-						<p:outputLabel for="ef2" value="Part-Time Workers:" />
-						<p:selectOneMenu id="ef2" value="#{environmentalFactorsAction.environmentalFactors.ef2}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-
-						<p:outputLabel for="ef3" value="Analyst Capability:" />
-						<p:selectOneMenu id="ef3" value="#{environmentalFactorsAction.environmentalFactors.ef3}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-
-						<p:outputLabel for="ef4" value="Application Experience:" />
-						<p:selectOneMenu id="ef4" value="#{environmentalFactorsAction.environmentalFactors.ef4}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-
-						<p:outputLabel for="ef5" value="Object-Oriented Experience:" />
-						<p:selectOneMenu id="ef5" value="#{environmentalFactorsAction.environmentalFactors.ef5}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-
-						<p:outputLabel for="ef6" value="Motivation:" />
-						<p:selectOneMenu id="ef6" value="#{environmentalFactorsAction.environmentalFactors.ef6}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-
-						<p:outputLabel for="ef7" value="Programming Language Experience:" />
-						<p:selectOneMenu id="ef7" value="#{environmentalFactorsAction.environmentalFactors.ef7}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-
-						<p:outputLabel for="ef8" value="Stable Requirements:" />
-						<p:selectOneMenu id="ef8" value="#{environmentalFactorsAction.environmentalFactors.ef8}" effect="fade" style="width:170px" required="true">
-							<f:selectItem itemLabel="Select Impact" itemValue="" />
-							<f:selectItems value="#{ecfImpactItems}" />
-						</p:selectOneMenu>
-						<f:facet name="footer">
-							<div style="text-align: right">
-								<p:commandButton value="OK" ajax="false" action="#{environmentalFactorsAction.okay}" styleClass="center-75" title="Apply settings and close form" />
-								<p:spacer width="4" />
-								<p:commandButton value="Cancel" action="#{environmentalFactorsAction.close}" styleClass="center-75" icon="ui-icon-close" title="Cancel form changes and close form" />
-								<p:spacer width="4" />
-								<p:commandButton value="Apply" action="#{environmentalFactorsAction.apply}" styleClass="center-75" title="Apply form settings" />
-							</div>
-						</f:facet>
-					</p:panelGrid>
-				</h:form>
-			</p:layoutUnit>
-		</p:layout>
-		
-		
-		
+				</div>
+			</div>
+		</h:form>
 	</ui:define>
 </ui:composition>

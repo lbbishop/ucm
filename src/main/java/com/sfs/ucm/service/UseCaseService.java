@@ -1,7 +1,6 @@
 package com.sfs.ucm.service;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -40,52 +39,50 @@ public class UseCaseService {
 	private Logger logger;
 
 	/**
-	 * Get count of basic flows for active product release set
+	 * Get count of basic flows
 	 * 
 	 * @param authUser
 	 * @param project
 	 * @return count
 	 * @throws UCMException
 	 */
-	public Long getBasicFlowCountByProductRelease(final AuthUser authUser, final Project project) throws UCMException {
+	public Long getBasicFlowCount(final AuthUser authUser, final Project project) throws UCMException {
 		Long cnt = 0L;
 		try {
-			Set<String> versions = this.projectService.findActiveProductReleaseVersions(authUser, project);
 
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Long> c = cb.createQuery(Long.class);
 			Root<UseCase> obj = c.from(UseCase.class);
-			c.select(cb.count(obj)).where(cb.equal(obj.get("project"), project), obj.get("productRelease").get("version").in(versions));
+			c.select(cb.count(obj)).where(cb.equal(obj.get("project"), project));
 			cnt = em.createQuery(c).getSingleResult();
 		}
 		catch (Exception e) {
-			logger.error("getBasicFlowCountByProductRelease: Error occurred {}", e.getMessage());
+			logger.error("Error occurred in getBasicFlowCount: {}", e.getMessage());
 			throw new UCMException(e);
 		}
 		return cnt;
 	}
 
 	/**
-	 * Get count of alternative flows for active product release set
+	 * Get count of alternative flows
 	 * 
 	 * @param authUser
 	 * @param project
 	 * @return count
 	 * @throws UCMException
 	 */
-	public Long getAlternativeFlowCountByProductRelease(final AuthUser authUser, final Project project) throws UCMException {
+	public Long getAlternativeFlowCount(final AuthUser authUser, final Project project) throws UCMException {
 		Long cnt = 0L;
 		try {
-			Set<String> versions = this.projectService.findActiveProductReleaseVersions(authUser, project);
 
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Long> c = cb.createQuery(Long.class);
 			Root<Flow> obj = c.from(Flow.class);
-			c.select(cb.count(obj)).where(cb.equal(obj.get("useCase").get("project"), project), obj.get("useCase").get("productRelease").get("version").in(versions));
+			c.select(cb.count(obj)).where(cb.equal(obj.get("useCase").get("project"), project));
 			cnt = em.createQuery(c).getSingleResult();
 		}
 		catch (Exception e) {
-			logger.error("getAlternativeFlowCountByProductRelease: Error occurred {}", e.getMessage());
+			logger.error("Error occurred in getAlternativeFlowCount: {}", e.getMessage());
 			throw new UCMException(e);
 		}
 		return cnt;

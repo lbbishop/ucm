@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,13 +56,6 @@ import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.service.TestService;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProductReleaseInit;
-import com.sfs.ucm.util.ProjectActorInit;
-import com.sfs.ucm.util.ProjectFeatureInit;
-import com.sfs.ucm.util.ProjectPackageInit;
-import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectUpdated;
-import com.sfs.ucm.util.ProjectUserInit;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
@@ -85,33 +77,7 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	@PersistenceContext(type = PersistenceContextType.EXTENDED)
 	private EntityManager em;
 
-	@Inject
-	@ProjectUpdated
-	private Event<Project> projectEvent;
-
-	@Inject
-	@ProjectPackageInit
-	private Event<Project> projectPackageSrc;
-
-	@Inject
-	@ProjectActorInit
-	private Event<Project> projectActorSrc;
-
-	@Inject
-	@ProjectFeatureInit
-	private Event<Project> projectFeatureSrc;
-
-	@Inject
-	@ProjectUserInit
-	private Event<Project> projectUserSrc;
-
-	@Inject
-	@ProjectSecurityInit
-	private Event<Project> projectSecurityMarkingSrc;
-
-	@Inject
-	@ProductReleaseInit
-	private Event<Project> productReleaseSrc;
+	private List<Feature> features;
 
 	@Inject
 	@Service
@@ -153,8 +119,6 @@ public class UseCaseAction extends ActionBase implements Serializable {
 		this.useCase = new UseCase();
 		this.selected = false;
 		this.renamed = false;
-
-		begin();
 	}
 
 	/**
@@ -164,17 +128,13 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
+			// begin work unit
+			begin();
+			
 			this.project = em.find(Project.class, id);
 
-			// update event listeners
-			this.projectPackageSrc.fire(this.project);
-			this.projectActorSrc.fire(this.project);
-			this.projectUserSrc.fire(this.project);
-			this.productReleaseSrc.fire(this.project);
-			this.projectFeatureSrc.fire(this.project);
-			this.projectSecurityMarkingSrc.fire(this.project);
-
 			loadList();
+			loadFeatures(this.project);
 
 			// get list of basic flows as candidate extended flows
 			this.extendedFlows = findExtendedFlows(this.project);
@@ -236,7 +196,7 @@ public class UseCaseAction extends ActionBase implements Serializable {
 					em.remove(useCaseRuleTestIter.next());
 				}
 			}
-			
+
 			// remove associated test case
 			this.testService.deleteTestCase(this.useCase);
 
@@ -251,7 +211,6 @@ public class UseCaseAction extends ActionBase implements Serializable {
 			// refresh list
 			loadList();
 
-			projectEvent.fire(project);
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -275,9 +234,8 @@ public class UseCaseAction extends ActionBase implements Serializable {
 
 				em.persist(this.project);
 				logger.info("saved {}", this.useCase.getArtifact());
-				projectEvent.fire(project);
 				this.facesContextMessage.infoMessage("{0} saved successfully", this.useCase.getArtifact());
-				
+
 				// renamed use case will become stale so remove it now
 				if (this.renamed) {
 					this.testService.deleteTestCase(this.useCase);
@@ -344,6 +302,21 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	 */
 	public void setUseCase(UseCase useCase) {
 		this.useCase = useCase;
+	}
+
+	/**
+	 * @return the features
+	 */
+	public List<Feature> getFeatures() {
+		return features;
+	}
+
+	/**
+	 * @param features
+	 *            the features to set
+	 */
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 
 	/**
@@ -447,4 +420,19 @@ public class UseCaseAction extends ActionBase implements Serializable {
 		return list;
 	}
 
+	/**
+	 * Load resources
+	 * 
+	 * @param project
+	 */
+	private void loadFeatures(final Project project) {
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Feature> c = cb.createQuery(Feature.class);
+		Root<Feature> obj = c.from(Feature.class);
+		c.select(obj);
+		c.where(cb.equal(obj.get("project"), project));
+		c.orderBy(cb.asc(obj.get("id")));
+		this.features = em.createQuery(c).getResultList();
+	}
 }

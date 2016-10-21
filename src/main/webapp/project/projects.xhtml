@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Projects</ui:define>
 	<ui:define name="content">
@@ -11,96 +11,77 @@
 		}
 		</script>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-		<p:layout fullPage="true">
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+		<h:form id="form">
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+						<p:growl id="messages" life="#{appManager.growlLife}" />
+						<div style="margin: 6px">
+							<h:outputText value="Projects" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No Projects Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="proj" value="#{projectAction.projects}" selectionMode="single" rowKey="#{proj.id}" selection="#{projectAction.project}">
+							<p:ajax event="rowSelect" listener="#{projectAction.onRowSelect}" update=":form:table editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
-			<p:layoutUnit position="center">
+							<f:facet name="header">
+								<h:outputText value="Projects" />
+							</f:facet>
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
+							<p:column style="width:150px" sortBy="#{proj.name}">
+								<f:facet name="header">
+									<h:outputText value="Project Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{proj.name}" />
+							</p:column>
 
-				<h:form id="form">
+							<p:column style="width:350px" sortBy="#{_project.descriptionAbbrv}">
+								<f:facet name="header">
+									<h:outputText value="Description" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{proj.descriptionAbbrv}" />
+							</p:column>
 
-					<p:growl id="messages" life="#{appManager.growlLife}" />
-					<div style="margin: 6px">
-						<h:outputText value="Projects" styleClass="header" />
+							<p:column style="width:120px" sortBy="#{_project.modifiedDate}">
+								<f:facet name="header">
+									<h:outputText value="Last Modified" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{proj.modifiedDate}">
+									<f:convertDateTime type="date" dateStyle="medium" />
+								</h:outputText>
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton value="New Project" disabled="#{not authUser.hasRole('Manager')}" update=":editForm:editPanel" action="#{projectAction.add}" oncomplete="PF('editDialog').show()" title="New Project" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not projectAction.selected}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not projectAction.selected}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="projects" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
+
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{projectAction.close}" styleClass="center-75" icon="ui-icon-close" />
+						</div>
 					</div>
-					<p:dataTable id="table" emptyMessage="No Projects Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="proj" value="#{projectAction.projects}" selectionMode="single" rowKey="#{proj.id}" selection="#{projectAction.project}">
-						<p:ajax event="rowSelect" listener="#{projectAction.onRowSelect}" update=":form:table editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+				</div>
+			</div>
+		</h:form>
 
-						<f:facet name="header">
-							<h:outputText value="Projects" />
-						</f:facet>
-
-						<p:column style="width:150px" sortBy="#{proj.name}">
-							<f:facet name="header">
-								<h:outputText value="Project Name" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{proj.name}" />
-						</p:column>
-
-						<p:column style="width:350px" sortBy="#{_project.descriptionAbbrv}">
-							<f:facet name="header">
-								<h:outputText value="Description" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{proj.descriptionAbbrv}" />
-						</p:column>
-
-						<p:column style="width:80px" sortBy="#{_project.projectStatusType}">
-							<f:facet name="header">
-								<h:outputText value="Status" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{proj.projectStatusType}" />
-						</p:column>
-
-						<p:column style="width:120px" sortBy="#{_project.modifiedDate}">
-							<f:facet name="header">
-								<h:outputText value="Last Modified" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{proj.modifiedDate}">
-								<f:convertDateTime type="date" dateStyle="medium" />
-							</h:outputText>
-						</p:column>
-
-						<f:facet name="footer">
-							<p:commandButton value="New Project" disabled="#{not authUser.hasRole('Manager')}" update=":editForm:editPanel" action="#{projectAction.add}" oncomplete="PF('editDialog').show()" title="New Project" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not projectAction.selected}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not projectAction.selected}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="projects" orientation="landscape" />
-							</h:commandLink>
-						</f:facet>
-					</p:dataTable>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{projectAction.close}" styleClass="center-75" icon="ui-icon-close" />
-					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
 
 		<p:dialog id="editDlg" header="Edit Project" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<p:outputLabel for="name" value="Project Name:" />
 					<p:inputText id="name" value="#{projectAction.project.name}" size="80" maxlength="100" requiredMessage="Name is required" required="true" />
@@ -114,20 +95,11 @@
 						<f:selectItems value="#{securityMarkingItems}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel for="projectStatus" value="Status:" />
-					<p:selectOneMenu id="projectStatus" value="#{projectAction.project.projectStatusType}">
-						<f:selectItem itemLabel="Select Status" itemValue="" />
-						<f:selectItems value="#{projectStatusTypes}" var="_status" itemValue="#{_status}" />
-					</p:selectOneMenu>
-
 					<p:outputLabel for="url" value="Resource Path:" />
 					<p:inputText id="url" value="#{projectAction.project.url}" size="100" maxlength="255" />
 
 					<p:outputLabel for="visibleCheckbox" value="Visible To Public:" />
 					<h:selectBooleanCheckbox id="visibleCheckbox" value="#{projectAction.project.visibleToPublic}" title="Is this project private or public" />
-
-					<p:outputLabel for="approvedBy" value="Approved By:" />
-					<p:inputText id="approvedBy" value="#{projectAction.project.approvedBy}" size="40" maxlength="255" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
@@ -136,7 +108,7 @@
 							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 
 			</h:form>
 		</p:dialog>
@@ -149,14 +121,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-
-		<p:dialog header="Project Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
-			<h:panelGrid id="helpPanel" columns="1" cellpadding="4">
-				<h:outputText value="Project help content:" escape="false" />
-			</h:panelGrid>
-		</p:dialog>
-		
-		
 
 	</ui:define>
 </ui:composition>

@@ -22,7 +22,6 @@
 package com.sfs.ucm.controller;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,8 +40,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang.StringUtils;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 
@@ -52,7 +49,6 @@ import com.sfs.ucm.model.Actor;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Flow;
 import com.sfs.ucm.model.FlowStep;
-import com.sfs.ucm.model.FlowStepRule;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.TestCase;
 import com.sfs.ucm.model.UseCase;
@@ -110,8 +106,6 @@ public class AlternativeFlowAction extends ActionBase implements Serializable {
 	private UseCase useCase;
 
 	private Flow alternativeFlow;
-	
-	private FlowStepRule flowStepRule;
 
 	private Project project;
 
@@ -130,7 +124,6 @@ public class AlternativeFlowAction extends ActionBase implements Serializable {
 	public void init() {
 
 		this.alternativeFlow = new Flow();
-		this.flowStepRule = new FlowStepRule();
 		this.selected = false;
 		this.alternativeStepSelected = false;
 
@@ -226,47 +219,6 @@ public class AlternativeFlowAction extends ActionBase implements Serializable {
 		String outcome = Literal.NAV_HOME.toString();
 		end();
 		return outcome;
-	}
-	
-	/**
-	 * Add business rule action
-	 */
-	public void addBusinessRule() {
-		Long cnt = getFlowStepRuleCount();
-
-		this.flowStepRule = new FlowStepRule(cnt.intValue() + 1);
-
-		// product release is inherited
-		this.flowStepRule.setProductRelease(this.useCase.getProductRelease());
-	}
-	
-	/**
-	 * save business rule action
-	 * 
-	 * @throws UCMException
-	 */
-	public void saveBusinessRule() throws UCMException {
-		try {
-			if (validateBusinessRule()) {
-				this.flowStepRule.setModifiedBy(this.authUser.getUsername());
-				if (this.flowStepRule.getId() == null) {
-					this.alternativeFlowStep.addFlowStepRule(this.flowStepRule);
-				}
-
-				em.persist(this.alternativeFlow);
-
-				// force testcase update
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				this.useCase.setModifiedDate(now);
-
-				em.persist(this.useCase);
-				logger.info("Saved Business Rule {}", this.flowStepRule.getArtifact());
-				this.facesContextMessage.infoMessage("Business Rule {0} saved successfully", this.flowStepRule.getArtifact());
-			}
-		}
-		catch (Exception e) {
-			throw new UCMException(e);
-		}
 	}
 
 	/**
@@ -484,20 +436,6 @@ public class AlternativeFlowAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * @return the flowStepRule
-	 */
-	public FlowStepRule getFlowStepRule() {
-		return flowStepRule;
-	}
-
-	/**
-	 * @param flowStepRule the flowStepRule to set
-	 */
-	public void setFlowStepRule(FlowStepRule flowStepRule) {
-		this.flowStepRule = flowStepRule;
-	}
-
-	/**
 	 * @return the flowId
 	 */
 	public Long getFlowId() {
@@ -588,50 +526,5 @@ public class AlternativeFlowAction extends ActionBase implements Serializable {
 
 		return testCases;
 	}
-	
-	/**
-	 * Get count of flowstep rules
-	 * 
-	 * @return count
-	 */
-	private Long getFlowStepRuleCount() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> c = cb.createQuery(Long.class);
-		c.select(cb.count(c.from(FlowStepRule.class)));
-		return em.createQuery(c).getSingleResult();
-	}
-	/**
-	 * Validate business rule
-	 * <ul>
-	 * <li>Check for duplicate business rule</li>
-	 * </ul>
-	 * 
-	 * @return flag true if validation is successful
-	 */
-	private boolean validateBusinessRule() {
-		boolean isvalid = true;
 
-		if (this.flowStepRule.getId() == null) {
-			if (checkForDuplicateBusinessRule(this.flowStepRule.getName())) {
-				this.facesContextMessage.errorMessage("{0} already exists", StringUtils.abbreviate(this.flowStepRule.getName(), 25));
-				logger.error("{} already exists", this.flowStepRule.getName());
-				isvalid = false;
-				RequestContext requestContext = RequestContext.getCurrentInstance();
-				requestContext.addCallbackParam("validationFailed", !isvalid);
-			}
-		}
-		return isvalid;
-	}
-
-	/**
-	 * check for duplicate alternative flow
-	 */
-	private boolean checkForDuplicateBusinessRule(String name) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<FlowStepRule> c = cb.createQuery(FlowStepRule.class);
-		Root<FlowStepRule> obj = c.from(FlowStepRule.class);
-		c.select(obj).where(cb.equal(obj.get("name"), name));
-		List<FlowStepRule> list = em.createQuery(c).getResultList();
-		return (list.size() > 0);
-	}
 }

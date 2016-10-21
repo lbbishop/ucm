@@ -259,8 +259,8 @@ public class TestCoverageAction extends ActionBase implements Serializable {
 
 		}
 
-		Long naltflows = this.useCaseService.getAlternativeFlowCountByProductRelease(authUser, project);
-		Long nbasicflows = this.useCaseService.getBasicFlowCountByProductRelease(authUser, project);
+		Long naltflows = this.useCaseService.getAlternativeFlowCount(authUser, project);
+		Long nbasicflows = this.useCaseService.getBasicFlowCount(authUser, project);
 		Long cnt = nbasicflows + naltflows;
 
 		logger.info("Generating {} test coverage report with {} test cases", this.project.getName(), cnt);

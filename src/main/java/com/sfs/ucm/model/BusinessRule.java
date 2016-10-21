@@ -60,7 +60,7 @@ import com.sfs.ucm.data.RuleType;
 @Inheritance
 @DiscriminatorColumn(name = "business_rule_type")
 @Table(name = "businessrule")
-public abstract class BusinessRule extends EntityBase implements Serializable {
+public class BusinessRule extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

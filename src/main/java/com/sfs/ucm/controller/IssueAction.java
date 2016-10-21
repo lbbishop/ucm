@@ -24,7 +24,6 @@ package com.sfs.ucm.controller;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
@@ -47,29 +46,25 @@ import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.data.StatusType;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
+import com.sfs.ucm.model.Issue;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.ProjectMember;
-import com.sfs.ucm.model.Issue;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProductReleaseInit;
-import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectTaskUpdated;
 import com.sfs.ucm.util.ProjectUpdated;
-import com.sfs.ucm.util.ProjectUserInit;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
 /**
- * Task Actions
+ * Issue Actions
  * 
  * @author lbbishop
  */
 @Stateful
 @ConversationScoped
-@Named("taskAction")
+@Named("issueAction")
 public class IssueAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -97,30 +92,14 @@ public class IssueAction extends ActionBase implements Serializable {
 	private boolean editable;
 
 	@Inject
-	@ProductReleaseInit
-	private Event<Project> productReleaseSrc;
-
-	@Inject
-	@ProjectUserInit
-	private Event<Project> projectUserSrc;
-
-	@Inject
-	@ProjectSecurityInit
-	private Event<Project> projectSecurityMarkingSrc;
-
-	@Inject
-	@ProjectTaskUpdated
-	private Event<Project> projectTaskSrc;
-
-	@Inject
 	@Service
 	private ProjectService projectService;
 
-	private Issue task;
+	private Issue issue;
 
-	private List<Issue> tasks;
+	private List<Issue> issues;
 
-	private List<Issue> filteredTasks;
+	private List<Issue> filteredIssues;
 
 	private Project project;
 
@@ -130,11 +109,11 @@ public class IssueAction extends ActionBase implements Serializable {
 
 	private double totalHours;
 
-	private int newTaskCount;
+	private int newIssueCount;
 
 	@Inject
 	public void init() {
-		this.task = new Issue();
+		this.issue = new Issue();
 		this.selected = false;
 		this.editable = true;
 
@@ -150,11 +129,6 @@ public class IssueAction extends ActionBase implements Serializable {
 	public void load() throws UCMException {
 		try {
 			this.project = em.find(Project.class, id);
-
-			// update producers
-			this.productReleaseSrc.fire(this.project);
-			this.projectUserSrc.fire(this.project);
-			this.projectSecurityMarkingSrc.fire(this.project);
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 
@@ -183,8 +157,8 @@ public class IssueAction extends ActionBase implements Serializable {
 	 * Add action
 	 */
 	public void add() {
-		this.task = new Issue(ModelUtils.getNextIdentifier(this.tasks));
-		this.task.setStatusType(StatusType.New);
+		this.issue = new Issue(ModelUtils.getNextIdentifier(this.issues));
+		this.issue.setStatusType(StatusType.New);
 		this.projectUser = null;
 	}
 
@@ -195,23 +169,19 @@ public class IssueAction extends ActionBase implements Serializable {
 	 */
 	public void remove() throws UCMException {
 		try {
-			this.project.removeTask(this.task);
-			em.remove(this.task);
-			logger.info("Deleted {}", this.task.getArtifact());
-			this.facesContextMessage.infoMessage("{0} deleted successfully", this.task.getArtifact());
+			this.project.removeIssue(this.issue);
+			em.remove(this.issue);
+			logger.info("Deleted {}", this.issue.getArtifact());
+			this.facesContextMessage.infoMessage("{0} deleted successfully", this.issue.getArtifact());
 			loadList();
 
 			this.selected = false;
 
-			// set total estimated hours for new tasks
+			// set total estimated hours for new issues
 			this.totalHours = calcTotalHours();
 
-			// new task count
-			this.newTaskCount = newTaskCount();
-
-			// update producers
-			this.projectEvent.fire(this.project);
-			this.projectTaskSrc.fire(this.project);
+			// new issue count
+			this.newIssueCount = newIssueCount();
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
@@ -226,28 +196,24 @@ public class IssueAction extends ActionBase implements Serializable {
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
-				this.task.setModifiedBy(authUser.getUsername());
-				if (this.task.getId() == null) {
-					this.project.addTask(this.task);
+				this.issue.setModifiedBy(authUser.getUsername());
+				if (this.issue.getId() == null) {
+					this.project.addIssue(this.issue);
 				}
 
 				em.persist(this.project);
 				projectEvent.fire(project);
-				logger.info("Saved {}", this.task.getArtifact());
-				this.facesContextMessage.infoMessage("{0} saved successfully", this.task.getArtifact());
+				logger.info("Saved {}", this.issue.getArtifact());
+				this.facesContextMessage.infoMessage("{0} saved successfully", this.issue.getArtifact());
 
-				// set total estimated hours for new tasks
+				// set total estimated hours for new issues
 				this.totalHours = calcTotalHours();
 
-				// new task count
-				this.newTaskCount = newTaskCount();
+				// new issue count
+				this.newIssueCount = newIssueCount();
 
 				loadList();
 				this.selected = true;
-
-				// update producers
-				this.projectEvent.fire(this.project);
-				this.projectTaskSrc.fire(this.project);
 			}
 		}
 		catch (Exception e) {
@@ -264,7 +230,7 @@ public class IssueAction extends ActionBase implements Serializable {
 		try {
 			AuthUser user = (AuthUser) event.getNewValue();
 			ProjectMember projectMember = findProjectMember(user, this.project);
-			this.task.setAssignee(projectMember);
+			this.issue.setAssignee(projectMember);
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
@@ -278,7 +244,7 @@ public class IssueAction extends ActionBase implements Serializable {
 	 */
 	public void onRowSelect(SelectEvent event) {
 		this.selected = true;
-		this.projectUser = this.task.getAssignee().getAuthUser();
+		this.projectUser = this.issue.getAssignee().getAuthUser();
 	}
 
 	/**
@@ -286,34 +252,34 @@ public class IssueAction extends ActionBase implements Serializable {
 	 * 
 	 * @return List
 	 */
-	public List<Issue> getTasks() {
-		return this.tasks;
+	public List<Issue> getIssues() {
+		return this.issues;
 	}
 
 	/**
-	 * @param tasks
-	 *            the tasks to set
+	 * @param issues
+	 *            the issues to set
 	 */
-	public void setTasks(List<Issue> tasks) {
-		this.tasks = tasks;
+	public void setIssues(List<Issue> issues) {
+		this.issues = issues;
 	}
 
 	/**
-	 * get Task
+	 * get Issue
 	 * 
-	 * @return task
+	 * @return issue
 	 */
-	public Issue getTask() {
-		return task;
+	public Issue getIssue() {
+		return issue;
 	}
 
 	/**
-	 * set Task
+	 * set Issue
 	 * 
-	 * @param task
+	 * @param issue
 	 */
-	public void setTask(Issue task) {
-		this.task = task;
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
 
 	/**
@@ -368,42 +334,42 @@ public class IssueAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * @return the newTaskCount
+	 * @return the newIssueCount
 	 */
-	public int getNewTaskCount() {
-		return newTaskCount;
+	public int getNewIssueCount() {
+		return newIssueCount;
 	}
 
 	/**
-	 * @return the filteredTasks
+	 * @return the filteredIssues
 	 */
-	public List<Issue> getFilteredTasks() {
-		return filteredTasks;
+	public List<Issue> getFilteredIssues() {
+		return filteredIssues;
 	}
 
 	/**
-	 * @param filteredTasks
-	 *            the filteredTasks to set
+	 * @param filteredIssues
+	 *            the filteredIssues to set
 	 */
-	public void setFilteredTasks(List<Issue> filteredTasks) {
-		this.filteredTasks = filteredTasks;
+	public void setFilteredIssues(List<Issue> filteredIssues) {
+		this.filteredIssues = filteredIssues;
 	}
 
 	/**
-	 * Validate task
+	 * Validate issue
 	 * <ul>
-	 * <li>If new task check for duplicate</li>
+	 * <li>If new issue check for duplicate</li>
 	 * </ul>
 	 * 
 	 * @return flag true if validation is successful
 	 */
 	private boolean validate() {
 		boolean isvalid = true;
-		logger.info("validate task {}", this.task);
-		if (this.task.getId() == null) {
-			if (this.tasks.contains(this.task)) {
-				this.facesContextMessage.errorMessage("{0} already exists", this.task.getName());
-				logger.error("{} already exists", this.task.getName());
+		logger.info("validate issue {}", this.issue);
+		if (this.issue.getId() == null) {
+			if (this.issues.contains(this.issue)) {
+				this.facesContextMessage.errorMessage("{0} already exists", this.issue.getName());
+				logger.error("{} already exists", this.issue.getName());
 				isvalid = false;
 				RequestContext requestContext = RequestContext.getCurrentInstance();
 				requestContext.addCallbackParam("validationFailed", !isvalid);
@@ -413,26 +379,24 @@ public class IssueAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * Load Task list
+	 * Load Issue list
 	 * 
 	 * @throws UCM
 	 *             Exception
 	 */
 	private void loadList() throws UCMException {
 
-		Set<String> versions = this.projectService.findActiveProductReleaseVersions(this.authUser, this.project);
-
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Issue> c = cb.createQuery(Issue.class);
 		Root<Issue> obj = c.from(Issue.class);
-		c.select(obj).where(cb.equal(obj.get("project"), this.project), obj.get("productRelease").get("version").in(versions)).orderBy(cb.asc(obj.get("id")));
-		this.tasks = em.createQuery(c).getResultList();
+		c.select(obj).where(cb.equal(obj.get("project"), this.project)).orderBy(cb.asc(obj.get("id")));
+		this.issues = em.createQuery(c).getResultList();
 
-		// set total estimated hours for new tasks
+		// set total estimated hours for new issues
 		this.totalHours = calcTotalHours();
 
-		// new task count
-		this.newTaskCount = newTaskCount();
+		// new issue count
+		this.newIssueCount = newIssueCount();
 	}
 
 	/**
@@ -464,17 +428,17 @@ public class IssueAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * Helper method to calculate total estimated hours for new tasks
+	 * Helper method to calculate total estimated hours for new issues
 	 * 
 	 * @return total hours
 	 */
 	private double calcTotalHours() {
 
 		double hours = 0.0;
-		for (Issue task : this.tasks) {
-			if (task.getStatusType().equals(StatusType.New)) {
-				if (task.getEstimatedEffort() != null) {
-					hours += task.getEstimatedEffort().doubleValue();
+		for (Issue issue : this.issues) {
+			if (issue.getStatusType().equals(StatusType.New)) {
+				if (issue.getEstimatedEffort() != null) {
+					hours += issue.getEstimatedEffort().doubleValue();
 				}
 			}
 		}
@@ -482,15 +446,15 @@ public class IssueAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * new task count
+	 * new issue count
 	 * 
 	 * @return count
 	 */
-	private int newTaskCount() {
+	private int newIssueCount() {
 
 		int cnt = 0;
-		for (Issue task : this.tasks) {
-			if (task.getStatusType().equals(StatusType.New)) {
+		for (Issue issue : this.issues) {
+			if (issue.getStatusType().equals(StatusType.New)) {
 				cnt++;
 			}
 		}

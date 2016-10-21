@@ -666,12 +666,10 @@ public class TestCaseAction extends ActionBase implements Serializable {
 	 */
 	private void loadList() {
 
-		Set<String> versions = this.projectService.findActiveProductReleaseVersions(this.authUser, this.testPlan.getProject());
-
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<TestCase> c = cb.createQuery(TestCase.class);
 		Root<TestCase> obj = c.from(TestCase.class);
-		c.select(obj).where(cb.equal(obj.get("testSet"), this.testSet), obj.get("useCase").get("productRelease").get("version").in(versions)).orderBy(cb.asc(obj.get("name")));
+		c.select(obj).where(cb.equal(obj.get("testSet"), this.testSet)).orderBy(cb.asc(obj.get("name")));
 		this.testCases = em.createQuery(c).getResultList();
 	}
 
@@ -679,12 +677,11 @@ public class TestCaseAction extends ActionBase implements Serializable {
 	 * Load all use cases with Implemented status associated with this project test plan for active viewset product releases
 	 */
 	private void loadUseCases() {
-		Set<String> versions = this.projectService.findActiveProductReleaseVersions(this.authUser, this.testPlan.getProject());
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<UseCase> c = cb.createQuery(UseCase.class);
 		Root<UseCase> obj = c.from(UseCase.class);
-		c.select(obj).where(cb.equal(obj.get("project"), this.testPlan.getProject()),cb.equal(obj.get("statusType"), StatusType.Implemented), obj.get("productRelease").get("version").in(versions)).orderBy(cb.asc(obj.get("id")));
+		c.select(obj).where(cb.equal(obj.get("project"), this.testPlan.getProject())).orderBy(cb.asc(obj.get("id")));
 		this.useCases = em.createQuery(c).getResultList();
 	}
 

@@ -43,8 +43,8 @@ import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Project;
-import com.sfs.ucm.model.RequirementRule;
-import com.sfs.ucm.model.RequirementRuleTest;
+import com.sfs.ucm.model.Requirement;
+import com.sfs.ucm.model.RequirementTest;
 import com.sfs.ucm.model.TestPlan;
 import com.sfs.ucm.model.TestSet;
 import com.sfs.ucm.security.AccessManager;
@@ -56,14 +56,14 @@ import com.sfs.ucm.util.TestPlanUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
 
 /**
- * RequirementRuleTest Test Actions
+ * Specification Test Actions
  * 
  * @author lbbishop
  */
 @Stateful
 @ConversationScoped
-@Named("requirementRuleTestAction")
-public class RequirementRuleTestAction extends ActionBase implements Serializable {
+@Named("specificationTestAction")
+public class SpecificationTestAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -97,9 +97,9 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 
 	private boolean editable;
 
-	private RequirementRuleTest requirementRuleTest;
+	private RequirementTest requirementTest;
 
-	private List<RequirementRuleTest> requirementRuleTests;
+	private List<RequirementTest> requirementTests;
 
 	private TestSet testSet;
 
@@ -110,7 +110,7 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	 */
 	@Inject
 	public void init() {
-		this.requirementRuleTest = new RequirementRuleTest();
+		this.requirementTest = new RequirementTest();
 		this.selected = false;
 
 		begin();
@@ -118,10 +118,8 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 
 	/**
 	 * Controller resource loader
-	 * 
-	 * @throws UCMException
 	 */
-	public void load() throws UCMException {
+	public void load() {
 		try {
 			this.testSet = em.find(TestSet.class, id);
 
@@ -159,7 +157,7 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	 * @return outcome
 	 */
 	public void add() {
-		this.requirementRuleTest = new RequirementRuleTest(ModelUtils.getNextIdentifier(this.requirementRuleTests));
+		this.requirementTest = new RequirementTest(ModelUtils.getNextIdentifier(this.requirementTests));
 	}
 
 	/**
@@ -167,8 +165,8 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	 */
 	public void clearTestResults() {
 
-		for (RequirementRuleTest requirementRuleTest : this.requirementRuleTests) {
-			requirementRuleTest.setTestResultType(null);
+		for (RequirementTest requirementTest : this.requirementTests) {
+			requirementTest.setTestResultType(null);
 		}
 
 		// refresh list
@@ -187,15 +185,13 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 
 	/**
 	 * Action: remove object
-	 * 
-	 * @throws UCMException
 	 */
-	public void remove() throws UCMException {
+	public void remove() {
 		try {
-			this.testSet.removeRequirementRuleTest(this.requirementRuleTest);
-			em.remove(this.requirementRuleTest);
-			logger.info("deleted {}", this.requirementRuleTest.getArtifact());
-			this.facesContextMessage.infoMessage("{0} deleted successfully", this.requirementRuleTest.getArtifact());
+			this.testSet.removeRequirementTest(this.requirementTest);
+			em.remove(this.requirementTest);
+			logger.info("deleted {}", this.requirementTest.getArtifact());
+			this.facesContextMessage.infoMessage("{0} deleted successfully", this.requirementTest.getArtifact());
 
 			// refresh list
 			loadList();
@@ -212,20 +208,17 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 
 	/**
 	 * save action
-	 * 
-	 * @throws UCMException
 	 */
-	public void save() throws UCMException {
+	public void save() {
 		try {
-			this.requirementRuleTest.setModifiedBy(authUser.getUsername());
-			if (this.requirementRuleTest.getId() == null) {
-				this.testSet.addRequirementRuleTest(this.requirementRuleTest);
+			this.requirementTest.setModifiedBy(authUser.getUsername());
+			if (this.requirementTest.getId() == null) {
+				this.testSet.addRequirementTest(this.requirementTest);
 			}
 
 			em.persist(this.testSet);
-
-			logger.info("saved {}", this.requirementRuleTest.getArtifact());
-			this.facesContextMessage.infoMessage("{0} saved successfully", this.requirementRuleTest.getArtifact());
+			logger.info("saved {}", this.requirementTest.getArtifact());
+			this.facesContextMessage.infoMessage("{0} saved successfully", this.requirementTest.getArtifact());
 
 			// refresh list
 			loadList();
@@ -241,30 +234,30 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	}
 
 	/**
-	 * RequirementRuleTests producer
+	 * RequirementTests producer
 	 * 
 	 * @return List
 	 */
-	public List<RequirementRuleTest> getRequirementRuleTests() {
-		return this.requirementRuleTests;
+	public List<RequirementTest> getRequirementTests() {
+		return this.requirementTests;
 	}
 
 	/**
-	 * get RequirementRuleTest
+	 * get RequirementTest
 	 * 
-	 * @return requirementRuleTest
+	 * @return requirementTest
 	 */
-	public RequirementRuleTest getRequirementRuleTest() {
-		return requirementRuleTest;
+	public RequirementTest getRequirementTest() {
+		return requirementTest;
 	}
 
 	/**
-	 * set RequirementRuleTest
+	 * set RequirementTest
 	 * 
-	 * @param requirementRuleTest
+	 * @param requirementTest
 	 */
-	public void setRequirementRuleTest(RequirementRuleTest requirementRuleTest) {
-		this.requirementRuleTest = requirementRuleTest;
+	public void setRequirementTest(RequirementTest requirementTest) {
+		this.requirementTest = requirementTest;
 	}
 
 	/**
@@ -283,11 +276,11 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	}
 
 	/**
-	 * @param requirementRuleTests
-	 *            the requirementRuleTests to set
+	 * @param requirementTests
+	 *            the requirementTests to set
 	 */
-	public void setRequirementRuleTests(List<RequirementRuleTest> requirementRuleTests) {
-		this.requirementRuleTests = requirementRuleTests;
+	public void setRequirementTests(List<RequirementTest> requirementTests) {
+		this.requirementTests = requirementTests;
 	}
 
 	/**
@@ -313,17 +306,21 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	}
 
 	/**
-	 * Generate tests action
+	 * Update tests
+	 * <p>
+	 * Creates new tests
 	 */
 	private void updateTests() {
 
-		// requirement rule tests
-		List<RequirementRule> requirementRules = findRequirementRules(this.testSet.getTestPlan().getProject());
+		logger.debug("updateTests called");
 
-		for (RequirementRule requirementRule : requirementRules) {
-			if (!checkForDuplicate(requirementRule)) {
-				RequirementRuleTest requirementRuleTest = new RequirementRuleTest(requirementRule.getIdentifier(), requirementRule);
-				this.testSet.addRequirementRuleTest(requirementRuleTest);
+		// requirement tests
+		List<Requirement> requirements = findRequirements(this.testSet.getTestPlan().getProject());
+
+		for (Requirement requirement : requirements) {
+			if (!checkForDuplicate(requirement)) {
+				RequirementTest requirementTest = new RequirementTest(requirement.getIdentifier(), requirement);
+				this.testSet.addRequirementTest(requirementTest);
 				em.persist(this.testSet);
 			}
 		}
@@ -336,13 +333,13 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	/**
 	 * Check for duplicate artifact
 	 * 
-	 * @param requirementRule
+	 * @param requirement
 	 * @return flag true if validation is successful
 	 */
-	private boolean checkForDuplicate(RequirementRule requirementRule) {
+	private boolean checkForDuplicate(Requirement requirement) {
 		boolean duplicate = false;
-		for (RequirementRuleTest requirementRuleTest : this.requirementRuleTests) {
-			if (requirementRule.equals(requirementRuleTest.getRequirementRule())) {
+		for (RequirementTest requirementTest : this.requirementTests) {
+			if (requirement.equals(requirementTest.getRequirement())) {
 				duplicate = true;
 				break;
 			}
@@ -351,29 +348,31 @@ public class RequirementRuleTestAction extends ActionBase implements Serializabl
 	}
 
 	/**
-	 * load requirementRuleTests
+	 * load requirementTests
 	 */
 	private void loadList() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<RequirementRuleTest> c = cb.createQuery(RequirementRuleTest.class);
-		Root<RequirementRuleTest> obj = c.from(RequirementRuleTest.class);
+		CriteriaQuery<RequirementTest> c = cb.createQuery(RequirementTest.class);
+		Root<RequirementTest> obj = c.from(RequirementTest.class);
 		c.select(obj).where(cb.equal(obj.get("testSet"), this.testSet)).orderBy(cb.asc(obj.get("id")));
-		this.requirementRuleTests = em.createQuery(c).getResultList();
+		this.requirementTests = em.createQuery(c).getResultList();
 	}
 
 	/**
-	 * Find Project requirement rules
+	 * Find project requirements
 	 * 
 	 * @param project
-	 * @return List of RequirementRule
+	 * @return List of Requirement
 	 */
-	private List<RequirementRule> findRequirementRules(Project project) {
+	private List<Requirement> findRequirements(Project project) {
+
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<RequirementRule> c = cb.createQuery(RequirementRule.class);
-		Root<RequirementRule> obj = c.from(RequirementRule.class);
-		c.select(obj).where(cb.equal(obj.get("requirement").get("project"), project)).orderBy(cb.asc(obj.get("id")));
-		List<RequirementRule> requirementRules = em.createQuery(c).getResultList();
-		return requirementRules;
+		CriteriaQuery<Requirement> c = cb.createQuery(Requirement.class);
+		Root<Requirement> obj = c.from(Requirement.class);
+		c.select(obj).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("id")));
+		List<Requirement> requirements = em.createQuery(c).getResultList();
+
+		return requirements;
 	}
 
 }

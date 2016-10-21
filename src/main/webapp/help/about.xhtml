@@ -1,85 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">About #{msg.appFullTitle}</ui:define>
 
 	<ui:define name="content">
-	
-		<!-- Default ajaxErrorHandler -->
-		<pe:ajaxErrorHandler />
+		<h:form>
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-		<p:layout fullPage="true">
+						<h1>About #{msg.appFullTitle}</h1>
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+						<p>A UseCase-Driven Application Life Cycle Management Tool.</p>
 
-			<p:layoutUnit position="center">
-				<h:form style="margin:10px">
-					<h1>About #{msg.appFullTitle}</h1>
+						<h2>Features</h2>
+						<p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+							<h:outputText value="UseCase-Driven Requirements Management" />
+							<h:outputText value="Unified Modeling Language (UML) artifact generation and management" />
+							<h:outputText value="UseCase Points Estimation" />
+							<h:outputText value="Automated Test Case Generation" />
+							<h:outputText value="Issue Management" />
+						</p:panelGrid>
 
-					<p>A UseCase-Driven Application Lifecycle Management Tool.</p>
+						<h2>#{msg.appFullTitle} Implementation</h2>
+						<p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+							<h:outputText value="Java Enterprise 7 (JEE7) Platform" />
+							<h:outputText value="Primefaces v6.0.6 Components" />
+							<h:outputText value="OCPSoft URL Rewrite v2.0.12.Final" />
+							<h:outputText value="Version: 1.0.0-SNAPSHOT" />
+						</p:panelGrid>
 
-					<h2>Features</h2>
-					<p:panelGrid columns="1">
-						<h:outputText value="UseCase-Driven Requirements Management" />
-						<h:outputText value="Unified Modeling Language (UML) artifact generation and management" />
-						<h:outputText value="UseCase Points Estimation" />
-						<h:outputText value="Automated Test Case Generation" />
-						<h:outputText value="Task and Issue Management" />
-						<h:outputText value="Iteration Definition, Tracking, Planning, and Assessment" />
-					</p:panelGrid>
-
-					<h2>Requirements Management Maturity Model</h2>
-					<h:panelGrid columns="1">
-						<h:graphicImage url="/images/rmm-cmm.jpg" />
-					</h:panelGrid>
-
-					<h2>References</h2>
-					<p:panelGrid columns="1">
-						<h:outputText value="REQ480: Mastering Requirements Management with Use Cases, Rational Software, IBM Corp 2003" />
-						<h:outputText value="PRJ480: Mastering the Management of Iterative Development v2, Rational Software, IBM Corp 2006" />
-
-						<h:outputLink value="http://tynerblain.com/blog/2007/01/25/cmmi-and-rmm-intro" target="_blank">
-							<h:outputText value="Requirements Management Maturity Introduction" />
-						</h:outputLink>
-
-						<h:outputLink value="http://www.ibm.com/developerworks/rational/library/content/RationalEdge/feb03/ManagementMaturity_TheRationalEdge_Feb2003.pdf" target="_blank">
-							<h:outputText value="The Five Levels of Requirements Management Maturity" />
-						</h:outputLink>
-
-						<h:outputText value="Bittner, Kurt; Ian Spence, Use Case Modeling, Addison-Wesley, 10th Edition, 2008." />
-
-						<h:outputText value="Karner, Gustav. Resource Estimation for Objectory Projects. Objective Systems SF AB, 1993." />
-
-						<h:outputText value="Albrecht, A.J. Measuring Application Development Productivity. Proc. of IBM Applications Development Symposium, Monterey, CA, 14-17 Oct. 1979: 83." />
-
-						<h:outputText value="Jacobson, I., G. Booch, and J. Rumbaugh. The Objectory Development Process. Addison-Wesley, 1998." />
-
-						<h:outputText value="Nageswaran, Suresh. Test Effort Estimation Using Use Case Points. June 2001" />
-
-					</p:panelGrid>
-
-					<h2>#{msg.appFullTitle} Implementation</h2>
-					<p:panelGrid columns="1">
-						<h:outputText value="Java Enterprise 6 (JEE6) Platform" />
-						<h:outputText value="Primefaces v5.0.6 Components" />
-						<h:outputText value="Primefaces Extensions v2.1.0" />
-						<h:outputText value="OCPSoft URL Rewrite v2.0.12.Final" />
-						<h:outputText value="Version: 0.9.8-SNAPSHOT" />
-					</p:panelGrid>
-
-					<div style="text-align: right; margin: 10px">
-						<p:button value="Close" outcome="/home.jsf?faces-redirect=true" style="width:80px" title="Close view" />
+						<div style="text-align: right; margin: 10px">
+							<p:button value="Close" outcome="/home.jsf?faces-redirect=true" icon="ui-icon-cancel" title="Close view" />
+						</div>
 					</div>
-
-				</h:form>
-			</p:layoutUnit>
-		</p:layout>
-		
-		
-		
+				</div>
+			</div>
+		</h:form>
 	</ui:define>
 </ui:composition>
