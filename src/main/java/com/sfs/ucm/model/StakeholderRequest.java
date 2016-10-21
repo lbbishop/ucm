@@ -22,9 +22,8 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,8 +36,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -64,7 +61,7 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name="stakeholderrequest")
+@Table(name = "stakeholderrequest")
 public class StakeholderRequest extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -87,7 +84,7 @@ public class StakeholderRequest extends EntityBase implements Serializable {
 	private String description;
 
 	@OneToOne
-	@JoinColumn(name = "stakeholder_id", nullable=true)
+	@JoinColumn(name = "stakeholder_id", nullable = true)
 	private Stakeholder stakeholder;
 
 	@ManyToOne
@@ -119,28 +116,6 @@ public class StakeholderRequest extends EntityBase implements Serializable {
 	private void init() {
 		this.features = new HashSet<Feature>();
 		this.stakeholder = new Stakeholder();
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**

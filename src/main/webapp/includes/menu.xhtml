@@ -18,23 +18,23 @@
 				</p:menuButton>
 				<p:spacer width="4" />
 				<p:menuButton value="Reports" rendered="#{authUser.loggedIn}">
-					<p:menuitem value="Requirement Changes" url="/reports/changes" style="width:150px" />
+					<p:menuitem value="Requirement Changes" url="/report/changes" style="width:150px" />
 					<p:separator />
-					<p:menuitem value="Product Backlog" url="/reports/backlog" rendered="true" />
+					<p:menuitem value="Product Backlog" url="/report/backlog" rendered="true" />
 					<p:separator rendered="false" />
-					<p:menuitem value="TestCase Results" url="/reports/testcaseresults" rendered="false" />
+					<p:menuitem value="TestCase Results" url="/report/testcaseresults" rendered="false" />
 					<p:separator rendered="false" />
-					<p:menuitem value="Project Activity" url="/reports/activity" rendered="false" />
+					<p:menuitem value="Project Activity" url="/report/activity" rendered="false" />
 					<p:separator rendered="true" />
-					<p:menuitem value="Product Road Map" url="/reports/roadmap" rendered="true" />
+					<p:menuitem value="Product Road Map" url="/report/roadmap" rendered="true" />
 					<p:separator rendered="true" />
-					<p:menuitem value="Test Coverage" url="/reports/testcoverage" rendered="true" />
+					<p:menuitem value="Test Coverage" url="/report/testcoverage" rendered="true" />
 					<p:separator rendered="false" />
-					<p:menuitem value="Outstanding Issues" url="/reports/issues" rendered="false" />
+					<p:menuitem value="Outstanding Issues" url="/report/issues" rendered="false" />
 					<p:separator />
-					<p:menuitem value="Traceability Matrix" url="/reports/traceability" />
+					<p:menuitem value="Traceability Matrix" url="/report/traceability" />
 					<p:separator />
-					<p:menuitem value="Use Case Estimator" url="/reports/estimator" />
+					<p:menuitem value="Use Case Estimator" url="/report/estimator" />
 				</p:menuButton>
 				<p:spacer width="4" />
 				<p:menuButton value="Help" rendered="#{authUser.loggedIn}">

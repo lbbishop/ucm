@@ -22,9 +22,8 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,8 +38,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -114,13 +111,8 @@ public class Requirement extends EntityBase implements Serializable {
 	@Column(name = "difficulty_type", nullable = true)
 	private DifficultyType difficultyType;
 
-	@NotNull(message = "Product Release is required")
-	@OneToOne
-	@JoinColumn(name = "productrelease_id", nullable = false)
-	private ProductRelease productRelease;
-
 	@Lob
-	@Column(name = "issues", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "issues", columnDefinition = "CLOB", nullable = true)
 	private String issues;
 
 	@ManyToOne
@@ -128,9 +120,6 @@ public class Requirement extends EntityBase implements Serializable {
 
 	@ManyToOne
 	private Feature feature;
-
-	@ManyToOne
-	private Iteration iteration;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "requirement", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
@@ -159,28 +148,6 @@ public class Requirement extends EntityBase implements Serializable {
 	private void init() {
 		this.statusType = StatusType.New;
 		this.requirementRules = new HashSet<RequirementRule>();
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -240,21 +207,6 @@ public class Requirement extends EntityBase implements Serializable {
 	 */
 	public Collection<RequirementRule> getRequirementRules() {
 		return requirementRules;
-	}
-
-	/**
-	 * @return the iteration
-	 */
-	public Iteration getIteration() {
-		return iteration;
-	}
-
-	/**
-	 * @param iteration
-	 *            the iteration to set
-	 */
-	public void setIteration(Iteration iteration) {
-		this.iteration = iteration;
 	}
 
 	/**
@@ -391,21 +343,6 @@ public class Requirement extends EntityBase implements Serializable {
 	 */
 	public void setProjectPackage(ProjectPackage projectPackage) {
 		this.projectPackage = projectPackage;
-	}
-
-	/**
-	 * @return the productRelease
-	 */
-	public ProductRelease getProductRelease() {
-		return productRelease;
-	}
-
-	/**
-	 * @param productRelease
-	 *            the productRelease to set
-	 */
-	public void setProductRelease(ProductRelease productRelease) {
-		this.productRelease = productRelease;
 	}
 
 	/**

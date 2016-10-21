@@ -47,12 +47,10 @@ import com.sfs.ucm.model.Actor;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.EnvironmentalFactors;
 import com.sfs.ucm.model.Feature;
-import com.sfs.ucm.model.Iteration;
 import com.sfs.ucm.model.ProductVision;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.Requirement;
 import com.sfs.ucm.model.StakeholderRequest;
-import com.sfs.ucm.model.Task;
 import com.sfs.ucm.model.TechnicalFactors;
 import com.sfs.ucm.model.TestPlan;
 import com.sfs.ucm.model.TestSet;
@@ -195,16 +193,6 @@ public class ProjectAction extends ActionBase implements Serializable {
 			Iterator<StakeholderRequest> stakeholderRequestIter = this.project.getStakeholderRequests().iterator();
 			while (stakeholderRequestIter.hasNext()) {
 				em.remove(stakeholderRequestIter.next());
-			}
-
-			Iterator<Iteration> iterationIter = this.project.getIterations().iterator();
-			while (iterationIter.hasNext()) {
-				em.remove(iterationIter.next());
-			}
-
-			Iterator<Task> taskIter = this.project.getTasks().iterator();
-			while (taskIter.hasNext()) {
-				em.remove(taskIter.next());
 			}
 
 			// test sets

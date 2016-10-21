@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +39,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -150,28 +147,6 @@ public class TestCase extends EntityBase implements Serializable {
 		this.testCaseSteps = new ArrayList<TestCaseStep>();
 		this.tester = new ProjectMember();
 		this.testResultType = TestResultType.Unknown;
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Timestamp(System.currentTimeMillis());
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Timestamp(System.currentTimeMillis());
 	}
 
 	/**

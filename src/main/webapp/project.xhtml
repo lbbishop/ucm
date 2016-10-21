@@ -39,25 +39,25 @@
 						</f:facet>
 
 						<h:outputLabel value="Project Name:" />
-						<h:outputText value="#{projectInfoManager.project.name}" />
+						<h:outputText value="#{projectManager.project.name}" />
 
 						<h:outputLabel value="Description:" />
-						<h:outputText value="#{projectInfoManager.project.description}" escape="false" />
+						<h:outputText value="#{projectManager.project.description}" escape="false" />
 
 						<h:outputLabel value="Security Marking:" />
-						<h:outputText value="#{projectInfoManager.project.securityMarking}" />
+						<h:outputText value="#{projectManager.project.securityMarking}" />
 
 						<h:outputLabel value="Status:" />
-						<h:outputText value="#{projectInfoManager.project.projectStatusType}" />
+						<h:outputText value="#{projectManager.project.projectStatusType}" />
 
 						<h:outputLabel value="Approved By:" />
-						<h:outputText value="#{projectInfoManager.project.approvedBy}" />
+						<h:outputText value="#{projectManager.project.approvedBy}" />
 
 						<h:outputLabel value="Actors:" />
-						<h:outputText value="#{projectInfoManager.project.actors.size()}" />
+						<h:outputText value="#{projectManager.project.actors.size()}" />
 
 						<h:outputLabel value="Stakeholders:" />
-						<h:outputText value="#{projectInfoManager.project.stakeholders.size()}" />
+						<h:outputText value="#{projectManager.project.stakeholders.size()}" />
 					</p:panelGrid>
 
 					<p:spacer height="10" />
@@ -68,13 +68,13 @@
    						 </f:facet>
 
 						<h:outputLabel value="Stakeholder Requests:" />
-						<h:outputText value="#{projectInfoManager.project.stakeholderRequests.size()}" />
+						<h:outputText value="#{projectManager.project.stakeholderRequests.size()}" />
 
 						<h:outputLabel value="Risks:" />
-						<h:outputText value="#{projectInfoManager.project.risks.size()}" />
+						<h:outputText value="#{projectManager.project.risks.size()}" />
 
 						<h:outputLabel value="Design Constraints:" />
-						<h:outputText value="#{projectInfoManager.project.designConstraints.size()}" />
+						<h:outputText value="#{projectManager.project.designConstraints.size()}" />
 					</p:panelGrid>
 
 					<p:spacer height="10" />
@@ -85,19 +85,19 @@
    						 </f:facet>
 
 						<h:outputLabel value="Product Features:" />
-						<h:outputText value="#{projectInfoManager.project.features.size()}" />
+						<h:outputText value="#{projectManager.project.features.size()}" />
 
 						<h:outputLabel value="Supplemental Specs:" />
-						<h:outputText value="#{projectInfoManager.project.requirements.size()}" />
+						<h:outputText value="#{projectManager.project.requirements.size()}" />
 
 						<h:outputLabel value="Use Cases:" />
-						<h:outputText value="#{projectInfoManager.project.useCases.size()}" />
+						<h:outputText value="#{projectManager.project.useCases.size()}" />
 
 						<h:outputLabel value="Glossary of Terms:" />
-						<h:outputText value="#{projectInfoManager.project.glossaryTerms.size()}" />
+						<h:outputText value="#{projectManager.project.glossaryTerms.size()}" />
 
 						<h:outputLabel value="Total Flows:" />
-						<h:outputText value="#{projectInfoManager.totalFlows}" />
+						<h:outputText value="#{projectManager.totalFlows}" />
 
 					</p:panelGrid>
 
@@ -107,10 +107,10 @@
    						 </f:facet>
 
 						<h:outputLabel value="Total Test Sets:" />
-						<h:outputText value="#{projectInfoManager.totalTestSets}" />
+						<h:outputText value="#{projectManager.totalTestSets}" />
 
 						<h:outputLabel value="Total Test Cases:" />
-						<h:outputText value="#{projectInfoManager.totalTestCases}" />
+						<h:outputText value="#{projectManager.totalTestCases}" />
 					</p:panelGrid>
 
 					<p:spacer height="10" />
@@ -121,13 +121,10 @@
    						 </f:facet>
 
 						<h:outputLabel value="Project Members:" />
-						<h:outputText value="#{projectInfoManager.project.projectMembers.size()}" />
+						<h:outputText value="#{projectManager.project.projectMembers.size()}" />
 
-						<h:outputLabel value="Iterations:" />
-						<h:outputText value="#{projectInfoManager.project.iterations.size()}" />
-
-						<h:outputLabel value="Tasks:" />
-						<h:outputText value="#{projectInfoManager.project.tasks.size()}" />
+						<h:outputLabel value="Issues:" />
+						<h:outputText value="#{projectManager.project.tasks.size()}" />
 					</p:panelGrid>
 
 					<div style="text-align: right; margin: 10px">

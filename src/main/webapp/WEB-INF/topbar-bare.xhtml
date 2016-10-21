@@ -1,0 +1,14 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:pu="http://primefaces.org/ultima">
+
+	<div class="topbar clearfix">
+		<div class="topbar-left">
+			<h:outputText value="#{appManager.displayName}" style="font-size:1.7em;color:white" />
+		</div>
+
+		<div class="topbar-center" style="font-size: 1.7em; color: white; position: fixed; top: 22px; left: 300px;">
+			<ui:insert name="title">Default Title</ui:insert>
+		</div>
+
+	</div>
+
+</ui:composition>

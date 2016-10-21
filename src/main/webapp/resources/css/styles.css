@@ -1,62 +1,18 @@
-.ui-widget,.ui-widget .ui-widget {
-	font-size: 96% !important;
+.ui-growl, .ui-growl-item-container, .ui-growl-message {
+	font-size: 8pt;
 }
 
-.ui-growl,.ui-growl-item-container,.ui-growl-message {
-        font-size: 8pt;
+.wordWrap {
+	text-align: justify;
+	white-space: normal;
+	word-wrap: break-all;
 }
 
-h1 {
-	font-family: tahoma;
-	font-size: 24px;
+.ui-outputlabel-rfi {
+	display: '*';
+	color: #FF0000;
 }
 
-h2 {
-	font-family: tahoma;
-	font-size: 16px;
+.ui-datatable-footer .ui-widget-header .ui-corner-bottom {
+	text-align: left !important;
 }
-
-a:link,a:visited {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-img {
-	border: none
-}
-
-hr {
-	height: 1px;
-	border-style: dotted;
-	border-color: #000000;
-	border-width: 0px 0px 1px 0px;
-}
-
-td {
-	color: #444444;
-}
-
-
-body,
-input,
-select,
-textarea,
-button,
-.ui-widget,
-.ui-widget input,
-.ui-widget select,
-.ui-widget textarea,
-.ui-widget button,
-.ui-widget-header,
-.ui-widget-content,
-.ui-widget-header .ui-widget-header,
-.ui-menu,.ui.tieredmenu, .ui-menuitem-text,
-.ui-widget-content .ui-widget-content {
-        font-family: tahoma;
-        font-size: 12px !important;
-}
-
-

@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -33,11 +32,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -51,12 +46,10 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
 import com.sfs.ucm.data.Constants;
-import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.data.RuleType;
-import com.sfs.ucm.data.StatusType;
 
 /**
- * BusinessRule
+ * BusinessRule base class
  * 
  * @author lbbisho
  * 
@@ -67,7 +60,7 @@ import com.sfs.ucm.data.StatusType;
 @Inheritance
 @DiscriminatorColumn(name = "business_rule_type")
 @Table(name = "businessrule")
-public class BusinessRule extends EntityBase implements Serializable {
+public abstract class BusinessRule extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -88,24 +81,16 @@ public class BusinessRule extends EntityBase implements Serializable {
 	protected RuleType ruleType;
 
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
-	@NotNull(message = "Rule is required")
+	@NotNull(message = "When condition is required")
 	@Lob
-	@Column(name = "rule", columnDefinition = "TEXT", nullable = false)
-	protected String rule;
+	@Column(name = "when", columnDefinition = "CLOB", nullable = false)
+	protected String when;
 
+	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
+	@NotNull(message = "Then outcome is required")
 	@Lob
-	@Column(name = "implementation", columnDefinition = "TEXT NULL", nullable = true)
-	protected String implementation;
-
-	@NotNull(message = "Status is required")
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status_type")
-	protected StatusType statusType;
-
-	@NotNull(message = "Product Release is required")
-	@OneToOne
-	@JoinColumn(name = "productrelease_id", nullable = false)
-	protected ProductRelease productRelease;
+	@Column(name = "then", columnDefinition = "CLOB", nullable = false)
+	protected String then;
 
 	/**
 	 * Default constructor
@@ -118,54 +103,21 @@ public class BusinessRule extends EntityBase implements Serializable {
 	/**
 	 * Constructor
 	 * 
-	 * @param productRelease
-	 */
-	public BusinessRule(ProductRelease productRelease) {
-		super();
-		this.productRelease = productRelease;
-	}
-
-	/**
-	 * Constructor
-	 * 
 	 * @param rule
 	 * @param implementation
 	 */
-	public BusinessRule(String rule, String implementation) {
+	public BusinessRule(String when, String then) {
 		super();
 		init();
-		this.rule = rule;
-		this.implementation = implementation;
+		this.when = when;
+		this.then = then;
 	}
 
 	/**
 	 * init method
 	 */
 	private void init() {
-		this.statusType = StatusType.New;
 		this.ruleType = RuleType.Generic;
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -184,40 +136,17 @@ public class BusinessRule extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the rule
+	 * @return the when condition abbreviated
 	 */
-	public String getRule() {
-		return rule;
+	public String getWhenAbbrv() {
+		return org.apache.commons.lang.StringUtils.abbreviate(this.when, Constants.ABBRV_DESC_LEN);
 	}
 
 	/**
-	 * @return the rule abbreviated
+	 * @return the then condition abbreviated
 	 */
-	public String getRuleAbbrv() {
-		return org.apache.commons.lang.StringUtils.abbreviate(this.rule, Constants.ABBRV_DESC_LEN);
-	}
-
-	/**
-	 * @param rule
-	 *            the rule to set
-	 */
-	public void setRule(String rule) {
-		this.rule = rule;
-	}
-
-	/**
-	 * @return the implementation
-	 */
-	public String getImplementation() {
-		return implementation;
-	}
-
-	/**
-	 * @param implementation
-	 *            the implementation to set
-	 */
-	public void setImplementation(String implementation) {
-		this.implementation = implementation;
+	public String getThenAbbrv() {
+		return org.apache.commons.lang.StringUtils.abbreviate(this.then, Constants.ABBRV_DESC_LEN);
 	}
 
 	/**
@@ -252,36 +181,6 @@ public class BusinessRule extends EntityBase implements Serializable {
 		this.ruleType = ruleType;
 	}
 
-	/**
-	 * @return the statusType
-	 */
-	public StatusType getStatusType() {
-		return statusType;
-	}
-
-	/**
-	 * @param statusType
-	 *            the statusType to set
-	 */
-	public void setStatusType(StatusType statusType) {
-		this.statusType = statusType;
-	}
-
-	/**
-	 * @return the productRelease
-	 */
-	public ProductRelease getProductRelease() {
-		return productRelease;
-	}
-
-	/**
-	 * @param productRelease
-	 *            the productRelease to set
-	 */
-	public void setProductRelease(ProductRelease productRelease) {
-		this.productRelease = productRelease;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -296,10 +195,10 @@ public class BusinessRule extends EntityBase implements Serializable {
 		builder.append(identifier);
 		builder.append(", name=");
 		builder.append(name);
-		builder.append(", rule=");
-		builder.append(rule);
-		builder.append(", implementation=");
-		builder.append(implementation);
+		builder.append(", when=");
+		builder.append(getWhenAbbrv());
+		builder.append(", then=");
+		builder.append(getThenAbbrv());
 		builder.append("]");
 		return builder.toString();
 	}

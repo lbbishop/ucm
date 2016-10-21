@@ -177,14 +177,10 @@ public class TreeController implements Serializable {
 				// Product Vision
 				TreeNode productVision = new DefaultTreeNode("document", new ModelNode("Product Vision", project.getId(), "productvision"), projectNode);
 
-				// Product Releases
-				TreeNode productReleasesNode = new DefaultTreeNode(new ModelNode("Product Releases", project.getId(), "productreleases"), projectNode);
 
 				// Project members
 				TreeNode projectMembersNode = new DefaultTreeNode(new ModelNode("Project Members", project.getId(), "members"), projectNode);
 
-				// User Stories
-				TreeNode userStoryRoot = new DefaultTreeNode(new ModelNode("User Stories", project.getId(), "userstories"), projectNode);
 
 				// Stakeholders
 				TreeNode stakeholdersRoot = new DefaultTreeNode(new ModelNode("Stakeholders", project.getId(), "stakeholders"), projectNode);
@@ -234,9 +230,6 @@ public class TreeController implements Serializable {
 				// UseCase Business Rules
 				TreeNode useCaseRules = new DefaultTreeNode(new ModelNode("Business Rules", project.getId(), "usecaserules"), useCasesRoot);
 
-				// BusinessProcess
-				// TreeNode businessProcessRoot = new DefaultTreeNode(new ModelNode("Business Processes", project.getId(), "businessprocesses"),
-				// projectNode);
 
 				// Test Plan
 				this.testPlanNode = new DefaultTreeNode("document", new ModelNode("Test Plan", project.getId(), "testplan"), projectNode);
@@ -274,22 +267,9 @@ public class TreeController implements Serializable {
 				// Project Tasks
 				TreeNode tasksNode = new DefaultTreeNode(new ModelNode("Tasks", project.getId(), "tasks"), projectNode);
 
-				// Project Iterations
-				TreeNode iterationsRoot = new DefaultTreeNode(new ModelNode("Iterations", project.getId(), "iterations"), projectNode);
-				List<Iteration> iterations = em.createQuery("from Iteration iter where iter.project.id = :projectId", Iteration.class).setParameter("projectId", project.getId()).getResultList();
-				for (Iteration iteration : iterations) {
-					TreeNode iterationNode = new DefaultTreeNode(new ModelNode(iteration.getArtifact(), iteration.getId(), "activities"), iterationsRoot);
-				}
+	
 
-				// Project Estimation
-				TreeNode estimationNode = new DefaultTreeNode(new ModelNode("Project Estimation", project.getId(), "projects", false), projectNode);
-				estimationNode.setExpanded(!theProjectMember.getProjectEstimationCollapsed());
-				TreeNode estimatesNode = new DefaultTreeNode("document", new ModelNode("Estimates", project.getId(), "estimates"), estimationNode);
-				TreeNode techFactorsNode = new DefaultTreeNode("document", new ModelNode("Technical Factors", project.getId(), "techfactors"), estimationNode);
-				TreeNode envFactorsNode = new DefaultTreeNode("document", new ModelNode("Environmental Factors", project.getId(), "envfactors"), estimationNode);
-
-				// Project Notes
-				TreeNode notesRoot = new DefaultTreeNode(new ModelNode("Notes", project.getId(), "notes"), projectNode);
+	
 			}
 		}
 		catch (Exception e) {

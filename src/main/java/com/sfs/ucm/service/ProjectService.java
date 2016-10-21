@@ -1,9 +1,7 @@
 package com.sfs.ucm.service;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,10 +16,8 @@ import com.sfs.ucm.data.ModelNode;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.Actor;
 import com.sfs.ucm.model.AuthUser;
-import com.sfs.ucm.model.ProductRelease;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.ProjectMember;
-import com.sfs.ucm.model.ViewSet;
 import com.sfs.ucm.util.Service;
 
 /**
@@ -81,69 +77,7 @@ public class ProjectService {
 		return userIsMember;
 	}
 
-	/**
-	 * Update the project member state
-	 * 
-	 * @param projectId
-	 * @param node
-	 * @param state
-	 */
-	public void updateProjectMemberState(final Long projectId, final AuthUser authUser, final String node, final boolean state) throws UCMException {
-
-		logger.debug("updateProjectMemberState {} {}", node, state);
-		try {
-			ProjectMember projectMember = findProjectMember(projectId, authUser);
-
-			if (projectMember != null) {
-				if ("Test Plan".equals(node)) {
-					projectMember.setTestPlanCollapsed(state);
-				}
-				else if ("Use Cases".equals(node)) {
-					projectMember.setUseCasesCollapsed(state);
-				}
-				else if ("Requirement Specifications".equals(node)) {
-					projectMember.setRequirementsCollapsed(state);
-				}
-				else if ("Project Management".equals(node)) {
-					projectMember.setProjectManagementCollapsed(state);
-				}
-				else if ("Project Estimation".equals(node)) {
-					projectMember.setProjectEstimationCollapsed(state);
-				}
-				else if ("Test Sets".equals(node)) {
-					projectMember.setTestSetsCollapsed(state);
-				}
-
-				em.persist(projectMember);
-			}
-		}
-		catch (Exception e) {
-			logger.error("Error occurred persisting projectMember {}", e.getMessage());
-			throw new UCMException(e.getMessage());
-		}
-	}
-
-	/**
-	 * Update project open/close state
-	 * 
-	 * @param projectId
-	 * @param authUser
-	 * @param state
-	 */
-	public void updateProjectState(final Long projectId, final AuthUser authUser, final boolean state) {
-
-		try {
-			ProjectMember projectMember = findProjectMember(projectId, authUser);
-			if (projectMember != null) {
-				projectMember.setProjectOpen(state);
-				em.persist(projectMember);
-			}
-		}
-		catch (UCMException e) {
-			logger.error("Error occurred persisting projectMember {}", e.getMessage());
-		}
-
-	}
+	
 
 	/**
 	 * Find the System actor for project
@@ -244,7 +178,6 @@ public class ProjectService {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Project> c = cb.createQuery(Project.class);
 			Root<Project> obj = c.from(Project.class);
-			obj.fetch("productReleases");
 			c.select(obj).where(cb.equal(obj.get("id"), projectId));
 			List<Project> list = em.createQuery(c).getResultList();
 
@@ -260,46 +193,6 @@ public class ProjectService {
 		return project;
 	}
 
-	/**
-	 * Find list of project product release versions that are included in authUser active viewset product release
-	 * 
-	 * @param authUser
-	 * @apram project
-	 * @return versions if no viewset versions found, versions is populated with project product release versions
-	 * @throws UCMException
-	 */
-	public Set<String> findActiveProductReleaseVersions(final AuthUser authUser, final Project project) throws UCMException {
-
-		Set<String> versions = new HashSet<String>();
-
-		// obtain active viewset product release of authUser
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ViewSet> c = cb.createQuery(ViewSet.class);
-		Root<ViewSet> obj = c.from(ViewSet.class);
-		c.select(obj).where(cb.equal(obj.get("authUser"), authUser), cb.isTrue(obj.<Boolean> get("active"))).orderBy(cb.asc(obj.get("id")));
-		List<ViewSet> viewSets = em.createQuery(c).getResultList();
-		Iterator<ViewSet> iter = viewSets.iterator();
-		if (iter.hasNext()) {
-			ViewSet viewSet = iter.next();
-			String version = viewSet.getProductRelease().getVersion();
-
-			// construct set of release versions in project that evaluate lexicographically less than or equal to the viewset release version
-			for (ProductRelease productRelease : project.getProductReleases()) {
-				if (productRelease.getVersion().compareTo(version) <= 0) {
-					versions.add(productRelease.getVersion());
-				}
-			}
-		}
-		else {
-			for (ProductRelease productRelease : project.getProductReleases()) {
-				versions.add(productRelease.getVersion());
-			}
-		}
-
-		// return the set of versions
-		logger.debug("version set: {}", versions);
-
-		return versions;
-	}
+	
 
 }

@@ -22,9 +22,8 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,8 +36,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -56,7 +53,7 @@ import com.sfs.ucm.util.ModelUtils;
  */
 @Entity
 @Audited
-@Table(name="stakeholder")
+@Table(name = "stakeholder")
 public class Stakeholder extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -91,7 +88,7 @@ public class Stakeholder extends EntityBase implements Serializable {
 	@Column(name = "deliverables", length = 255, nullable = true)
 	private String deliverables;
 
-	@OneToOne(optional=true, cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, fetch=FetchType.LAZY)
+	@OneToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, fetch = FetchType.LAZY)
 	@JoinColumn(name = "survivaltest_id", nullable = true)
 	private SurvivalTest survivalTest;
 
@@ -126,28 +123,6 @@ public class Stakeholder extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
 	 * @return the id
 	 */
 	public Long getId() {
@@ -155,7 +130,8 @@ public class Stakeholder extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
@@ -296,7 +272,7 @@ public class Stakeholder extends EntityBase implements Serializable {
 		stakeholderRequest.setStakeholder(this);
 		this.stakeholderRequests.add(stakeholderRequest);
 	}
-	
+
 	/**
 	 * @param the
 	 *            stakeholderRequest to remove
@@ -331,7 +307,9 @@ public class Stakeholder extends EntityBase implements Serializable {
 		return builder.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -342,7 +320,9 @@ public class Stakeholder extends EntityBase implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -358,9 +338,8 @@ public class Stakeholder extends EntityBase implements Serializable {
 			if (other.role != null)
 				return false;
 		}
-		else
-			if (!role.equals(other.role))
-				return false;
+		else if (!role.equals(other.role))
+			return false;
 		return true;
 	}
 

@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,14 +34,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.envers.Audited;
 
-import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.data.TestResultType;
 
 /**
@@ -53,7 +49,7 @@ import com.sfs.ucm.data.TestResultType;
  */
 @Entity
 @Audited
-@Table(name="testcasestep")
+@Table(name = "testcasestep")
 public class TestCaseStep extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -72,13 +68,13 @@ public class TestCaseStep extends EntityBase implements Serializable {
 	private Actor actor;
 
 	@Lob
-	@Column(name = "action_description", columnDefinition = "TEXT")
+	@Column(name = "action_description", columnDefinition = "CLOB")
 	private String actionDescription;
 
-	@Column(name = "expected_results", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "expected_results", columnDefinition = "CLOB", nullable = true)
 	private String expectedResults;
 
-	@Column(name = "notes", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "notes", columnDefinition = "CLOB", nullable = true)
 	private String notes;
 
 	@Enumerated(EnumType.STRING)
@@ -99,64 +95,36 @@ public class TestCaseStep extends EntityBase implements Serializable {
 
 	/**
 	 * Constructor
+	 * 
 	 * @param stepNumber
 	 * @param actorName
 	 * @param actionDescription
 	 */
 	public TestCaseStep(short stepNumber, Actor actor, String actionDescription) {
-		super();		
+		super();
 		init();
 		this.stepNumber = stepNumber;
 		this.actor = actor;
 		this.actionDescription = actionDescription;
 	}
-	
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param stepNumber
 	 * @param flowstep
 	 */
 	public TestCaseStep(short stepNumber, FlowStep flowStep) {
-		super();		
+		super();
 		init();
 		this.stepNumber = stepNumber;
 		this.actor = flowStep.getActor();
 		this.actionDescription = flowStep.getActionDescription();
-		
-		// embed business rules into action description
-		for (FlowStepRule flowStepRule : flowStep.getFlowStepRules()) {
-			this.actionDescription += "<br/>";
-			this.actionDescription += "<br/>";
-			this.actionDescription += "<b>Business Rule: " + flowStepRule.getArtifact() + "</b><br/>";
-			this.actionDescription += flowStepRule.getRule();
-		}
+
 	}
-	
+
 	private void init() {
 		this.testResultType = TestResultType.Unknown;
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**

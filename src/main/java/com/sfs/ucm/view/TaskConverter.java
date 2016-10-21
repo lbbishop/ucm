@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import com.sfs.ucm.model.Task;
+import com.sfs.ucm.model.Issue;
 
 /**
  * Task Converter
@@ -50,10 +50,10 @@ public class TaskConverter implements Converter, Serializable {
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
-		Task obj = null;
+		Issue obj = null;
 		if (!value.trim().equals("")) {
 			Long id = Long.valueOf(value);
-			obj = em.find(Task.class, id);
+			obj = em.find(Issue.class, id);
 		}
 		return obj;
 	}
@@ -62,7 +62,7 @@ public class TaskConverter implements Converter, Serializable {
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
 		String sval = "";
 		if (value != null && !value.equals("")) {
-			Task obj = (Task) value;
+			Issue obj = (Issue) value;
 			if (obj != null && obj.getId() != null) {
 				sval = obj.getId().toString();
 			}

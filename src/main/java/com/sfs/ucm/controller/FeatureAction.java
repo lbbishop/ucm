@@ -328,12 +328,11 @@ public class FeatureAction extends ActionBase implements Serializable {
 	 * load list
 	 */
 	private void loadList() throws UCMException {
-		Set<String> versions = this.projectService.findActiveProductReleaseVersions(this.authUser, this.project);
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Feature> c = cb.createQuery(Feature.class);
 		Root<Feature> obj = c.from(Feature.class);
-		c.select(obj).where(cb.equal(obj.get("project"), this.project), obj.get("productRelease").get("version").in(versions)).orderBy(cb.asc(obj.get("id")));
+		c.select(obj).where(cb.equal(obj.get("project"), this.project)).orderBy(cb.asc(obj.get("id")));
 		this.features = em.createQuery(c).getResultList();
 
 	}

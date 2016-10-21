@@ -22,9 +22,8 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,15 +33,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.envers.Audited;
-
-import com.sfs.ucm.data.Literal;
 
 /**
  * UseCase SubFlow
@@ -52,7 +47,7 @@ import com.sfs.ucm.data.Literal;
  */
 @Entity
 @Audited
-@Table(name="subflow")
+@Table(name = "subflow")
 public class Subflow extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -97,28 +92,6 @@ public class Subflow extends EntityBase implements Serializable {
 	 */
 	private void init() {
 		this.subflowSteps = new HashSet<SubflowStep>();
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**

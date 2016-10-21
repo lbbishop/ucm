@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,8 +34,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -76,7 +73,7 @@ public class RequirementTest extends EntityBase implements Serializable {
 	private String notes;
 
 	@OneToOne
-	@JoinColumn(name = "requirement_id", nullable=true)
+	@JoinColumn(name = "requirement_id", nullable = true)
 	private Requirement requirement;
 
 	@ManyToOne
@@ -100,7 +97,7 @@ public class RequirementTest extends EntityBase implements Serializable {
 		this.requirement = requirement;
 
 	}
-	
+
 	/**
 	 * Identifier constructor
 	 */
@@ -118,28 +115,6 @@ public class RequirementTest extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
 	 * @return the id
 	 */
 	public Long getId() {
@@ -153,7 +128,7 @@ public class RequirementTest extends EntityBase implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */

@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,15 +29,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.envers.Audited;
 
 import com.sfs.ucm.data.Constants;
-import com.sfs.ucm.data.Literal;
 
 /**
  * Project estimation environmental factors
@@ -48,7 +44,7 @@ import com.sfs.ucm.data.Literal;
  */
 @Entity
 @Audited
-@Table(name="envfactors")
+@Table(name = "envfactors")
 public class EnvironmentalFactors extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -118,28 +114,6 @@ public class EnvironmentalFactors extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
 	 * @return the id
 	 */
 	public Long getId() {
@@ -147,7 +121,8 @@ public class EnvironmentalFactors extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;

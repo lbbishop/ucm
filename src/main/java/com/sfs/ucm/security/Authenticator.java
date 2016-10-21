@@ -114,7 +114,7 @@ public class Authenticator implements Serializable {
 
 		if (authUser == null) {
 
-			authUser = new AuthUser(username, username, username);
+			authUser = new AuthUser(username, username);
 			this.authUserService.store(authUser);
 
 		}

@@ -86,26 +86,8 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.addRule(Join.path("/user/viewset").to("/user/viewset.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("viewSetAction.load")))).after(PhaseId.RESTORE_VIEW))
 
-				.addRule(Join.path("/reports/activity").to("/reports/activity.jsf"))
-
-				.addRule(Join.path("/reports/backlog").to("/reports/backlog.jsf"))
-
-				.addRule(Join.path("/reports/roadmap").to("/reports/roadmap.jsf"))
-
 				.addRule(Join.path("/reports/testcoverage").to("/reports/testcoverage.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("testCoverageAction.load")))).after(PhaseId.RESTORE_VIEW))
-
-				.addRule(Join.path("/reports/changes").to("/reports/changes.jsf"))
-
-				.addRule(Join.path("/reports/testcaseresults").to("/reports/testcaseresults.jsf"))
-
-				.addRule(Join.path("/reports/issues").to("/reports/issues.jsf"))
-
-				.addRule(Join.path("/reports/traceability").to("/reports/traceability.jsf"))
-
-				.addRule(Join.path("/reports/inprogress").to("/reports/inprogress.jsf"))
-
-				.addRule(Join.path("/reports/estimator").to("/reports/estimator.jsf"))
 
 				.addRule(Join.path("/projects").to("/projects.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("projectAction.load")))).after(PhaseId.RESTORE_VIEW))

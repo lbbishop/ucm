@@ -23,7 +23,6 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
@@ -33,9 +32,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -71,10 +67,6 @@ public class AuthUser extends EntityBase implements Serializable {
 	@Pattern(regexp = "^\\w*$", message = "not a valid username")
 	private String username;
 
-	@NotNull(message = "password is required")
-	@Column(name = "password", length = 255, nullable = false)
-	private String password;
-
 	@NotNull(message = "name is required")
 	@Column(name = "name", length = 40, nullable = false)
 	@Size(max = 40)
@@ -92,16 +84,13 @@ public class AuthUser extends EntityBase implements Serializable {
 	private Collection<AuthRole> authRoles;
 
 	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL })
-	private Collection<ViewSet> viewSets;
-
-	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL })
 	private Collection<Preference> preferences;
 
 	@Transient
 	private boolean loggedIn;
-
+	
 	@Transient
-	private String theme;
+	private String selectedProject;
 
 	/**
 	 * Default constructor
@@ -136,27 +125,12 @@ public class AuthUser extends EntityBase implements Serializable {
 	 * 
 	 * @param username
 	 * @param password
-	 * @param userRoleType
-	 */
-	public AuthUser(String username, String password) {
-		super();
-		init();
-		this.username = username;
-		this.password = password;
-	}
-
-	/**
-	 * constructor
-	 * 
-	 * @param username
-	 * @param password
 	 * @param name
 	 */
-	public AuthUser(String username, String password, String name) {
+	public AuthUser(String username, String name) {
 		super();
 		init();
 		this.username = username;
-		this.password = password;
 		this.name = name;
 	}
 
@@ -164,48 +138,9 @@ public class AuthUser extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.viewSets = new HashSet<ViewSet>();
 		this.loggedIn = false;
 		this.authRoles = new HashSet<AuthRole>();
 		this.preferences = new HashSet<Preference>();
-		this.theme = Literal.THEME_DEFAULT.toString();
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * Post Load event handler
-	 */
-	@PostLoad
-	public void postLoad() {
-
-		// set preference properties
-		for (Preference preference : this.preferences) {
-			if (preference.getKeyword().equals(Literal.PREF_THEME.toString())) {
-				this.theme = preference.getStrval();
-				break;
-			}
-		}
 	}
 
 	/**
@@ -251,21 +186,7 @@ public class AuthUser extends EntityBase implements Serializable {
 		this.username = username;
 	}
 
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @param password
-	 *            the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
+	
 	/**
 	 * @return the name
 	 */
@@ -309,31 +230,6 @@ public class AuthUser extends EntityBase implements Serializable {
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
-	}
-
-	/**
-	 * @return the viewSets
-	 */
-	public Collection<ViewSet> getViewSets() {
-		return viewSets;
-	}
-
-	/**
-	 * @param viewSet
-	 *            add the viewSet
-	 */
-	public void addViewSet(ViewSet viewSet) {
-		viewSet.setAuthUser(this);
-		this.viewSets.add(viewSet);
-	}
-
-	/**
-	 * @param viewSet
-	 *            remove the viewSet
-	 */
-	public void removeViewSet(ViewSet viewSet) {
-		viewSet.setAuthUser(null);
-		this.viewSets.remove(viewSet);
 	}
 
 	/**
@@ -426,67 +322,6 @@ public class AuthUser extends EntityBase implements Serializable {
 	}
 
 	// ================= preference mappings ==================
-	/**
-	 * User Interface theme for user
-	 * 
-	 * @return primefaces theme
-	 */
-	public String getTheme() {
-		// String theme = Literal.THEME_DEFAULT.toString();
-		// for (Preference preference : this.preferences) {
-		// if (preference.getKeyword().equals(Literal.PREF_THEME.toString())) {
-		// this.theme = preference.getStrval();
-		// break;
-		// }
-		// }
-		return this.theme;
-	}
-
-	/**
-	 * Set tooltips display mode
-	 * 
-	 * @param tooltip
-	 *            display mode
-	 */
-	public void setTooltipDisplayed(boolean flag) {
-		for (Preference preference : this.preferences) {
-			if (preference.getKeyword().equals(Literal.PREF_DISPLAYTOOLTIPS.toString())) {
-				preference.setBlnval(flag);
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Tooltips display mode
-	 * 
-	 * @return tooltip display mode
-	 */
-	public boolean isTooltipDisplayed() {
-		boolean flag = true;
-		for (Preference preference : this.preferences) {
-			if (preference.getKeyword().equals(Literal.PREF_DISPLAYTOOLTIPS.toString())) {
-				flag = preference.getBlnval();
-				break;
-			}
-		}
-		return flag;
-	}
-
-	/**
-	 * Set theme
-	 * 
-	 * @param theme
-	 */
-	public void setTheme(String theTheme) {
-		for (Preference preference : this.preferences) {
-			if (preference.getKeyword().equals(Literal.PREF_THEME.toString())) {
-				preference.setStrval(theTheme);
-				this.theme = theTheme;
-				break;
-			}
-		}
-	}
 
 	/**
 	 * check for a preference setting
@@ -523,8 +358,6 @@ public class AuthUser extends EntityBase implements Serializable {
 		builder.append(email);
 		builder.append(", phoneNumber=");
 		builder.append(phoneNumber);
-		builder.append(", theme=");
-		builder.append(theme);
 		builder.append("]");
 		return builder.toString();
 	}

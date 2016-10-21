@@ -23,14 +23,11 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,8 +35,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -56,8 +51,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
 import com.sfs.ucm.data.Constants;
-import com.sfs.ucm.data.Literal;
-import com.sfs.ucm.data.ProjectStatusType;
 
 /**
  * Project entity
@@ -100,21 +93,9 @@ public class Project extends EntityBase implements Serializable {
 	@Column(name = "security_marking", length = 50, nullable = false)
 	private String securityMarking;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "project_status_type", nullable = true)
-	private ProjectStatusType projectStatusType;
-
 	@NotNull
 	@Column(name = "visible_to_public", nullable = false)
 	private Boolean visibleToPublic;
-
-	@Size(max = 255)
-	@Column(name = "approved_by", length = 255, nullable = true)
-	private String approvedBy;
-
-	@OneToOne
-	@JoinColumn(name = "defaultrelease_id", nullable = true)
-	private ProductRelease defaultRelease;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
@@ -162,14 +143,6 @@ public class Project extends EntityBase implements Serializable {
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<Risk> risks;
 
-	@IndexedEmbedded
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<UserStory> userStories;
-
-	@IndexedEmbedded
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<Estimate> estimates;
-
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<Stakeholder> stakeholders;
 
@@ -182,25 +155,11 @@ public class Project extends EntityBase implements Serializable {
 	private Collection<UseCase> useCases;
 
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<ProductRelease> productReleases;
-
-	@IndexedEmbedded
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<BusinessProcess> businessProcesses;
-
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<Iteration> iterations;
-
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<Resource> resources;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<Task> tasks;
-
-	@IndexedEmbedded
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<Note> notes;
+	private Collection<Issue> issues;
 
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	@JoinColumn(name = "testplan_id")
@@ -226,14 +185,12 @@ public class Project extends EntityBase implements Serializable {
 		init();
 		this.name = name;
 		this.description = description;
-		this.projectStatusType = ProjectStatusType.Proposed;
 	}
 
 	/**
 	 * class init method
 	 */
 	private void init() {
-		this.projectStatusType = ProjectStatusType.Proposed;
 		this.visibleToPublic = false;
 
 		this.projectMembers = new HashSet<ProjectMember>();
@@ -243,42 +200,16 @@ public class Project extends EntityBase implements Serializable {
 		this.features = new HashSet<Feature>();
 		this.glossaryTerms = new HashSet<GlossaryTerm>();
 		this.requirements = new HashSet<Requirement>();
-		this.productReleases = new HashSet<ProductRelease>();
 		this.risks = new HashSet<Risk>();
-		this.userStories = new HashSet<UserStory>();
-		this.estimates = new HashSet<Estimate>();
 		this.stakeholders = new HashSet<Stakeholder>();
 		this.stakeholderRequests = new HashSet<StakeholderRequest>();
 		this.useCases = new HashSet<UseCase>();
-		this.businessProcesses = new HashSet<BusinessProcess>();
-		this.iterations = new HashSet<Iteration>();
-		this.tasks = new HashSet<Task>();
+		this.issues = new HashSet<Issue>();
 		this.resources = new HashSet<Resource>();
 		this.settings = new HashSet<Setting>();
 		this.open = true;
 	}
 
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
 
 	/**
 	 * @return the id
@@ -503,30 +434,7 @@ public class Project extends EntityBase implements Serializable {
 		this.settings.remove(setting);
 	}
 
-	/**
-	 * @return the userStories
-	 */
-	public Collection<UserStory> getUserStories() {
-		return userStories;
-	}
-
-	/**
-	 * @param userStory
-	 *            the userStory to add
-	 */
-	public void addUserStory(UserStory userStory) {
-		userStory.setProject(this);
-		this.userStories.add(userStory);
-	}
-
-	/**
-	 * @param userStory
-	 *            the userStory to remove
-	 */
-	public void removeUserStory(UserStory userStory) {
-		userStory.setProject(null);
-		this.userStories.remove(userStory);
-	}
+	
 
 	/**
 	 * @return the risks
@@ -668,20 +576,7 @@ public class Project extends EntityBase implements Serializable {
 		this.description = description;
 	}
 
-	/**
-	 * @return the defaultRelease
-	 */
-	public ProductRelease getDefaultRelease() {
-		return defaultRelease;
-	}
-
-	/**
-	 * @param defaultRelease
-	 *            the defaultRelease to set
-	 */
-	public void setDefaultRelease(ProductRelease defaultRelease) {
-		this.defaultRelease = defaultRelease;
-	}
+	
 
 	/**
 	 * @return the productVision
@@ -760,59 +655,8 @@ public class Project extends EntityBase implements Serializable {
 		this.actors.remove(actor);
 	}
 
-	/**
-	 * @return the businessProcesses
-	 */
-	public Collection<BusinessProcess> getBusinessProcesses() {
-		return businessProcesses;
-	}
 
-	/**
-	 * Add business process
-	 * 
-	 * @param businessProcess
-	 */
-	public void addBusinessProcess(BusinessProcess businessProcess) {
-		businessProcess.setProject(this);
-		this.businessProcesses.add(businessProcess);
-	}
 
-	/**
-	 * Remove business process
-	 * 
-	 * @param businessProcess
-	 */
-	public void removeBusinessProcess(BusinessProcess businessProcess) {
-		businessProcess.setProject(null);
-		this.businessProcesses.remove(businessProcess);
-	}
-
-	/**
-	 * Add Iteration
-	 * 
-	 * @param iteration
-	 */
-	public void addIteration(Iteration iteration) {
-		iteration.setProject(this);
-		this.iterations.add(iteration);
-	}
-
-	/**
-	 * Remove Iteration
-	 * 
-	 * @param iteration
-	 */
-	public void removeIteration(Iteration iteration) {
-		iteration.setProject(null);
-		this.iterations.remove(iteration);
-	}
-
-	/**
-	 * @return the iterations
-	 */
-	public Collection<Iteration> getIterations() {
-		return iterations;
-	}
 
 	/**
 	 * @return the url
@@ -830,30 +674,30 @@ public class Project extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * Add task
+	 * Add issue
 	 * 
-	 * @param task
+	 * @param issue
 	 */
-	public void addTask(Task task) {
-		task.setProject(this);
-		this.tasks.add(task);
+	public void addIssue(Issue issue) {
+		issue.setProject(this);
+		this.issues.add(issue);
 	}
 
 	/**
-	 * Remove task
+	 * Remove issue
 	 * 
-	 * @param task
+	 * @param issue
 	 */
-	public void removeTask(Task task) {
-		task.setProject(null);
-		this.tasks.remove(task);
+	public void removeIssue(Issue issue) {
+		issue.setProject(null);
+		this.issues.remove(issue);
 	}
 
 	/**
-	 * @return the tasks
+	 * @return the issues
 	 */
-	public Collection<Task> getTasks() {
-		return tasks;
+	public Collection<Issue> getIssues() {
+		return issues;
 	}
 
 	/**
@@ -883,33 +727,7 @@ public class Project extends EntityBase implements Serializable {
 		this.resources.remove(resource);
 	}
 
-	/**
-	 * @return the productReleases
-	 */
-	public Collection<ProductRelease> getProductReleases() {
-		return productReleases;
-	}
-
-	/**
-	 * Add Product Release
-	 * 
-	 * @param ProductRelease
-	 */
-	public void addProductRelease(ProductRelease productRelease) {
-		productRelease.setProject(this);
-		this.productReleases.add(productRelease);
-	}
-
-	/**
-	 * Remove Product Release
-	 * 
-	 * @param ProductRelease
-	 */
-	public void removeProductRelease(ProductRelease productRelease) {
-		productRelease.setProject(null);
-		this.productReleases.remove(productRelease);
-	}
-
+	
 	/**
 	 * @return the useCases
 	 */
@@ -917,30 +735,7 @@ public class Project extends EntityBase implements Serializable {
 		return useCases;
 	}
 
-	/**
-	 * @return the estimates
-	 */
-	public Collection<Estimate> getEstimates() {
-		return estimates;
-	}
-
-	/**
-	 * @param estimate
-	 *            the estimate to add
-	 */
-	public void addEstimate(Estimate estimate) {
-		estimate.setProject(this);
-		this.estimates.add(estimate);
-	}
-
-	/**
-	 * @param estimate
-	 *            the estimate to remove
-	 */
-	public void removeEstimate(Estimate estimate) {
-		estimate.setProject(null);
-		this.estimates.remove(estimate);
-	}
+	
 
 	/**
 	 * @return the securityMarking
@@ -957,20 +752,7 @@ public class Project extends EntityBase implements Serializable {
 		this.securityMarking = securityMarking;
 	}
 
-	/**
-	 * @return the projectStatusType
-	 */
-	public ProjectStatusType getProjectStatusType() {
-		return projectStatusType;
-	}
-
-	/**
-	 * @param projectStatusType
-	 *            the projectStatusType to set
-	 */
-	public void setProjectStatusType(ProjectStatusType projectStatusType) {
-		this.projectStatusType = projectStatusType;
-	}
+	
 
 	/**
 	 * @return the visibleToPublic
@@ -987,20 +769,7 @@ public class Project extends EntityBase implements Serializable {
 		this.visibleToPublic = visibleToPublic;
 	}
 
-	/**
-	 * @return the approvedBy
-	 */
-	public String getApprovedBy() {
-		return approvedBy;
-	}
-
-	/**
-	 * @param approvedBy
-	 *            the approvedBy to set
-	 */
-	public void setApprovedBy(String approvedBy) {
-		this.approvedBy = approvedBy;
-	}
+	
 
 	/**
 	 * @return the glossary
@@ -1034,30 +803,7 @@ public class Project extends EntityBase implements Serializable {
 		this.open = open;
 	}
 
-	/**
-	 * @return the notes
-	 */
-	public Collection<Note> getNotes() {
-		return notes;
-	}
-
-	/**
-	 * @param note
-	 *            the note to add
-	 */
-	public void addNote(Note note) {
-		note.setProject(this);
-		this.notes.add(note);
-	}
-
-	/**
-	 * @param note
-	 *            the note to remove
-	 */
-	public void removeNote(Note note) {
-		note.setProject(null);
-		this.notes.remove(note);
-	}
+	
 
 	/**
 	 * @return the testPlan
@@ -1091,10 +837,6 @@ public class Project extends EntityBase implements Serializable {
 		builder.append(securityMarking);
 		builder.append(", description=");
 		builder.append(description);
-		builder.append(", projectStatusType=");
-		builder.append(projectStatusType);
-		builder.append(", approvedBy=");
-		builder.append(approvedBy);
 		builder.append(", modifiedBy=");
 		builder.append(modifiedBy);
 		builder.append(", modifiedDate=");

@@ -87,9 +87,10 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 
 	/**
 	 * Controller resource loader
+	 * 
 	 * @throws UCMException
 	 */
-	public void load() throws UCMException{
+	public void load() throws UCMException {
 		try {
 			this.project = em.find(Project.class, id);
 			this.environmentalFactors = this.project.getEnvironmentalFactors();
@@ -114,9 +115,10 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 
 	/**
 	 * apply action
+	 * 
 	 * @throws UCMException
 	 */
-	public void apply() throws UCMException{
+	public void apply() throws UCMException {
 		try {
 			if (validate()) {
 				this.environmentalFactors.setModifiedBy(authUser.getUsername());
@@ -139,7 +141,7 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 	 * @return outcome
 	 * @throws UCMException
 	 */
-	public String okay() throws UCMException{
+	public String okay() throws UCMException {
 
 		String outcome = Literal.NAV_HOME.toString();
 		try {

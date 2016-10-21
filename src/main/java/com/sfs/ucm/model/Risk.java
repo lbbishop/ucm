@@ -62,7 +62,7 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name="risk")
+@Table(name = "risk")
 public class Risk extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -89,7 +89,7 @@ public class Risk extends EntityBase implements Serializable {
 	private String mitigation;
 
 	@NotNull(message = "Level is required")
-    @Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@Column(name = "risk_level_type", nullable = false)
 	private RiskLevelType riskLevelType;
 
@@ -102,35 +102,13 @@ public class Risk extends EntityBase implements Serializable {
 	public Risk() {
 		super();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
 	public Risk(int identifier) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -141,7 +119,8 @@ public class Risk extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
@@ -208,8 +187,6 @@ public class Risk extends EntityBase implements Serializable {
 		this.mitigation = mitigation;
 	}
 
-
-
 	/**
 	 * @return the riskLevelType
 	 */
@@ -218,7 +195,8 @@ public class Risk extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param riskLevelType the riskLevelType to set
+	 * @param riskLevelType
+	 *            the riskLevelType to set
 	 */
 	public void setRiskLevelType(RiskLevelType riskLevelType) {
 		this.riskLevelType = riskLevelType;
@@ -245,7 +223,7 @@ public class Risk extends EntityBase implements Serializable {
 	public String getArtifact() {
 		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_RISK.toString(), this.identifier);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -272,7 +250,9 @@ public class Risk extends EntityBase implements Serializable {
 		return builder.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -283,7 +263,9 @@ public class Risk extends EntityBase implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -299,9 +281,8 @@ public class Risk extends EntityBase implements Serializable {
 			if (other.name != null)
 				return false;
 		}
-		else
-			if (!name.equals(other.name))
-				return false;
+		else if (!name.equals(other.name))
+			return false;
 		return true;
 	}
 

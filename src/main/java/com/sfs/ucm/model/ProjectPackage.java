@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,8 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -48,7 +45,7 @@ import com.sfs.ucm.data.Literal;
  */
 @Entity
 @Audited
-@Table(name="projectpackage")
+@Table(name = "projectpackage")
 public class ProjectPackage extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -76,7 +73,7 @@ public class ProjectPackage extends EntityBase implements Serializable {
 	public ProjectPackage() {
 		super();
 	}
-	
+
 	/**
 	 * constructor
 	 */
@@ -84,7 +81,6 @@ public class ProjectPackage extends EntityBase implements Serializable {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 	}
-
 
 	/**
 	 * @param name
@@ -94,28 +90,6 @@ public class ProjectPackage extends EntityBase implements Serializable {
 		super();
 		this.name = name;
 		this.description = description;
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -236,9 +210,8 @@ public class ProjectPackage extends EntityBase implements Serializable {
 			if (other.name != null)
 				return false;
 		}
-		else
-			if (!name.equals(other.name))
-				return false;
+		else if (!name.equals(other.name))
+			return false;
 		return true;
 	}
 

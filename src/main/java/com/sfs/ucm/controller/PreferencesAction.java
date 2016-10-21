@@ -101,51 +101,7 @@ public class PreferencesAction extends ActionBase implements Serializable {
 		return outcome;
 	}
 
-	/**
-	 * saveTheme action
-	 * 
-	 * @throws UCMException
-	 */
-	public void saveTheme() throws UCMException {
-		try {
-			if (validate()) {
-				this.authUser.setModifiedBy(this.user.getUsername());
-				em.persist(this.user);
-				logger.info("Updated user interface theme for {}", this.user);
-				this.facesContextMessage.infoMessage("Updated user interface theme for {0}", this.user.getName());
-
-				// set theme for session authUser
-				this.authUser.setTheme(this.user.getTheme());
-				authUserEventSrc.fire(this.authUser);
-			}
-		}
-		catch (Exception e) {
-			throw new UCMException(e);
-		}
-	}
-
-	/**
-	 * saveTooltipsDisplayMode action
-	 * 
-	 * @throws UCMException
-	 */
-	public void saveTooltipsDisplayMode() throws UCMException {
-		try {
-			if (validate()) {
-				this.authUser.setModifiedBy(this.authUser.getUsername());
-				em.persist(this.user);
-				logger.info("Updated tooltips display mode for {}", this.user);
-				this.facesContextMessage.infoMessage("Updated tooltips display mode for {0}", this.user.getName());
-
-				// set theme for session authUser
-				this.authUser.setTooltipDisplayed(this.user.isTooltipDisplayed());
-				authUserEventSrc.fire(this.authUser);
-			}
-		}
-		catch (Exception e) {
-			throw new UCMException(e);
-		}
-	}
+	
 
 	/**
 	 * Validate

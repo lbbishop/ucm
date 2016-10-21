@@ -23,7 +23,6 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
@@ -36,8 +35,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -154,28 +151,6 @@ public class TestSet extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
 	 * @return the id
 	 */
 	public Long getId() {
@@ -247,7 +222,7 @@ public class TestSet extends EntityBase implements Serializable {
 		testCase.setTestSet(this);
 		this.testCases.add(testCase);
 	}
-	
+
 	/**
 	 * Remove test case
 	 * 
@@ -274,7 +249,7 @@ public class TestSet extends EntityBase implements Serializable {
 	public String getIdentifierNameAbbrv() {
 		return getArtifact() + ": " + StringUtils.abbreviate(this.name, 25);
 	}
-	
+
 	/**
 	 * Return identifier name string of the form UC1: name
 	 * 
@@ -283,7 +258,6 @@ public class TestSet extends EntityBase implements Serializable {
 	public String getIdentifierName() {
 		return getArtifact() + ": " + this.name;
 	}
-
 
 	/**
 	 * @return the requirementRuleTests
@@ -331,7 +305,7 @@ public class TestSet extends EntityBase implements Serializable {
 		useCaseRuleTest.setTestSet(this);
 		this.useCaseRuleTests.add(useCaseRuleTest);
 	}
-	
+
 	/**
 	 * Remove use case rule test
 	 * 

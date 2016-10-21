@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,8 +30,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
@@ -47,7 +44,7 @@ import com.sfs.ucm.data.Literal;
  */
 @Entity
 @Audited
-@Table(name="productvision")
+@Table(name = "productvision")
 public class ProductVision extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -75,28 +72,6 @@ public class ProductVision extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
 	 * @return the id
 	 */
 	public Long getId() {
@@ -104,7 +79,8 @@ public class ProductVision extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;

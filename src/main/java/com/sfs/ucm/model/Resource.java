@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +33,6 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -57,7 +54,7 @@ import com.sfs.ucm.util.ModelUtils;
  */
 @Entity
 @Audited
-@Table(name="resource")
+@Table(name = "resource")
 public class Resource extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -95,7 +92,7 @@ public class Resource extends EntityBase implements Serializable {
 
 	@ManyToOne
 	private Project project;
-	
+
 	@Transient
 	private boolean externalResource;
 
@@ -121,37 +118,15 @@ public class Resource extends EntityBase implements Serializable {
 	 * init method
 	 */
 	private void init() {
-		
+
 	}
 
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-	
 	/**
 	 * Post load callback
 	 */
 	@PostLoad
 	public void postLoad() {
-		
+
 		this.externalResource = false;
 		if (this.contents == null || this.contents.length == 0) {
 			this.externalResource = true;
@@ -179,7 +154,7 @@ public class Resource extends EntityBase implements Serializable {
 	public String getPath() {
 		return path;
 	}
-	
+
 	/**
 	 * @return the path
 	 */

@@ -23,7 +23,6 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 import javax.persistence.CascadeType;
@@ -38,9 +37,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -71,7 +67,7 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name="feature")
+@Table(name = "feature")
 public class Feature extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -116,11 +112,6 @@ public class Feature extends EntityBase implements Serializable {
 	@ManyToOne
 	private Project project;
 
-	@NotNull(message = "Product Release is required")
-	@OneToOne
-	@JoinColumn(name = "productrelease_id", nullable = false)
-	private ProductRelease productRelease;
-
 	@OneToMany(mappedBy = "feature", cascade = { CascadeType.PERSIST })
 	private Collection<Requirement> requirements;
 
@@ -150,28 +141,6 @@ public class Feature extends EntityBase implements Serializable {
 	private void init() {
 		this.requirements = new HashSet<Requirement>();
 		this.useCases = new HashSet<UseCase>();
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -318,8 +287,6 @@ public class Feature extends EntityBase implements Serializable {
 		this.stakeholderRequest = stakeholderRequest;
 	}
 
-	
-
 	/**
 	 * add requirement
 	 * 
@@ -329,7 +296,7 @@ public class Feature extends EntityBase implements Serializable {
 		requirement.setFeature(this);
 		this.requirements.add(requirement);
 	}
-	
+
 	/**
 	 * remove requirement
 	 * 
@@ -338,21 +305,6 @@ public class Feature extends EntityBase implements Serializable {
 	public void removeRequirement(Requirement requirement) {
 		requirement.setFeature(null);
 		this.requirements.remove(requirement);
-	}
-
-	/**
-	 * @return the productRelease
-	 */
-	public ProductRelease getProductRelease() {
-		return productRelease;
-	}
-
-	/**
-	 * @param productRelease
-	 *            the productRelease to set
-	 */
-	public void setProductRelease(ProductRelease productRelease) {
-		this.productRelease = productRelease;
 	}
 
 	/**
@@ -365,7 +317,7 @@ public class Feature extends EntityBase implements Serializable {
 		useCase.setFeature(this);
 		this.useCases.add(useCase);
 	}
-	
+
 	/**
 	 * Remove UseCase
 	 * 
@@ -376,8 +328,6 @@ public class Feature extends EntityBase implements Serializable {
 		useCase.setFeature(null);
 		this.useCases.remove(useCase);
 	}
-
-	
 
 	/**
 	 * @return the requirements
@@ -424,8 +374,6 @@ public class Feature extends EntityBase implements Serializable {
 		builder.append(priorityType);
 		builder.append(", project=");
 		builder.append(project);
-		builder.append(", productRelease=");
-		builder.append(productRelease);
 		builder.append("]");
 		return builder.toString();
 	}
@@ -461,9 +409,8 @@ public class Feature extends EntityBase implements Serializable {
 			if (other.name != null)
 				return false;
 		}
-		else
-			if (!name.equals(other.name))
-				return false;
+		else if (!name.equals(other.name))
+			return false;
 		return true;
 	}
 

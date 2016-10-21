@@ -22,7 +22,7 @@
 package com.sfs.ucm.data;
 
 /**
- * Actor Complexity Types
+ * Project Status Types
  * 
  * @author lbbishop
  * 

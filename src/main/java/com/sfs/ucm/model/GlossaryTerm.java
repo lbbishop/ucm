@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,8 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -58,7 +55,7 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name="glossaryterm")
+@Table(name = "glossaryterm")
 public class GlossaryTerm extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -88,7 +85,7 @@ public class GlossaryTerm extends EntityBase implements Serializable {
 	public GlossaryTerm() {
 		super();
 	}
-	
+
 	/**
 	 * Identifier constructor
 	 */
@@ -105,28 +102,6 @@ public class GlossaryTerm extends EntityBase implements Serializable {
 		super();
 		this.term = term;
 		this.definition = definition;
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -167,7 +142,7 @@ public class GlossaryTerm extends EntityBase implements Serializable {
 	public String getDefinition() {
 		return definition;
 	}
-	
+
 	/**
 	 * @return the definition abbreviated
 	 */
@@ -197,7 +172,7 @@ public class GlossaryTerm extends EntityBase implements Serializable {
 	public void setProject(Project project) {
 		this.project = project;
 	}
-	
+
 	/**
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
@@ -227,7 +202,9 @@ public class GlossaryTerm extends EntityBase implements Serializable {
 		return builder.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -238,7 +215,9 @@ public class GlossaryTerm extends EntityBase implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -254,9 +233,8 @@ public class GlossaryTerm extends EntityBase implements Serializable {
 			if (other.term != null)
 				return false;
 		}
-		else
-			if (!term.equals(other.term))
-				return false;
+		else if (!term.equals(other.term))
+			return false;
 		return true;
 	}
 

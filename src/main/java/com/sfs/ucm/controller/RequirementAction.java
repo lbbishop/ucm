@@ -67,7 +67,7 @@ import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
 /**
- * Requirement Actions
+ * Supplementary Specification Requirement Actions
  * 
  * @author lbbishop
  */
@@ -202,9 +202,6 @@ public class RequirementAction extends ActionBase implements Serializable {
 	public void addBusinessRule() {
 		Long cnt = getRequirementRuleCount();
 		this.requirementRule = new RequirementRule(cnt.intValue() + 1);
-
-		// product release is inherited
-		this.requirementRule.setProductRelease(this.requirement.getProductRelease());
 	}
 
 	/**
@@ -414,12 +411,10 @@ public class RequirementAction extends ActionBase implements Serializable {
 	 */
 	private void loadList() throws UCMException {
 
-		Set<String> versions = this.projectService.findActiveProductReleaseVersions(this.authUser, this.project);
-
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Requirement> c = cb.createQuery(Requirement.class);
 		Root<Requirement> obj = c.from(Requirement.class);
-		c.select(obj).where(cb.equal(obj.get("project"), this.project), obj.get("productRelease").get("version").in(versions)).orderBy(cb.asc(obj.get("id")));
+		c.select(obj).where(cb.equal(obj.get("project"), this.project)).orderBy(cb.asc(obj.get("id")));
 		this.requirements = em.createQuery(c).getResultList();
 
 	}

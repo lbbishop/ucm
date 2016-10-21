@@ -22,20 +22,15 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.sfs.ucm.data.Literal;
 
 /**
  * Help
@@ -44,7 +39,7 @@ import com.sfs.ucm.data.Literal;
  * 
  */
 @Entity
-@Table(name="help")
+@Table(name = "help")
 public class Help extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -77,7 +72,8 @@ public class Help extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
@@ -91,28 +87,6 @@ public class Help extends EntityBase implements Serializable {
 		super();
 		this.keyval = keyval;
 		this.value = value;
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**

@@ -110,13 +110,11 @@ public class ProjectFeatureProducer implements Serializable {
 	 */
 	private void load(final Project project) {
 
-		Set<String> versions = this.projectService.findActiveProductReleaseVersions(this.authUser, project);
-
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Feature> c = cb.createQuery(Feature.class);
 		Root<Feature> obj = c.from(Feature.class);
 		c.select(obj);
-		c.where(cb.equal(obj.get("project"), project), obj.get("productRelease").get("version").in(versions));
+		c.where(cb.equal(obj.get("project"), project));
 		c.orderBy(cb.asc(obj.get("id")));
 		this.features = em.createQuery(c).getResultList();
 	}

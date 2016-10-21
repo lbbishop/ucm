@@ -28,8 +28,6 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +53,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
 import com.sfs.ucm.data.Literal;
-import com.sfs.ucm.data.StatusType;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
@@ -67,7 +64,7 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name="usecase")
+@Table(name = "usecase")
 public class UseCase extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -98,19 +95,9 @@ public class UseCase extends EntityBase implements Serializable {
 	@Column(name = "objective", length = 255, nullable = false)
 	private String objective;
 
-	@NotNull(message = "Status is required")
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status_type", nullable = false)
-	private StatusType statusType;
-
 	@NotNull(message = "Complexity is required")
 	@Column(name = "complexity", nullable = false)
 	private Integer complexity;
-
-	@NotNull(message = "Product Release is required")
-	@OneToOne
-	@JoinColumn(name = "productrelease_id", nullable = false)
-	private ProductRelease productRelease;
 
 	@OneToOne
 	@JoinColumn(name = "projectpackage_id", nullable = true)
@@ -148,23 +135,20 @@ public class UseCase extends EntityBase implements Serializable {
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	@JoinColumn(name = "basicflow_id", nullable = true)
 	private Flow basicFlow;
-	
+
 	@OneToOne
 	@JoinColumn(name = "extendedflow_id", nullable = true)
 	private Flow extendedFlow;
 
 	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<Flow> alternativeFlows;
-	
+
 	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<UseCaseAttachment> attachments;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "useCase", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<UseCaseRule> useCaseRules;
-
-	@ManyToOne
-	private Iteration iteration;
 
 	@Transient
 	private String complexityLabel;
@@ -190,13 +174,11 @@ public class UseCase extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.statusType = StatusType.New;
 		this.basicFlow = new Flow(true);
 		this.alternativeFlows = new HashSet<Flow>();
 		this.useCaseRules = new HashSet<UseCaseRule>();
 
 	}
-
 
 	/**
 	 * Post load
@@ -227,7 +209,7 @@ public class UseCase extends EntityBase implements Serializable {
 	public String getObjective() {
 		return objective;
 	}
-	
+
 	/**
 	 * @return the objective
 	 */
@@ -241,21 +223,6 @@ public class UseCase extends EntityBase implements Serializable {
 	 */
 	public void setObjective(String objective) {
 		this.objective = objective;
-	}
-
-	/**
-	 * @return the statusType
-	 */
-	public StatusType getStatusType() {
-		return statusType;
-	}
-
-	/**
-	 * @param statusType
-	 *            the statusType to set
-	 */
-	public void setStatusType(StatusType statusType) {
-		this.statusType = statusType;
 	}
 
 	/**
@@ -496,7 +463,7 @@ public class UseCase extends EntityBase implements Serializable {
 		flow.setUseCase(this);
 		this.alternativeFlows.add(flow);
 	}
-	
+
 	/**
 	 * Remove flow
 	 * 
@@ -506,8 +473,6 @@ public class UseCase extends EntityBase implements Serializable {
 		flow.setUseCase(null);
 		this.alternativeFlows.remove(flow);
 	}
-	
-	
 
 	/**
 	 * @return the attachments
@@ -518,22 +483,25 @@ public class UseCase extends EntityBase implements Serializable {
 
 	/**
 	 * Add attachment
-	 * @param attachment the attachment to add
+	 * 
+	 * @param attachment
+	 *            the attachment to add
 	 */
 	public void addAttachment(UseCaseAttachment attachment) {
 		attachment.setUseCase(this);
 		this.attachments.add(attachment);
 	}
-	
+
 	/**
 	 * Remove attachment
-	 * @param attachment the attachment to remove
+	 * 
+	 * @param attachment
+	 *            the attachment to remove
 	 */
 	public void removeAttachment(UseCaseAttachment attachment) {
 		attachment.setUseCase(null);
 		this.attachments.remove(attachment);
 	}
-
 
 	/**
 	 * @return the useCaseRules
@@ -552,7 +520,7 @@ public class UseCase extends EntityBase implements Serializable {
 		useCaseRule.setUseCase(this);
 		this.useCaseRules.add(useCaseRule);
 	}
-	
+
 	/**
 	 * Remove business rule
 	 * 
@@ -563,9 +531,10 @@ public class UseCase extends EntityBase implements Serializable {
 		useCaseRule.setUseCase(null);
 		this.useCaseRules.remove(useCaseRule);
 	}
-	
+
 	/**
 	 * Get number of flows (basic flow + alternative flows)
+	 * 
 	 * @return total number of flows
 	 */
 	public int getNumFlows() {
@@ -598,36 +567,6 @@ public class UseCase extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the iteration
-	 */
-	public Iteration getIteration() {
-		return iteration;
-	}
-
-	/**
-	 * @param iteration
-	 *            the iteration to set
-	 */
-	public void setIteration(Iteration iteration) {
-		this.iteration = iteration;
-	}
-
-	/**
-	 * @return the productRelease
-	 */
-	public ProductRelease getProductRelease() {
-		return productRelease;
-	}
-
-	/**
-	 * @param productRelease
-	 *            the productRelease to set
-	 */
-	public void setProductRelease(ProductRelease productRelease) {
-		this.productRelease = productRelease;
-	}
-
-	/**
 	 * @return the extendedFlow
 	 */
 	public Flow getExtendedFlow() {
@@ -635,7 +574,8 @@ public class UseCase extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param extendedFlow the extendedFlow to set
+	 * @param extendedFlow
+	 *            the extendedFlow to set
 	 */
 	public void setExtendedFlow(Flow extendedFlow) {
 		this.extendedFlow = extendedFlow;
@@ -663,8 +603,6 @@ public class UseCase extends EntityBase implements Serializable {
 		builder.append(postconditions);
 		builder.append(", triggerEvent=");
 		builder.append(triggerEvent);
-		builder.append(", statusType=");
-		builder.append(statusType);
 		builder.append(", comments=");
 		builder.append(comments);
 		builder.append(", percentComplete=");

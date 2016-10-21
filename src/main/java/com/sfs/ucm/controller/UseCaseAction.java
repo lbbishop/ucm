@@ -24,7 +24,6 @@ package com.sfs.ucm.controller;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ConversationScoped;
@@ -410,12 +409,10 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	 */
 	private void loadList() throws UCMException {
 
-		Set<String> versions = this.projectService.findActiveProductReleaseVersions(this.authUser, this.project);
-
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<UseCase> c = cb.createQuery(UseCase.class);
 		Root<UseCase> obj = c.from(UseCase.class);
-		c.select(obj).where(cb.equal(obj.get("project"), this.project), obj.get("productRelease").get("version").in(versions)).orderBy(cb.asc(obj.get("name")));
+		c.select(obj).where(cb.equal(obj.get("project"), this.project)).orderBy(cb.asc(obj.get("name")));
 		this.useCases = em.createQuery(c).getResultList();
 	}
 

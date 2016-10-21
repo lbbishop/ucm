@@ -22,30 +22,20 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Collection;
-import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
-
-import com.sfs.ucm.data.Literal;
 
 /**
  * FlowStep
@@ -77,13 +67,6 @@ public class FlowStep extends EntityBase implements Serializable {
 	@Column(name = "action_description", columnDefinition = "TEXT")
 	private String actionDescription;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "resource_id", nullable = true)
-	private Resource resource;
-
-	@OneToMany(mappedBy = "flowStep", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<FlowStepRule> flowStepRules;
-
 	@ManyToOne(optional = false)
 	private Flow flow;
 
@@ -105,31 +88,12 @@ public class FlowStep extends EntityBase implements Serializable {
 		init();
 		this.stepNumber = stepNumber;
 	}
-	
+
+	/**
+	 * init method
+	 */
 	private void init() {
-		this.flowStepRules = new HashSet<FlowStepRule>();
-	}
 
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -230,21 +194,6 @@ public class FlowStep extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the resource
-	 */
-	public Resource getResource() {
-		return resource;
-	}
-
-	/**
-	 * @param resource
-	 *            the resource to set
-	 */
-	public void setResource(Resource resource) {
-		this.resource = resource;
-	}
-
-	/**
 	 * @return the stepNumber
 	 */
 	public Short getStepNumber() {
@@ -257,35 +206,6 @@ public class FlowStep extends EntityBase implements Serializable {
 	 */
 	public void setStepNumber(Short stepNumber) {
 		this.stepNumber = stepNumber;
-	}
-
-	/**
-	 * @return the flowStepRules
-	 */
-	public Collection<FlowStepRule> getFlowStepRules() {
-		return flowStepRules;
-	}
-
-	/**
-	 * Add business rule
-	 * 
-	 * @param flowStepRule
-	 *            the FlowStepRule to add
-	 */
-	public void addFlowStepRule(FlowStepRule flowStepRule) {
-		flowStepRule.setFlowStep(this);
-		this.flowStepRules.add(flowStepRule);
-	}
-
-	/**
-	 * Remove business rule
-	 * 
-	 * @param flowStepRule
-	 *            the FlowStepRule to remove
-	 */
-	public void removeFlowStepRule(FlowStepRule flowStepRule) {
-		flowStepRule.setFlowStep(null);
-		this.flowStepRules.remove(flowStepRule);
 	}
 
 	/*

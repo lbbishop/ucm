@@ -1,26 +1,28 @@
-<ui:composition 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:pu="http://primefaces.org/ultima">
 
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
-    
-    <div id="layout-topbar">
-        <a href="#" id="logo" class="ClearBoth DispBlock">
-            <h:graphicImage name="images/logo.svg" styleClass="ShowOnDesktop" library="ronin-layout" />
-            <span class="ShowOnMobile red Fs30 FontDosisSemiBold">Use Case Manager</span></a>
+	<div class="topbar clearfix">
+		<div class="topbar-left">
+			<h:outputText value="#{appManager.displayName}" style="font-size:1.7em;color:white" />
+		</div>
 
-        <!-- mobile menu open button start -->
-        <a id="mobile-menu-button" class="Animated03 CursPointer ShowOnMobile"><i class="fa fa-bars"></i> Menu</a>
-        <!-- mobile menu open button start -->
+		<div class="topbar-center" style="font-size: 1.7em; color: white; position: fixed; top: 22px; left: 300px;">
+			<ui:insert name="title">Default Title</ui:insert>
+		</div>
 
-        <span id="topbar-link-cover">
-            <a href="#" class="topbar-link Animated03"><i class="fa fa-wrench"></i></a>
-            <a href="#" class="topbar-link Animated03"><i class="fa fa-envelope"></i></a>
-            <a href="#" class="topbar-link red Animated03"><i class="fa fa-bell animated infinite swing"></i></a>
-        </span>
-        <input id="topbar-search" placeholder="Search" class="FontDosisMedium"/>
-        <div class="EmptyBox20 ShowOnDesktop"></div>
-    </div>
-    
+		<div class="topbar-right">
+			<a id="menu-button" href="#"> <i></i>
+			</a> <a id="topbar-menu-button" href="#"> <i class="material-icons">menu</i>
+			</a>
+			<ul class="topbar-items fadeInDown animated">
+			
+				<li class="search-item">
+				<h:panelGroup styleClass="md-inputfield">
+						<p:inputText />
+						<label>Search</label>
+						<i class="topbar-icon material-icons">&#xE8B6;</i>
+				</h:panelGroup></li>
+			</ul>
+		</div>
+	</div>
+
 </ui:composition>

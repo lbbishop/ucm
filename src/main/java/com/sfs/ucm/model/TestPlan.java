@@ -22,9 +22,8 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,15 +34,11 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
-
-import com.sfs.ucm.data.Literal;
 
 /**
  * TestPlan
@@ -53,7 +48,7 @@ import com.sfs.ucm.data.Literal;
  */
 @Entity
 @Audited
-@Table(name="testplan")
+@Table(name = "testplan")
 public class TestPlan extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -62,7 +57,7 @@ public class TestPlan extends EntityBase implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull(message="Description is required")
+	@NotNull(message = "Description is required")
 	@Lob
 	@Column(name = "description", columnDefinition = "TEXT", nullable = false)
 	private String description;
@@ -99,28 +94,6 @@ public class TestPlan extends EntityBase implements Serializable {
 	private void init() {
 		this.testSets = new HashSet<TestSet>();
 		this.unitTests = new HashSet<UnitTest>();
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
@@ -163,9 +136,9 @@ public class TestPlan extends EntityBase implements Serializable {
 		testSet.setTestPlan(this);
 		this.testSets.add(testSet);
 	}
-	
+
 	/**
-	 * Remove test set 
+	 * Remove test set
 	 * 
 	 * @param testSet
 	 *            the testSet to remove
@@ -199,9 +172,9 @@ public class TestPlan extends EntityBase implements Serializable {
 		unitTest.setTestPlan(this);
 		this.unitTests.add(unitTest);
 	}
-	
+
 	/**
-	 * Remove unit test 
+	 * Remove unit test
 	 * 
 	 * @param unitTest
 	 *            the unitTest to remove
@@ -219,7 +192,8 @@ public class TestPlan extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;

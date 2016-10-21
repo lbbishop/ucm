@@ -23,7 +23,6 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,15 +30,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.envers.Audited;
-
-import com.sfs.ucm.data.Literal;
 
 /**
  * SurvivalTest
@@ -49,7 +44,7 @@ import com.sfs.ucm.data.Literal;
  */
 @Entity
 @Audited
-@Table(name="survivaltest")
+@Table(name = "survivaltest")
 public class SurvivalTest extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -242,28 +237,6 @@ public class SurvivalTest extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
 	 * @return the id
 	 */
 	public Long getId() {
@@ -271,7 +244,8 @@ public class SurvivalTest extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
@@ -825,8 +799,8 @@ public class SurvivalTest extends EntityBase implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SurvivalTest [id=").append(id).append(", sizeMultiplier=").append(sizeMultiplier).append(", finalScore=").append(finalScore).append(", question1=")
-				.append(question1).append(", question2=").append(question2).append(", question3=").append(question3).append(", question4=").append(question4).append(", question5=").append(question5)
+		builder.append("SurvivalTest [id=").append(id).append(", sizeMultiplier=").append(sizeMultiplier).append(", finalScore=").append(finalScore).append(", question1=").append(question1)
+				.append(", question2=").append(question2).append(", question3=").append(question3).append(", question4=").append(question4).append(", question5=").append(question5)
 				.append(", question6=").append(question6).append(", question7=").append(question7).append(", question8=").append(question8).append(", question9=").append(question9)
 				.append(", question10=").append(question10).append(", question11=").append(question11).append(", question12=").append(question12).append(", question13=").append(question13)
 				.append(", question14=").append(question14).append(", question15=").append(question15).append(", question16=").append(question16).append(", question17=").append(question17)

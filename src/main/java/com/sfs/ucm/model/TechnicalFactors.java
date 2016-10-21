@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,15 +29,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.envers.Audited;
 
 import com.sfs.ucm.data.Constants;
-import com.sfs.ucm.data.Literal;
 
 /**
  * Project estimation technical factors
@@ -48,7 +44,7 @@ import com.sfs.ucm.data.Literal;
  */
 @Entity
 @Audited
-@Table(name="techfactors")
+@Table(name = "techfactors")
 public class TechnicalFactors extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -139,28 +135,6 @@ public class TechnicalFactors extends EntityBase implements Serializable {
 		this.tf12 = Constants.TCF_COMPLEXITY_IRRELEVANT;
 		this.tf13 = Constants.TCF_COMPLEXITY_IRRELEVANT;
 
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**

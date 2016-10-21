@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:pu="http://primefaces.org/ultima">
+
+	<h:form id="menuform">
+		<div class="layout-menu layout-menu-dark">
+			<div class="nano">
+				<div class="nano-content menu-scroll-content">
+					<div class="profile">
+						<a id="profile-options" href="#"> <span class="profile-name">#{authUser.name}</span> <i class="material-icons">&#xE313;</i>
+						</a>
+					</div>
+
+					<ul id="profile-menu" class="ultima-menu">
+						<li role="menuitem"><a href="#" class="ripplelink"> <i class="material-icons">person</i> <span>Profile</span>
+						</a></li>
+						<li role="menuitem"><a href="#{request.contextPath}/user/preferences" class="ripplelink"> <i class="material-icons">settings_application</i> <span>Settings</span>
+						</a></li>
+						<li role="menuitem"><a href="#{request.contextPath}/logout" class="ripplelink"> <i class="material-icons">power_settings_new</i> <span>Logout</span>
+						</a></li>
+					</ul>
+
+					<pu:menu widgetVar="me">
+						<p:menuitem id="um_home" value="Home" icon="home" outcome="/home" containerStyleClass="layout-menubar-active" />
+						<p:submenu id="um_proj" label="Project Management" icon="create" expanded="false">
+							<p:menuitem id="um_proj_projects" value="Projects" icon="search" outcome="/project/projects" />
+							<p:menuitem id="um_proj_members" value="Members" icon="search" outcome="/project/members" />
+							<p:menuitem id="um_proj_packages" value="Packages" icon="search" outcome="/project/packages" />
+							<p:menuitem id="um_proj_envfactors" value="Environmental Factors" icon="search" outcome="/project/envfactors" />
+							<p:menuitem id="um_proj_techfactors" value="Technical Factors" icon="search" outcome="/project/techfactors" />
+						</p:submenu>
+
+						<p:submenu id="um_req" label="Requirements" icon="create" expanded="true">
+							<p:menuitem id="um_req_productvision" value="Product Vision" icon="search" outcome="/requirement/productvision" />
+							<p:menuitem id="um_req_stakeholders" value="Stakeholders" icon="search" outcome="/requirement/stakeholders" />
+							<p:menuitem id="um_req_stakeholders" value="Stakeholder Requests" icon="search" outcome="/requirement/stakeholderrequests" />
+							<p:menuitem id="um_req_risks" value="Risks" icon="search" outcome="/requirement/risks" />
+							<p:menuitem id="um_req_constraints" value="Design Constraints" icon="search" outcome="/requirement/constraints" />
+							<p:menuitem id="um_req_glossary" value="Glossary" icon="search" outcome="/requirement/glossary" />
+							<p:menuitem id="um_req_features" value="Features" icon="search" outcome="/requirement/features" />
+							<p:menuitem id="um_req_spec" value="Supplementary Specifications" icon="search" outcome="/requirement/specifications" />
+							<p:menuitem id="um_req_actors" value="Actors" icon="search" outcome="/requirement/actors" />
+							<p:menuitem id="um_req_usecases" value="Use Cases" icon="search" outcome="/requirement/usecases" />
+						</p:submenu>
+
+						<p:submenu id="um_testplan" label="Tests" icon="create" expanded="false">
+							<p:menuitem id="um_test_plan" value="Test Plan" icon="search" outcome="/test/testplan" />
+							<p:menuitem id="um_test_unit" value="Unit Tests" icon="search" outcome="/test/unittest" />
+							<p:menuitem id="um_test_sets" value="Test Sets" icon="search" outcome="/test/testsets" />
+							<p:menuitem id="um_test_cases" value="Test Cases" icon="search" outcome="/test/testcases" />
+							<p:menuitem id="um_test_cases" value="Requirement Tests" icon="search" outcome="/test/requirementtests" />
+							<p:menuitem id="um_test_cases" value="Business Rule Tests" icon="search" outcome="/test/businessruletests" />
+						</p:submenu>
+
+						<p:menuitem id="um_issues" value="Issues" icon="search" outcome="/issue/issues" />
+
+						<p:submenu id="um_reports" label="Reports" icon="create" expanded="false">
+							<p:menuitem id="um_report_coverage" value="Test Coverage" icon="search" outcome="/report/testcoverage" />
+						</p:submenu>
+
+						<p:submenu id="um_admin" label="Admin" icon="create" expanded="false">
+							<p:menuitem id="um_admin_user" value="Manage Users" url="/admin/users" icon="contacts" />
+							<p:menuitem id="um_admin_logger" value="Application Logger" url="/admin/logger" icon="folder" />
+							<p:menuitem id="um_admin_settings" value="Settings" url="/admin/settings" icon="folder" />
+						</p:submenu>
+
+						<p:submenu id="um_help" label="Help" icon="book" expanded="false">
+							<p:menuitem id="um_help_overview" value="Overview" url="/help/overview" icon="help" />
+							<p:menuitem id="um_help_workflow" value="Workflows" url="/help/workflow" icon="help" />
+							<p:menuitem id="um_help_about" value="About Use Case Manager" url="/help/about" icon="help" />
+						</p:submenu>
+					</pu:menu>
+
+				</div>
+			</div>
+		</div>
+	</h:form>
+</ui:composition>

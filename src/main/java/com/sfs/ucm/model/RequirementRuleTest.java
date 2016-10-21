@@ -22,7 +22,6 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +33,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
@@ -62,7 +59,7 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 	protected Long id;
 
 	@OneToOne
-	@JoinColumn(name = "requirementrule_id", nullable=true)
+	@JoinColumn(name = "requirementrule_id", nullable = true)
 	private RequirementRule requirementRule;
 
 	@ManyToOne
@@ -87,7 +84,7 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 	}
-	
+
 	/**
 	 * Constructor
 	 */
@@ -95,28 +92,6 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 		this.requirementRule = requirementRule;
-	}
-	
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
 	}
 
 	/**
