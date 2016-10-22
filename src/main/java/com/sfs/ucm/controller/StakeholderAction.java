@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -63,6 +65,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("stakeholderAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class StakeholderAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -152,6 +155,7 @@ public class StakeholderAction extends ActionBase implements Serializable {
 	/**
 	 * Add action
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.stakeholder = new Stakeholder(ModelUtils.getNextIdentifier(this.stakeholders));
 	}
@@ -166,6 +170,7 @@ public class StakeholderAction extends ActionBase implements Serializable {
 	/**
 	 * save survival test
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void saveSurvivalTest() {
 		this.stakeholder.setSurvivalTest(this.survivalTest);
 	}
@@ -190,6 +195,7 @@ public class StakeholderAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.project.removeStakeholder(this.stakeholder);
@@ -216,6 +222,7 @@ public class StakeholderAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {

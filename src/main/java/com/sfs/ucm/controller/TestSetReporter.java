@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -56,6 +58,7 @@ import com.sfs.ucm.util.ProjectSecurityInit;
 @Stateful
 @ConversationScoped
 @Named("testSetReporter")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class TestSetReporter extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;

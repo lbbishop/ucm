@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -67,6 +69,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("resourceAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ResourceAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -156,6 +159,7 @@ public class ResourceAction extends ActionBase implements Serializable {
 	 * Add action
 	 * 
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.resource = new Resource(ModelUtils.getNextIdentifier(this.resources));
 	}
@@ -165,6 +169,7 @@ public class ResourceAction extends ActionBase implements Serializable {
 	 * 
 	 * @param event
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void handleFileUpload(FileUploadEvent event) {
 
 		// extract filename
@@ -185,6 +190,7 @@ public class ResourceAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.project.removeResource(this.resource);
@@ -205,6 +211,7 @@ public class ResourceAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
@@ -224,13 +231,6 @@ public class ResourceAction extends ActionBase implements Serializable {
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
-		}
-	}
-
-	public void upload() {
-		logger.info("upload {}", file);
-		if (file != null) {
-			this.facesContextMessage.infoMessage("Uploaded file {0}", file.getFileName());
 		}
 	}
 

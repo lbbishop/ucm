@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,6 +56,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("testCaseFlowAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class TestCaseFlowAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -131,6 +134,7 @@ public class TestCaseFlowAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			this.testCase.setModifiedBy(authUser.getUsername());

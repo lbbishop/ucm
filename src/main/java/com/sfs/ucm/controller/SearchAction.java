@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,6 +63,7 @@ import com.sfs.ucm.view.FacesContextMessage;
  */
 @SessionScoped
 @Named("searchAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class SearchAction implements Serializable {
 
 	private static final long serialVersionUID = 1L;

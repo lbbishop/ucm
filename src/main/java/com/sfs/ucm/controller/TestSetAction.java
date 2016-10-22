@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
@@ -65,6 +67,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("testSetAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class TestSetAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -175,6 +178,7 @@ public class TestSetAction extends ActionBase implements Serializable {
 	 * Add action
 	 * 
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.testSet = new TestSet(ModelUtils.getNextIdentifier(this.testSets));
 	}
@@ -184,6 +188,7 @@ public class TestSetAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.testPlan.removeTestSet(this.testSet);
@@ -207,6 +212,7 @@ public class TestSetAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
@@ -235,6 +241,7 @@ public class TestSetAction extends ActionBase implements Serializable {
 	 * @param event
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void onUserChange(ValueChangeEvent event) throws UCMException {
 		try {
 			AuthUser user = (AuthUser) event.getNewValue();

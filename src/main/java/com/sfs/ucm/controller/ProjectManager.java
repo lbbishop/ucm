@@ -24,6 +24,8 @@ package com.sfs.ucm.controller;
 import java.io.Serializable;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -48,6 +50,7 @@ import com.sfs.ucm.util.ProjectUpdated;
 @Stateful
 @ConversationScoped
 @Named("projectManager")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProjectManager extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;

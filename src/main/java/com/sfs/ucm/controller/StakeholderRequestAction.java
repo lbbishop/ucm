@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
@@ -64,6 +66,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("stakeholderRequestAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class StakeholderRequestAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -158,6 +161,7 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	/**
 	 * Add action
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.stakeholderRequest = new StakeholderRequest(ModelUtils.getNextIdentifier(this.stakeholderRequests));
 	}
@@ -167,6 +171,7 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.project.removeStakeholderRequest(this.stakeholderRequest);
@@ -194,6 +199,7 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
@@ -291,6 +297,7 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	 * 
 	 * @param e
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void stakeholderValueChange(ValueChangeEvent e) {
 
 		Stakeholder theStakeholder = (Stakeholder) e.getNewValue();

@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -63,6 +65,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("specificationTestAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class SpecificationTestAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -156,6 +159,7 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	 * 
 	 * @return outcome
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.requirementTest = new RequirementTest(ModelUtils.getNextIdentifier(this.requirementTests));
 	}
@@ -163,6 +167,7 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	/**
 	 * Clear test results
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void clearTestResults() {
 
 		for (RequirementTest requirementTest : this.requirementTests) {
@@ -186,6 +191,7 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	/**
 	 * Action: remove object
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() {
 		try {
 			this.testSet.removeRequirementTest(this.requirementTest);
@@ -209,6 +215,7 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	/**
 	 * save action
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() {
 		try {
 			this.requirementTest.setModifiedBy(authUser.getUsername());

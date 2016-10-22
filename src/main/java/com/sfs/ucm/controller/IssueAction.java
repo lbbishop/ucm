@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
@@ -65,6 +67,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("issueAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class IssueAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -156,6 +159,7 @@ public class IssueAction extends ActionBase implements Serializable {
 	/**
 	 * Add action
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.issue = new Issue(ModelUtils.getNextIdentifier(this.issues));
 		this.issue.setStatusType(StatusType.New);
@@ -167,6 +171,7 @@ public class IssueAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.project.removeIssue(this.issue);
@@ -193,6 +198,7 @@ public class IssueAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
@@ -226,6 +232,7 @@ public class IssueAction extends ActionBase implements Serializable {
 	 * 
 	 * @param event
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void onAssignedToChange(ValueChangeEvent event) {
 		try {
 			AuthUser user = (AuthUser) event.getNewValue();

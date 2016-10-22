@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
@@ -64,6 +66,7 @@ import com.sfs.ucm.util.Service;
 @Stateful
 @ConversationScoped
 @Named("testCoverageAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class TestCoverageAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;

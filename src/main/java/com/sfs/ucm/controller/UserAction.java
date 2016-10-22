@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -57,6 +59,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("userAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class UserAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -127,6 +130,7 @@ public class UserAction extends ActionBase implements Serializable {
 	 * Add action
 	 * 
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.authUser = new AuthUser(ModelUtils.getNextIdentifier(this.authUsers));
 
@@ -140,6 +144,7 @@ public class UserAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			em.remove(this.authUser);
@@ -163,6 +168,7 @@ public class UserAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {

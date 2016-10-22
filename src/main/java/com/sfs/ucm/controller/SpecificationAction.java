@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
@@ -69,6 +71,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("specificationAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class SpecificationAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -167,6 +170,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	 * 
 	 * @return outcome
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.requirement = new Requirement(ModelUtils.getNextIdentifier(this.requirements));
 	}
@@ -176,6 +180,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	 * 
 	 * @return outcome
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addBusinessRule() {
 		Long cnt = getRequirementRuleCount();
 		this.requirementRule = new RequirementRule(cnt.intValue() + 1);
@@ -195,6 +200,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			// remove any requirement rule tests
@@ -231,6 +237,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	/**
 	 * save action
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
@@ -259,6 +266,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void saveBusinessRule() {
 		try {
 			if (validate()) {
@@ -369,6 +377,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	 * 
 	 * @param e
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void featureValueChange(ValueChangeEvent e) {
 		Feature feature = (Feature) e.getNewValue();
 		feature.addRequirement(this.requirement);

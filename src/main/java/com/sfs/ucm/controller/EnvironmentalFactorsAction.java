@@ -24,6 +24,8 @@ package com.sfs.ucm.controller;
 import java.io.Serializable;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -51,6 +53,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("environmentalFactorsAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EnvironmentalFactorsAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -118,6 +121,7 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void apply() throws UCMException {
 		try {
 			if (validate()) {
@@ -141,6 +145,7 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 	 * @return outcome
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public String okay() throws UCMException {
 
 		String outcome = Literal.NAV_HOME.toString();

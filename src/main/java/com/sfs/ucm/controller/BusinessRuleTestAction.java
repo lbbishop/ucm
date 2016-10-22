@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -63,6 +65,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("useCaseRuleTestAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class BusinessRuleTestAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -121,6 +124,7 @@ public class BusinessRuleTestAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void load() throws UCMException {
 		try {
 			this.testSet = em.find(TestSet.class, id);
@@ -158,6 +162,7 @@ public class BusinessRuleTestAction extends ActionBase implements Serializable {
 	 * 
 	 * @return outcome
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.useCaseRuleTest = new UseCaseRuleTest(ModelUtils.getNextIdentifier(this.useCaseRuleTests));
 	}
@@ -167,6 +172,7 @@ public class BusinessRuleTestAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void clearTestResults() throws UCMException {
 		try {
 			for (UseCaseRuleTest useCaseRuleTest : this.useCaseRuleTests) {
@@ -195,6 +201,7 @@ public class BusinessRuleTestAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.testSet.removeUseCaseRuleTest(this.useCaseRuleTest);
@@ -220,6 +227,7 @@ public class BusinessRuleTestAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			this.useCaseRuleTest.setModifiedBy(authUser.getUsername());

@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
@@ -67,6 +69,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("useCaseAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class UseCaseAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -162,6 +165,7 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	/**
 	 * Add action
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.useCase = new UseCase(ModelUtils.getNextIdentifier(this.useCases));
 	}
@@ -173,6 +177,7 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	 * 
 	 * @param event
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void onNameChange(ValueChangeEvent event) throws UCMException {
 		String name = (String) event.getNewValue();
 		this.useCase.getBasicFlow().setName(name);
@@ -186,6 +191,7 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			// remove any associated usecase rule tests
@@ -224,6 +230,7 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
@@ -347,6 +354,7 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	 * 
 	 * @param e
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void featureValueChange(ValueChangeEvent e) {
 		Feature feature = (Feature) e.getNewValue();
 		feature.addUseCase(this.useCase);

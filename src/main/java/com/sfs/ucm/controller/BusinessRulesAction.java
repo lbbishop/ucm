@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -51,6 +53,7 @@ import com.sfs.ucm.util.ProjectUpdated;
 @Stateful
 @ConversationScoped
 @Named("businessRuleAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class BusinessRulesAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;

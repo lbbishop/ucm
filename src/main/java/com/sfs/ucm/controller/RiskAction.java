@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -60,6 +62,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("riskAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class RiskAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -136,6 +139,7 @@ public class RiskAction extends ActionBase implements Serializable {
 	/**
 	 * Add action
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.risk = new Risk(ModelUtils.getNextIdentifier(this.risks));
 	}
@@ -145,6 +149,7 @@ public class RiskAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 
 		try {
@@ -170,6 +175,7 @@ public class RiskAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 
 		try {

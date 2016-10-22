@@ -25,6 +25,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -60,6 +62,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("constraintAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ConstraintAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -142,6 +145,7 @@ public class ConstraintAction extends ActionBase implements Serializable {
 	 * 
 	 * @return outcome
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.designConstraint = new DesignConstraint(ModelUtils.getNextIdentifier(this.designConstraints));
 		this.selected = true;
@@ -152,6 +156,7 @@ public class ConstraintAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.project.removeDesignConstraint(this.designConstraint);
@@ -176,6 +181,7 @@ public class ConstraintAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {

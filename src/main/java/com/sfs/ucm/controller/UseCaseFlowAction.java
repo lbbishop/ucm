@@ -28,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -70,6 +72,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("useCaseFlowAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class UseCaseFlowAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -210,6 +213,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addFlowStep() throws UCMException {
 		try {
 			Integer stepNumber = this.useCase.getBasicFlow().getFlowSteps().size() + 1;
@@ -234,6 +238,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void insertFlowStep() throws UCMException {
 		try {
 			logger.debug("inserting flow step before: {}", this.basicFlowStep.getStepNumber());
@@ -258,6 +263,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void removeFlowStep() throws UCMException {
 		try {
 			this.basicFlow.removeFlowStep(this.basicFlowStep);
@@ -288,6 +294,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void saveBasicFlow() throws UCMException {
 		try {
 			this.basicFlowStep.setModifiedBy(this.authUser.getUsername());
@@ -319,6 +326,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	/**
 	 * Action: add AlternativeFlow
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addAlternativeFlow() {
 
 		logger.info("addAlternativeFlow called");
@@ -333,6 +341,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void saveAlternativeFlow() throws UCMException {
 		try {
 			if (validateAlternativeFlow()) {
@@ -367,6 +376,7 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateAlternativeFlowName() throws UCMException {
 		try {
 			if (this.alternativeFlow.getId() == null) {

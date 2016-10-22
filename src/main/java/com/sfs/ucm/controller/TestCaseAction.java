@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -74,6 +76,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("testCaseAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class TestCaseAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -183,6 +186,7 @@ public class TestCaseAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
 			this.testSet.removeTestCase(this.testCase);
@@ -206,6 +210,7 @@ public class TestCaseAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
@@ -317,6 +322,7 @@ public class TestCaseAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateTestCases() throws UCMException {
 
 		try {
@@ -437,6 +443,7 @@ public class TestCaseAction extends ActionBase implements Serializable {
 	/**
 	 * Clear all testcase results
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void clearAllTestResults() {
 
 		for (TestCase testCase : this.testCases) {
@@ -455,6 +462,7 @@ public class TestCaseAction extends ActionBase implements Serializable {
 	/**
 	 * Clear selected testcase results
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void clearTestResults() {
 
 		testCase.setTestResultType(TestResultType.Unknown);
