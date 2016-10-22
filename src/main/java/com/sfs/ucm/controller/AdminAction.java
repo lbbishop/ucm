@@ -24,6 +24,8 @@ package com.sfs.ucm.controller;
 import java.io.Serializable;
 
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,6 +50,7 @@ import com.sfs.ucm.view.FacesContextMessage;
 @Stateful
 @ConversationScoped
 @Named("adminAction")
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AdminAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -86,6 +89,7 @@ public class AdminAction extends ActionBase implements Serializable {
 	 * 
 	 * @throws UCMException
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void onProjectManagerChange() throws UCMException {
 		try {
 			AuthUser pm = em.find(AuthUser.class, this.projectManager.getId());

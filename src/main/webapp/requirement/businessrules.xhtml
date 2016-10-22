@@ -89,7 +89,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{useCaseRuleAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+							<p:commandButton value="Close" action="#{useCaseRuleAction.close}"  icon="ui-icon-close" title="Close view" />
 						</div>
 					</div>
 				</div>
@@ -138,8 +138,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{useCaseRuleAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" styleClass="center-50" onclick="PF('cd').hide()" type="button" />
+					<p:commandButton value="Yes" update="@(form)"  actionListener="#{useCaseRuleAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No"  onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

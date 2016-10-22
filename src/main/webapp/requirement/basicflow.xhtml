@@ -29,7 +29,7 @@
 				<div class="ui-g-12">
 					<div class="card">
 						<div style="text-align: right; margin: 10px">
-							<h:commandLink value="Close" action="#{useCaseFlowAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+							<h:commandLink value="Close" action="#{useCaseFlowAction.close}"  icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:flowPanel" />
@@ -116,11 +116,11 @@
 								<f:facet name="footer">
 									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
 									<p:spacer width="4" />
-									<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" styleClass="center-75" oncomplete="PF('editDialog').show()" title="Edit flow step" />
+									<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel"  oncomplete="PF('editDialog').show()" title="Edit flow step" />
 									<p:spacer width="4" />
-									<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-close" styleClass="center-75" onclick="PF('cd').show()" title="Delete selected basic flow step" />
+									<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-close"  onclick="PF('cd').show()" title="Delete selected basic flow step" />
 									<p:spacer width="4" />
-									<p:commandButton id="insertButton" value="Insert" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.insertFlowStep}" styleClass="center-75" oncomplete="PF('editDialog').show()"
+									<p:commandButton id="insertButton" value="Insert" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.insertFlowStep}"  oncomplete="PF('editDialog').show()"
 										title="Insert new step above selection" />
 									<p:spacer width="4" />
 									<p:commandButton id="addFlowButton" value="Add Alternative Flow" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":flowForm:flowPanel" action="#{useCaseFlowAction.addAlternativeFlow}" oncomplete="PF('flowDialog').show()"
@@ -137,7 +137,7 @@
 						</p:panel>
 
 						<div style="text-align: right; margin: 10px">
-							<h:commandLink value="Close" action="#{useCaseFlowAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+							<h:commandLink value="Close" action="#{useCaseFlowAction.close}"  icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:flowPanel" />
@@ -169,9 +169,9 @@
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
-							<p:commandButton value="#{msg.buttonSave}" actionListener="#{useCaseFlowAction.saveBasicFlow}" update="@(form)" styleClass="center-75" oncomplete="handleEditDialogComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:commandButton value="#{msg.buttonSave}" actionListener="#{useCaseFlowAction.saveBasicFlow}" update="@(form)"  oncomplete="handleEditDialogComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
 							<p:spacer width="6" />
-							<p:commandButton value="#{msg.buttonCancel}" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" styleClass="center-75" />
+							<p:commandButton value="#{msg.buttonCancel}" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close"  />
 						</p:outputPanel>
 					</f:facet>
 				</p:panelGrid>
@@ -253,8 +253,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update=":form:table :form:messages" styleClass="center-50" actionListener="#{useCaseFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" styleClass="center-50" onclick="PF('cd').hide()" type="button" />
+					<p:commandButton value="Yes" update=":form:table :form:messages"  actionListener="#{useCaseFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No"  onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

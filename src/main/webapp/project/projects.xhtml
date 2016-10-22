@@ -70,7 +70,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{projectAction.close}" styleClass="center-75" icon="ui-icon-close" />
+							<p:commandButton value="Close" action="#{projectAction.close}"  icon="ui-icon-close" />
 						</div>
 					</div>
 				</div>
@@ -116,8 +116,8 @@
 		<p:confirmDialog message="Are you sure?" width="180" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{projectAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="center-50" type="button" />
+					<p:commandButton value="Yes" update="@(form)"  actionListener="#{projectAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

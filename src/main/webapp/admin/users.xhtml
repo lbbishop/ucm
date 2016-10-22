@@ -24,7 +24,7 @@
 						<p:growl id="messages" life="#{appManager.growlLife}" />
 
 						<div style="margin: 10px">
-							<h:outputText value="#{msg.appFullTitle} Users" styleClass="header" />
+							<h:outputText value="#{msg.appFullTitle} Users"/>
 						</div>
 						<p:dataTable id="table" emptyMessage="No Users Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_user" value="#{userAction.authUsers}" selectionMode="single" rowKey="#{_user.id}" selection="#{userAction.authUser}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{userAction.onRowSelect}" update="editButton deleteButton" />

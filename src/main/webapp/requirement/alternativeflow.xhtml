@@ -23,7 +23,7 @@
 						<div style="text-align: right; margin: 10px">
 							<h:commandLink value="Save" actionListener="#{alternativeFlowAction.save}" />
 							<p:spacer width="10" />
-							<h:link value="Close" outcome="/home" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+							<h:link value="Close" outcome="/home"  icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:panel" />
@@ -92,11 +92,11 @@
 								<f:facet name="footer">
 									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not alternativeFlowAction.editable}" update=":editForm:editPanel" action="#{alternativeFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
 									<p:spacer width="6" />
-									<p:commandButton id="editButton" value="Edit" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-pencil" styleClass="center-75" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit flow step" />
+									<p:commandButton id="editButton" value="Edit" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-pencil"  update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit flow step" />
 									<p:spacer width="6" />
-									<p:commandButton id="deleteButton" value="Delete" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-close" styleClass="center-75" onclick="PF('cd').show()" title="Delete selected flow step" />
+									<p:commandButton id="deleteButton" value="Delete" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-close"  onclick="PF('cd').show()" title="Delete selected flow step" />
 									<p:spacer width="6" />
-									<p:commandButton id="insertButton" value="Insert" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" styleClass="center-75" update=":editForm:editPanel" action="#{alternativeFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()"
+									<p:commandButton id="insertButton" value="Insert" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}"  update=":editForm:editPanel" action="#{alternativeFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()"
 										title="Insert new step above selection" />
 									<p:spacer width="6" />
 									<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" update=":ruleForm:rulePanel" action="#{alternativeFlowAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()"
@@ -115,7 +115,7 @@
 						<div style="text-align: right; margin: 10px">
 							<h:commandLink value="Save" actionListener="#{alternativeFlowAction.save}" />
 							<p:spacer width="10" />
-							<h:link value="Close" outcome="/home" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+							<h:link value="Close" outcome="/home"  icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:panel" />
@@ -201,8 +201,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)" styleClass="center-50" actionListener="#{alternativeFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" styleClass="center-50" />
+					<p:commandButton value="Yes" update="@(form)"  actionListener="#{alternativeFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button"  />
 				</div>
 			</h:form>
 		</p:confirmDialog>
