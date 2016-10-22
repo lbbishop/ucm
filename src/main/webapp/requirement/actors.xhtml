@@ -12,93 +12,86 @@
 		}
 		</script>
 
-		<div class="Container100">
-			<div class="ContainerIndent">
-				<div class="Container30 Responsive">
-					<div class="ContainerIndent">
-						<ui:include src="/includes/sidebar.xhtml" />
-					</div>
-				</div>
 
-				<div class="Container70 Responsive">
-					<div class="ContainerIndent">
-						<h:form id="form">
-							<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
-							<div style="text-align: center;">
-								<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
-							</div>
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
 
-							<div style="margin: 6px">
-								<h:outputText value="#{actorAction.project.name}: Use Case Actors" styleClass="header" />
-							</div>
-							<p:dataTable id="table" emptyMessage="No Actors Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_actor" value="#{actorAction.actors}" selectionMode="single" rowKey="#{_actor.id}" selection="#{actorAction.actor}" reflow="true">
-								<p:ajax event="rowSelect" listener="#{actorAction.onRowSelect}" update="editButton deleteButton" />
-								<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+						<div style="margin: 6px">
+							<h:outputText value="#{actorAction.project.name}: Use Case Actors" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No Actors Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_actor" value="#{actorAction.actors}" selectionMode="single" rowKey="#{_actor.id}" selection="#{actorAction.actor}" reflow="true">
+							<p:ajax event="rowSelect" listener="#{actorAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
+							<f:facet name="header">
+								<h:outputText value="#{actorAction.project.name}: Actors" />
+							</f:facet>
+
+							<p:column style="vertical-align:top" sortBy="#{_actor.artifact}">
 								<f:facet name="header">
-									<h:outputText value="#{actorAction.project.name}: Actors" />
+									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
+								<h:outputText value="#{_actor.artifact}" style="font-size:0.9em" />
+							</p:column>
 
-								<p:column style="vertical-align:top" sortBy="#{_actor.artifact}">
-									<f:facet name="header">
-										<h:outputText value="Id" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{_actor.artifact}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="vertical-align:top">
-									<f:facet name="header">
-										<h:outputText value="Actor Name" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{_actor.name}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="vertical-align:top" sortBy="#{_actor.complexityLabel}">
-									<f:facet name="header">
-										<h:outputText value="Complexity" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{_actor.complexityLabel}" style="font-size:0.9em" />
-								</p:column>
-
-								<p:column style="vertical-align:top">
-									<f:facet name="header">
-										<h:outputText value="Responsibilities" style="font-size:0.93em" />
-									</f:facet>
-									<h:outputText value="#{_actor.responsibilitiesAbbrv}" style="font-size:0.9em" />
-								</p:column>
-
-								<f:facet name="footer">
-									<p:commandButton value="New Actor" disabled="#{not actorAction.editable}" update=":editForm:editPanel" action="#{actorAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
-									<p:spacer width="6" />
-									<p:commandButton id="editButton" value="Edit" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-									<p:spacer width="6" />
-									<p:commandButton id="deleteButton" value="Delete" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-									<p:spacer width="10" />
-									<p:button id="viewButton" value="View All" outcome="/actorlist" icon="ui-icon-search" title="View or Print Actor List">
-										<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
-										<f:param name="id" value="#{actorAction.id}" />
-									</p:button>
-									<h:commandLink>
-										<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-										<pe:exporter type="xlsx" target="table" fileName="#{actorAction.project.name}_actors" orientation="landscape" />
-									</h:commandLink>
+							<p:column style="vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Actor Name" style="font-size:0.93em" />
 								</f:facet>
-							</p:dataTable>
+								<h:outputText value="#{_actor.name}" style="font-size:0.9em" />
+							</p:column>
 
-							<div style="text-align: right; margin: 10px">
-								<p:commandButton value="Close" action="#{actorAction.close}" styleClass="center-75" title="Close view" />
-							</div>
-						</h:form>
+							<p:column style="vertical-align:top" sortBy="#{_actor.complexityLabel}">
+								<f:facet name="header">
+									<h:outputText value="Complexity" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_actor.complexityLabel}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Responsibilities" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_actor.responsibilitiesAbbrv}" style="font-size:0.9em" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton value="New Actor" disabled="#{not actorAction.editable}" update=":editForm:editPanel" action="#{actorAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:spacer width="10" />
+								<p:button id="viewButton" value="View All" outcome="/actorlist" icon="ui-icon-search" title="View or Print Actor List">
+									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+									<f:param name="id" value="#{actorAction.id}" />
+								</p:button>
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="#{actorAction.project.name}_actors" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
+
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{actorAction.close}" styleClass="center-75" title="Close view" />
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</h:form>
 
 
-		<p:dialog id="dialog" header="Edit Actor" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+		<p:dialog id="dialog" header="Edit Actor" widgetVar="editDialog" resizable="true" modal="true" responsive="true">
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<h:panelGrid id="editPanel" columns="2" cellpadding="5">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
 					<h:outputText id="identifier" value="#{actorAction.actor.artifact}" />
@@ -120,12 +113,12 @@
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
-							<p:commandButton value="Save" update="@(form)" actionListener="#{actorAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:commandButton value="Save" update="@(form)" actionListener="#{actorAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon-check" />
 							<p:spacer width="6" />
-							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon-cancel" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
@@ -137,12 +130,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-
-		<p:dialog header="Actor Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
-			<h:panelGrid id="helpPanel" columns="1">
-				<h:outputText value="Actor help content:" escape="false" />
-			</h:panelGrid>
-		</p:dialog>
 
 	</ui:define>
 </ui:composition>

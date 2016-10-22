@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">UseCase Business Rules</ui:define>
 	<ui:define name="content">
@@ -11,108 +11,94 @@
 		}
 		</script>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-		<p:layout fullPage="true">
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<div style="margin: 6px">
+							<h:outputText value="#{useCaseRuleAction.project.name}: UseCase Business Rules" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No Requirement Rules Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_rule" value="#{useCaseRuleAction.flowStepRules}" selectionMode="single" rowKey="#{_rule.id}"
+							selection="#{useCaseRuleAction.flowStepRule}">
+							<p:ajax event="rowSelect" listener="#{useCaseRuleAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('ruleDialog').show()" />
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+							<f:facet name="header">
+								<h:outputText value="UseCase Business Rules" />
+							</f:facet>
 
-			<p:layoutUnit position="center">
+							<p:column style="width:40px;vertical-align: top;" sortBy="#{_rule.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_rule.artifact}" style="font-size:0.9em" />
+							</p:column>
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
+							<p:column style="width:200px;vertical-align: top;">
+								<f:facet name="header">
+									<h:outputText value="Flow" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_rule.flowStep.flow.name}" style="font-size:0.9em" />
+							</p:column>
 
-				<h:form id="form">
+							<p:column style="width:30px;vertical-align: top;">
+								<f:facet name="header">
+									<h:outputText value="Step" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_rule.flowStep.stepNumber}" style="font-size:0.9em" />
+							</p:column>
 
-					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+							<p:column style="width:240px;vertical-align: top;">
+								<f:facet name="header">
+									<h:outputText value="Business Rule Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_rule.name}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:80px;vertical-align: top;" sortBy="#{_rule.ruleType}">
+								<f:facet name="header">
+									<h:outputText value="Rule Type" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_rule.ruleType}" style="font-size:0.9em" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseRuleAction.selected or not useCaseRuleAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('ruleDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseRuleAction.selected or not useCaseRuleAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:spacer width="10" />
+								<p:button id="viewButton" value="View All" outcome="/usecaserulelist" icon="ui-icon-search" title="View or Print UseCase Rules">
+									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+									<f:param name="id" value="#{useCaseRuleAction.id}" />
+								</p:button>
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="usecaserules" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
+
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{useCaseRuleAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+						</div>
 					</div>
-					<div style="margin: 6px">
-						<h:outputText value="#{useCaseRuleAction.project.name}: UseCase Business Rules" styleClass="header" />
-					</div>
-					<p:dataTable id="table" emptyMessage="No Requirement Rules Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_rule" value="#{useCaseRuleAction.flowStepRules}" selectionMode="single" rowKey="#{_rule.id}"
-						selection="#{useCaseRuleAction.flowStepRule}">
-						<p:ajax event="rowSelect" listener="#{useCaseRuleAction.onRowSelect}" update="editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('ruleDialog').show()" />
+				</div>
+			</div>
+		</h:form>
 
-						<f:facet name="header">
-							<h:outputText value="UseCase Business Rules" />
-						</f:facet>
-
-						<p:column style="width:40px;vertical-align: top;" sortBy="#{_rule.artifact}">
-							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_rule.artifact}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:200px;vertical-align: top;">
-							<f:facet name="header">
-								<h:outputText value="Flow" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_rule.flowStep.flow.name}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:30px;vertical-align: top;">
-							<f:facet name="header">
-								<h:outputText value="Step" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_rule.flowStep.stepNumber}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:240px;vertical-align: top;">
-							<f:facet name="header">
-								<h:outputText value="Business Rule Name" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_rule.name}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:80px;vertical-align: top;" sortBy="#{_rule.ruleType}">
-							<f:facet name="header">
-								<h:outputText value="Rule Type" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_rule.ruleType}" style="font-size:0.9em" />
-						</p:column>
-
-						<f:facet name="footer">
-							<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseRuleAction.selected or not useCaseRuleAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('ruleDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseRuleAction.selected or not useCaseRuleAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<p:spacer width="10" />
-							<p:button id="viewButton" value="View All" outcome="/usecaserulelist" icon="ui-icon-search" title="View or Print UseCase Rules">
-								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
-								<f:param name="id" value="#{useCaseRuleAction.id}" />
-							</p:button>
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="usecaserules" orientation="landscape" />
-							</h:commandLink>
-						</f:facet>
-					</p:dataTable>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{useCaseRuleAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
-					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
-
-		<p:dialog header="Edit Business Rule" widgetVar="ruleDialog" resizable="true" modal="true" styleClass="modalDialog">
+		<p:dialog header="Edit Business Rule" widgetVar="ruleDialog" resizable="true" modal="true" responsive="true">
 			<h:form id="editForm">
-				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
 					<h:outputText id="identifier" value="#{useCaseRuleAction.flowStepRule.artifact}" />
@@ -145,7 +131,7 @@
 							<p:commandButton value="Cancel" onclick="PF('ruleDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
@@ -157,8 +143,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-		
-		
 
 	</ui:define>
 </ui:composition>

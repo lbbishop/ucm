@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Project Stakeholders</ui:define>
 	<ui:define name="content">
@@ -12,107 +12,96 @@
 		</script>
 
 
-		<p:layout fullPage="true">
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+		<h:form id="form">
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="center">
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
 
-				<h:form id="form">
+						<div style="margin: 6px">
+							<h:outputText value="#{stakeholderAction.project.name}: Stakeholders" styleClass="header" />
+						</div>
+						<p:dataTable id="table" var="_stakeholder" scrollable="true" value="#{stakeholderAction.stakeholders}" scrollHeight="#{appManager.tableScrollHeight}" rowKey="#{_stakeholder.id}" selection="#{stakeholderAction.stakeholder}" selectionMode="single" reflow="true">
+							<p:ajax event="rowSelect" listener="#{stakeholderAction.onRowSelect}" update="editButton deleteButton :form:table:testButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
-					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+							<f:facet name="header">
+								<h:outputText value="#{stakeholderAction.project.name} Stakeholders" />
+							</f:facet>
 
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+							<p:column style="width:50px;vertical-align:top" sortBy="#{_stakeholder.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_stakeholder.artifact}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:150px;vertical-align:top" sortBy="#{_stakeholder.role}">
+								<f:facet name="header">
+									<h:outputText value="Stakeholder Role" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_stakeholder.role}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:150px;vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Representative" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_stakeholder.representative}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:350px;vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Responsibilities" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_stakeholder.responsibilities}" styleClass="wordWrap" style="font-size:0.9em" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton id="newButton" value="New Stakeholder" disabled="#{not stakeholderAction.editable}" update=":editForm:editPanel" action="#{stakeholderAction.add}" oncomplete="PF('editDialog').show()" title="New Stakeholder" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not stakeholderAction.selected or not stakeholderAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not stakeholderAction.selected or not stakeholderAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:spacer width="10" />
+								<p:button id="viewButton" value="View All" outcome="/stakeholderlist" icon="ui-icon-search" title="View or Print Stakeholder List">
+									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+									<f:param name="id" value="#{stakeholderAction.id}" />
+								</p:button>
+								<p:spacer width="20" />
+								<p:commandButton id="testButton" value="Take Survival Test" disabled="#{not stakeholderAction.editable}" action="#{stakeholderAction.initSurvivalTest}" update=":survivalTestForm:survivalTestTabView" oncomplete="PF('survivalTestDialog').show()" title="Take Project Survival Test" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="#{stakeholderAction.project.name}_stakeholders" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
+
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{stakeholderAction.close}" style="width:80px" title="Close view" />
+						</div>
 					</div>
+				</div>
+			</div>
+		</h:form>
 
-					<div style="margin: 6px">
-						<h:outputText value="#{stakeholderAction.project.name}: Stakeholders" styleClass="header" />
-					</div>
-					<p:dataTable id="table" var="_stakeholder" scrollable="true" value="#{stakeholderAction.stakeholders}" scrollHeight="#{appManager.tableScrollHeight}" rowKey="#{_stakeholder.id}" selection="#{stakeholderAction.stakeholder}" selectionMode="single">
-						<p:ajax event="rowSelect" listener="#{stakeholderAction.onRowSelect}" update="editButton deleteButton :form:table:testButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
-						<f:facet name="header">
-							<h:outputText value="#{stakeholderAction.project.name} Stakeholders" />
-						</f:facet>
-
-						<p:column style="width:50px;vertical-align:top" sortBy="#{_stakeholder.artifact}">
-							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_stakeholder.artifact}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:150px;vertical-align:top" sortBy="#{_stakeholder.role}">
-							<f:facet name="header">
-								<h:outputText value="Stakeholder Role" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_stakeholder.role}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:150px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="Representative" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_stakeholder.representative}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:350px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="Responsibilities" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_stakeholder.responsibilities}" styleClass="wordWrap" style="font-size:0.9em" />
-						</p:column>
-
-						<f:facet name="footer">
-							<p:commandButton id="newButton" value="New Stakeholder" disabled="#{not stakeholderAction.editable}" update=":editForm:editPanel" action="#{stakeholderAction.add}" oncomplete="PF('editDialog').show()" title="New Stakeholder" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not stakeholderAction.selected or not stakeholderAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not stakeholderAction.selected or not stakeholderAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<p:spacer width="10" />
-							<p:button id="viewButton" value="View All" outcome="/stakeholderlist" icon="ui-icon-search" title="View or Print Stakeholder List">
-								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
-								<f:param name="id" value="#{stakeholderAction.id}" />
-							</p:button>
-							<p:spacer width="20" />
-							<p:commandButton id="testButton" value="Take Survival Test" disabled="#{not stakeholderAction.editable}" action="#{stakeholderAction.initSurvivalTest}" update=":survivalTestForm:survivalTestTabView" oncomplete="PF('survivalTestDialog').show()" title="Take Project Survival Test" />
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="#{stakeholderAction.project.name}_stakeholders" orientation="landscape" />
-							</h:commandLink>
-						</f:facet>
-					</p:dataTable>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{stakeholderAction.close}" style="width:80px" title="Close view" />
-					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
-
-		<p:dialog header="Edit Stakeholder" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+		<p:dialog header="Edit Stakeholder" widgetVar="editDialog" resizable="true" modal="true" responsive="true">
 
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<h:panelGrid id="editPanel" columns="2" cellpadding="4">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
 					<h:outputText id="identifier" value="#{stakeholderAction.stakeholder.artifact}" />
@@ -142,7 +131,7 @@
 							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
@@ -150,7 +139,7 @@
 			<h:form id="survivalTestForm">
 				<p:tabView id="survivalTestTabView">
 					<p:tab title="Requirements">
-						<p:panelGrid columns="2" columnClasses="left-700,left">
+						<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-9,ui-g-3" styleClass="ui-panelgrid-blank form-group">
 							<f:facet name="header">
 								Requirements
 							</f:facet>
@@ -193,7 +182,7 @@
 					</p:tab>
 
 					<p:tab title="Planning">
-						<p:panelGrid columns="2" columnClasses="left-700,left">
+						<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-9,ui-g-3" styleClass="ui-panelgrid-blank form-group">
 							<f:facet name="header">
 								Planning
 							</f:facet>
@@ -249,7 +238,7 @@
 					</p:tab>
 					<p:tab title="Project Control">
 
-						<p:panelGrid columns="2" columnClasses="left-700,left">
+						<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-9,ui-g-3" styleClass="ui-panelgrid-blank form-group">
 							<f:facet name="header">
 								Project Control
 							</f:facet>
@@ -319,7 +308,7 @@
 
 					<p:tab title="Project Risk">
 
-						<p:panelGrid columns="2" columnClasses="left-700,left">
+						<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-9,ui-g-3" styleClass="ui-panelgrid-blank form-group">
 							<f:facet name="header">
 								Project Risk
 							</f:facet>
@@ -345,7 +334,7 @@
 
 					<p:tab title="Personnel">
 
-						<p:panelGrid columns="2" columnClasses="left-700,left">
+						<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-9,ui-g-3" styleClass="ui-panelgrid-blank form-group">
 							<f:facet name="header">
 								Personnel
 							</f:facet>
@@ -386,7 +375,6 @@
 								<f:selectItems value="#{survivalTestItems}" />
 							</p:selectOneMenu>
 
-
 						</p:panelGrid>
 					</p:tab>
 				</p:tabView>
@@ -409,13 +397,5 @@
 			</h:form>
 		</p:confirmDialog>
 
-		<p:dialog header="Stakeholder Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
-			<h:panelGrid id="helpPanel" columns="1">
-				<h:outputLabel value="Stakeholder help content:" escape="false" />
-			</h:panelGrid>
-		</p:dialog>
-
-		
-		
 	</ui:define>
 </ui:composition>

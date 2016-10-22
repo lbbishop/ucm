@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Glossary of Terms</ui:define>
 	<ui:define name="content">
@@ -11,97 +11,82 @@
 		}
 		</script>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-		<p:layout fullPage="true">
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+						<p:growl id="messages" showDetail="false" />
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<div style="margin: 6px">
+							<h:outputText value="#{glossaryTermAction.project.name}: Glossary of Terms" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No Glossary Terms Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_glossaryTerm" value="#{glossaryTermAction.glossaryTerms}" selectionMode="single" rowKey="#{_glossaryTerm.id}"
+							selection="#{glossaryTermAction.glossaryTerm}" reflow="true">
+							<p:ajax event="rowSelect" listener="#{glossaryTermAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
-
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
-
-			<p:layoutUnit position="center">
-
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
-
-				<h:form id="form">
-
-					<p:growl id="messages" showDetail="false" />
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
-					</div>
-					<div style="margin: 6px">
-						<h:outputText value="#{glossaryTermAction.project.name}: Glossary of Terms" styleClass="header" />
-					</div>
-					<p:dataTable id="table" emptyMessage="No Glossary Terms Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_glossaryTerm" value="#{glossaryTermAction.glossaryTerms}" selectionMode="single" rowKey="#{_glossaryTerm.id}"
-						selection="#{glossaryTermAction.glossaryTerm}">
-						<p:ajax event="rowSelect" listener="#{glossaryTermAction.onRowSelect}" update="editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-
-						<f:facet name="header">
-							<h:outputText value="#{glossaryTermAction.project.name}: Glossary of Terms" />
-						</f:facet>
-
-						<p:column style="width:50px;vertical-align:top" sortBy="#{_glossaryTerm.artifact}">
 							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
+								<h:outputText value="#{glossaryTermAction.project.name}: Glossary of Terms" />
 							</f:facet>
-							<h:outputText value="#{_glossaryTerm.artifact}" style="font-size:0.9em" />
-						</p:column>
 
-						<p:column style="width:200px;vertical-align:top" sortBy="#{_glossaryTerm.term}">
-							<f:facet name="header">
-								<h:outputText value="Glossary Term" style="font-size:0.93em" />
+							<p:column style="width:50px;vertical-align:top" sortBy="#{_glossaryTerm.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_glossaryTerm.artifact}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:200px;vertical-align:top" sortBy="#{_glossaryTerm.term}">
+								<f:facet name="header">
+									<h:outputText value="Glossary Term" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_glossaryTerm.term}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:450px;vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="Definition" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_glossaryTerm.definitionAbbrv}" escape="true" style="font-size:0.9em" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton value="New Glossary Term" disabled="#{not glossaryTermAction.editable}" update=":editForm:editPanel" action="#{glossaryTermAction.add}" oncomplete="PF('editDialog').show()" title="New Glossary Term" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not glossaryTermAction.selected or not glossaryTermAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not glossaryTermAction.selected or not glossaryTermAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:button id="viewButton" value="View All" outcome="/glossarylist" icon="ui-icon-search" title="View or Print Glossary">
+									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+									<f:param name="id" value="#{glossaryTermAction.id}" />
+								</p:button>
+								<p:spacer width="10" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="#{glossaryTermAction.project.name}_glossary" orientation="landscape" />
+								</h:commandLink>
 							</f:facet>
-							<h:outputText value="#{_glossaryTerm.term}" style="font-size:0.9em" />
-						</p:column>
+						</p:dataTable>
 
-						<p:column style="width:450px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="Definition" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_glossaryTerm.definitionAbbrv}" escape="true" style="font-size:0.9em" />
-						</p:column>
-
-						<f:facet name="footer">
-							<p:commandButton value="New Glossary Term" disabled="#{not glossaryTermAction.editable}" update=":editForm:editPanel" action="#{glossaryTermAction.add}" oncomplete="PF('editDialog').show()" title="New Glossary Term" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not glossaryTermAction.selected or not glossaryTermAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not glossaryTermAction.selected or not glossaryTermAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<p:button id="viewButton" value="View All" outcome="/glossarylist" icon="ui-icon-search" title="View or Print Glossary">
-								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
-								<f:param name="id" value="#{glossaryTermAction.id}" />
-							</p:button>
-							<p:spacer width="10" />
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="#{glossaryTermAction.project.name}_glossary" orientation="landscape" />
-							</h:commandLink>
-						</f:facet>
-					</p:dataTable>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{glossaryTermAction.close}" styleClass="center-75" title="Close view" />
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{glossaryTermAction.close}" styleClass="center-75" title="Close view" />
+						</div>
 					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
+				</div>
+			</div>
+		</h:form>
 
 		<p:dialog id="dialog" header="Edit Glossary Term" widgetVar="editDialog" minWidth="600" resizable="true" modal="true" styleClass="modalDialog">
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
+					<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
 					<h:outputText id="identifier" value="#{glossaryTermAction.glossaryTerm.artifact}" />
@@ -119,7 +104,7 @@
 							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
@@ -131,14 +116,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-
-		<p:dialog header="GlossaryTerm Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
-			<h:panelGrid id="helpPanel" columns="1">
-				<h:outputText value="Glossary Term help content:" escape="false" />
-			</h:panelGrid>
-		</p:dialog>
-		
-		
 
 	</ui:define>
 </ui:composition>

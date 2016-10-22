@@ -54,9 +54,7 @@ import org.hibernate.search.annotations.Store;
 import com.sfs.ucm.data.Constants;
 import com.sfs.ucm.data.DifficultyType;
 import com.sfs.ucm.data.Literal;
-import com.sfs.ucm.data.PriorityType;
 import com.sfs.ucm.data.QualityType;
-import com.sfs.ucm.data.StatusType;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
@@ -98,15 +96,6 @@ public class Requirement extends EntityBase implements Serializable {
 	@JoinColumn(name = "projectpackage_id", nullable = true)
 	private ProjectPackage projectPackage;
 
-	@NotNull(message = "Status is required")
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status_type", nullable = false)
-	private StatusType statusType;
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "priority_type", nullable = true)
-	private PriorityType priorityType;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "difficulty_type", nullable = true)
 	private DifficultyType difficultyType;
@@ -146,7 +135,6 @@ public class Requirement extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.statusType = StatusType.New;
 		this.requirementRules = new HashSet<RequirementRule>();
 	}
 
@@ -271,21 +259,6 @@ public class Requirement extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the priorityType
-	 */
-	public PriorityType getPriorityType() {
-		return priorityType;
-	}
-
-	/**
-	 * @param priorityType
-	 *            the priorityType to set
-	 */
-	public void setPriorityType(PriorityType priorityType) {
-		this.priorityType = priorityType;
-	}
-
-	/**
 	 * @return the qualityType
 	 */
 	public QualityType getQualityType() {
@@ -313,21 +286,6 @@ public class Requirement extends EntityBase implements Serializable {
 	 */
 	public void setDifficultyType(DifficultyType difficultyType) {
 		this.difficultyType = difficultyType;
-	}
-
-	/**
-	 * @return the statusType
-	 */
-	public StatusType getStatusType() {
-		return statusType;
-	}
-
-	/**
-	 * @param statusType
-	 *            the statusType to set
-	 */
-	public void setStatusType(StatusType statusType) {
-		this.statusType = statusType;
 	}
 
 	/**
@@ -374,8 +332,6 @@ public class Requirement extends EntityBase implements Serializable {
 		builder.append(identifier);
 		builder.append(", description=");
 		builder.append(description);
-		builder.append(", priorityType=");
-		builder.append(priorityType);
 		builder.append(", qualityType=");
 		builder.append(qualityType);
 		builder.append(", difficultyType=");

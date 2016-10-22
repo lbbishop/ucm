@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Project UseCases</ui:define>
 	<ui:define name="content">
@@ -11,210 +11,156 @@
 		}
 		</script>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
+
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<div style="margin: 6px">
+							<h:outputText value="#{useCaseAction.project.name}: UseCases" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No UseCases Defined" resizableColumns="true" var="_useCase" value="#{useCaseAction.useCases}" selectionMode="single" rowKey="#{_useCase.id}" selection="#{useCaseAction.useCase}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" reflow="true">
+							<p:ajax event="rowSelect" listener="#{useCaseAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+
+							<f:facet name="header">
+								<h:outputText value="#{useCaseAction.project.name}: UseCases" />
+							</f:facet>
+
+							<p:column style="width:50px;vertical-align:top" sortBy="#{_useCase.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_useCase.artifact}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:240px;vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="UseCase Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_useCase.name}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:140px;vertical-align:top" sortBy="#{_useCase.primaryActor.name}">
+								<f:facet name="header">
+									<h:outputText value="Primary Actor" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_useCase.primaryActor.name}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:70px;vertical-align:top" sortBy="#{_useCase.projectPackage.name}">
+								<f:facet name="header">
+									<h:outputText value="Package" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_useCase.projectPackage.name}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:40px;vertical-align:top">
+								<f:facet name="header">
+									<h:outputText value="NFlows" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_useCase.numFlows}" style="font-size:0.9em" />
+							</p:column>
 
 
-		<p:layout fullPage="true">
+							<f:facet name="footer">
+								<p:commandButton value="New UseCase" disabled="#{not useCaseAction.editable}" update=":editForm:editPanel" action="#{useCaseAction.add}" oncomplete="PF('editDialog').show()" title="New UseCase" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseAction.selected or not useCaseAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseAction.selected or not useCaseAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:spacer width="10" />
+								<p:button id="viewButton" value="View All" outcome="/usecaselist" icon="ui-icon-search" title="View or Print UseCase List">
+									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+									<f:param name="id" value="#{useCaseAction.id}" />
+								</p:button>
+								<p:spacer width="10" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="#{useCaseAction.project.name}_usecases" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
-
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
-
-			<p:layoutUnit position="center">
-
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
-
-				<h:form id="form">
-
-					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{useCaseAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
+						</div>
 					</div>
-					<div style="margin: 6px">
-						<h:outputText value="#{useCaseAction.project.name}: UseCases" styleClass="header" />
-					</div>
-					<p:dataTable id="table" emptyMessage="No UseCases Defined" resizableColumns="true" var="_useCase" value="#{useCaseAction.useCases}" selectionMode="single" rowKey="#{_useCase.id}" selection="#{useCaseAction.useCase}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}">
-						<p:ajax event="rowSelect" listener="#{useCaseAction.onRowSelect}" update="editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+				</div>
+			</div>
+		</h:form>
 
-						<f:facet name="header">
-							<h:outputText value="#{useCaseAction.project.name}: UseCases" />
-						</f:facet>
-
-						<p:column style="width:50px;vertical-align:top" sortBy="#{_useCase.artifact}">
-							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_useCase.artifact}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:240px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="UseCase Name" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_useCase.name}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:140px;vertical-align:top" sortBy="#{_useCase.primaryActor.name}">
-							<f:facet name="header">
-								<h:outputText value="Primary Actor" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_useCase.primaryActor.name}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:70px;vertical-align:top" sortBy="#{_useCase.projectPackage.name}">
-							<f:facet name="header">
-								<h:outputText value="Package" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_useCase.projectPackage.name}" style="font-size:0.9em" />
-						</p:column>
-
-						<p:column style="width:70px;vertical-align:top" sortBy="#{_useCase.statusType}">
-							<f:facet name="header">
-								<h:outputText value="Status" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_useCase.statusType}" style="font-size:0.9em" />
-						</p:column>
-						
-						<p:column style="width:40px;vertical-align:top">
-							<f:facet name="header">
-								<h:outputText value="NFlows" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_useCase.numFlows}" style="font-size:0.9em" />
-						</p:column>						
-
-						<p:column style="width:60px;vertical-align:top" sortBy="#{_useCase.productRelease.version}">
-							<f:facet name="header">
-								<h:outputText value="Release" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_useCase.productRelease.version}" style="font-size:0.9em" />
-						</p:column>
-
-						<f:facet name="footer">
-							<p:commandButton value="New UseCase" disabled="#{not useCaseAction.editable}" update=":editForm:editPanel" action="#{useCaseAction.add}" oncomplete="PF('editDialog').show()" title="New UseCase" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseAction.selected or not useCaseAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseAction.selected or not useCaseAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<p:spacer width="10" />
-							<p:button id="viewButton" value="View All" outcome="/usecaselist" icon="ui-icon-search" title="View or Print UseCase List">
-								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
-								<f:param name="id" value="#{useCaseAction.id}" />
-							</p:button>
-							<p:spacer width="10" />
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="#{useCaseAction.project.name}_usecases" orientation="landscape"/>
-							</h:commandLink>
-						</f:facet>
-					</p:dataTable>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{useCaseAction.close}" styleClass="center-75" icon="ui-icon-close" title="Close view" />
-					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
-
-		<p:dialog id="dialog" header="Edit UseCase" widgetVar="editDialog" resizable="true" modal="true" style="width:800px" width="800" styleClass="modalDialog">
+		<p:dialog id="dialog" header="Edit UseCase" widgetVar="editDialog" resizable="true" modal="true" style="width:800px" width="800" responsive="true">
 
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<h:panelGrid id="editPanel" columns="3" columnClasses="left-140,left-600,left">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="A unique identifier for this artifact" />
 					<h:outputText id="identifier" value="#{useCaseAction.useCase.artifact}" />
-					<pe:tooltip for="identifierLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="nameLabel" for="name" value="UseCase Name:" title="A short description that encompasses all flows of this Use Case" />
 					<p:inputText id="name" value="#{useCaseAction.useCase.name}" size="90" maxlength="100" required="true" valueChangeListener="#{useCaseAction.onNameChange}" requiredMessage="Name is required">
-						<p:ajax event="keyup" update="basicFlow"/>
+						<p:ajax event="keyup" update="basicFlow" />
 					</p:inputText>
-					<pe:tooltip for="nameLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="actorLabel" for="actor" value="Primary Actor:" title="The primary actor of this UseCase (other than System). A UseCase can have many Actors but must have one Primary Actor" />
 					<p:selectOneMenu id="actor" value="#{useCaseAction.useCase.primaryActor}" converter="#{actorConverter}" effect="fade" style="width:160px" required="true" requiredMessage="Primary Actor is required">
 						<f:selectItem itemLabel="Select Actor" itemValue="" />
 						<f:selectItems value="#{projectActors}" var="primaryActor" itemLabel="#{primaryActor.name}" itemValue="#{primaryActor}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="actorLabel" styleClass="customTooltip" />
+
 
 					<p:outputLabel id="objectiveLabel" for="objective" value="Objective:" title="What is the objective or goal of the successful execution of this use case?" />
 					<p:inputTextarea id="objective" value="#{useCaseAction.useCase.objective}" cols="100" rows="3" label="Objective" required="true" requiredMessage="Objective is required" />
-					<pe:tooltip for="objectiveLabel" rendered="#{authUser.tooltipDisplayed}" styleClass="customTooltip" />
-
-					<p:outputLabel id="statusLabel" for="status" value="Status:" title="The current status of the Use Case." />
-					<p:selectOneMenu id="status" value="#{useCaseAction.useCase.statusType}" effect="fade" style="width:160px" required="true" requiredMessage="Status is required">
-						<f:selectItem itemLabel="Select Status" itemValue="" />
-						<f:selectItems value="#{statusTypes}" var="_status" itemValue="#{_status}" />
-					</p:selectOneMenu>
-					<pe:tooltip for="statusLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="complexityLabel" for="complexity" value="Complexity:" title="The relative complexity of the UseCase" />
 					<p:selectOneMenu id="complexity" value="#{useCaseAction.useCase.complexity}" effect="fade" style="width:160px" required="true" requiredMessage="Complexity is required">
 						<f:selectItem itemLabel="Select Complexity" itemValue="" />
 						<f:selectItems value="#{useCaseComplexityItems}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="complexityLabel" rendered="#{authUser.tooltipDisplayed}" styleClass="customTooltip" />
-
-					<p:outputLabel id="productReleaseLabel" for="productReleaseSelect" value="Product Release:" title="The product release for which this use case will be implemented" />
-					<p:selectOneMenu id="productReleaseSelect" value="#{useCaseAction.useCase.productRelease}" converter="#{productReleaseConverter}" style="width:160px" effect="fade" required="true" requiredMessage="Product Release is required">
-						<f:selectItem itemLabel="Select Release" itemValue="" />
-						<f:selectItems value="#{productReleases}" var="productRelease" itemLabel="#{productRelease.version}" itemValue="#{productRelease}" />
-					</p:selectOneMenu>
-					<pe:tooltip for="productReleaseLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="packageLabel" for="package" value="Package:" title="You can categorize use cases by defining a package" />
 					<p:selectOneMenu id="package" value="#{useCaseAction.useCase.projectPackage}" effect="fade" style="width:160px" converter="#{projectPackageConverter}">
 						<f:selectItem itemLabel="Select Package" itemValue="" />
 						<f:selectItems value="#{projectPackages}" var="_package" itemValue="#{_package}" itemLabel="#{_package.name}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="packageLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="featureLabel" for="featureSelect" value="Feature:" title="The feature linked to this UseCase" />
 					<p:selectOneMenu id="featureSelect" value="#{useCaseAction.useCase.feature}" converter="#{featureConverter}" style="width:450px" effect="fade">
 						<f:selectItem itemLabel="Select Feature" itemValue="" />
 						<f:selectItems value="#{projectFeatures}" var="feature" itemLabel="#{feature.artifact}:#{feature.name}" itemValue="#{feature}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="featureLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="preconditionsLabel" for="preconditions" value="Preconditions:" title="State any preconditions to the realization of this use case" />
 					<p:inputText id="preconditions" value="#{useCaseAction.useCase.preconditions}" size="95" maxlength="80" />
-					<pe:tooltip for="preconditionsLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="postconditionsLabel" for="postconditions" value="Postconditions:" title="Describe any side effects of this UseCase execution" />
 					<p:inputText id="postconditions" value="#{useCaseAction.useCase.postconditions}" size="95" maxlength="80" />
-					<pe:tooltip for="postconditionsLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="triggerEventLabel" for="triggerEvent" value="Trigger Event:" title="The event that triggers the execution of this use case" />
 					<p:inputText id="triggerEvent" value="#{useCaseAction.useCase.triggerEvent}" size="95" maxlength="80" />
-					<pe:tooltip for="triggerEventLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="commentsLabel" for="comments" value="Comments:" title="Provide any additional information needed to communicate this UseCase" />
 					<p:inputTextarea id="comments" value="#{useCaseAction.useCase.comments}" cols="100" rows="3" />
-					<pe:tooltip for="commentsLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="basicFlowLabel" for="basicFlow" value="Basic Flow:" title="Name of the main use case flow scenario. Generated TestCases will use this name." />
 					<p:inputText id="basicFlow" value="#{useCaseAction.useCase.basicFlow.name}" size="90" maxlength="100" required="true" requiredMessage="Basic Flow Name is required" />
-					<pe:tooltip for="basicFlowLabel" styleClass="customTooltip" />
 
 					<h:outputLabel id="extendedFlowLabel" for="basicFlow" value="Extended Flow:" title="Select a Basic Flow that extends this Basic Flow. Entended Flows are used to link Basic Flows together in TestCases." />
 					<p:selectOneMenu id="extendedFlowSelect" value="#{useCaseAction.useCase.extendedFlow}" converter="#{flowConverter}" style="width:500px" effect="fade" required="false">
 						<f:selectItem itemLabel="---- Select Flow ----" itemValue="" />
 						<f:selectItems value="#{useCaseAction.extendedFlows}" var="flow" itemLabel="#{flow.name}" itemValue="#{flow}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="extendedFlowLabel" styleClass="customTooltip" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
@@ -223,7 +169,20 @@
 							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" title="Close the dialog" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
+				<pe:tooltip for="identifier" styleClass="customTooltip" />
+				<pe:tooltip for="extendedFlow" styleClass="customTooltip" />
+				<pe:tooltip for="basicFlow" styleClass="customTooltip" />
+				<pe:tooltip for="commentsLabel" styleClass="customTooltip" />
+				<pe:tooltip for="triggerEvent" styleClass="customTooltip" />
+				<pe:tooltip for="postconditions" styleClass="customTooltip" />
+				<pe:tooltip for="preconditions" styleClass="customTooltip" />
+				<pe:tooltip for="featureSelect" styleClass="customTooltip" />
+				<pe:tooltip for="package" styleClass="customTooltip" />
+				<pe:tooltip for="actor" styleClass="customTooltip" />
+				<pe:tooltip for="name" styleClass="customTooltip" />
+				<pe:tooltip for="complexity" styleClass="customTooltip" />
+				<pe:tooltip for="objective" styleClass="customTooltip" />
 
 			</h:form>
 		</p:dialog>
@@ -236,8 +195,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-		
-		
 
 	</ui:define>
 </ui:composition>

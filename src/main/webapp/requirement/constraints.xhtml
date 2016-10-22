@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Design Constraints</ui:define>
 	<ui:define name="content">
@@ -12,98 +12,85 @@
 		}
 	</script>
 
-		<p:layout fullPage="true">
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
+		</p:dialog>
 
-			<p:layoutUnit position="north" header="#{msg.appFullTitle}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="west" header="#{msg.sidebarTitle}" resizable="true" size="#{appManager.navigatorWidth}">
-				<h:form id="navigatorForm">
-					<ui:include src="/includes/sidebar.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
+						<div style="text-align: center;">
+							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
+						</div>
+						<div style="margin: 6px">
+							<h:outputText value="#{constraintAction.project.name}: Design Constraints" styleClass="header" />
+						</div>
+						<p:dataTable id="table" emptyMessage="No Constraints Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_designConstraint" value="#{constraintAction.designConstraints}" selectionMode="single" rowKey="#{_designConstraint.id}"
+							selection="#{constraintAction.designConstraint}" reflow="true">
+							<p:ajax event="rowSelect" listener="#{constraintAction.onRowSelect}" update="editButton deleteButton" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
-			<p:layoutUnit position="center">
-
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/ajax-loading.gif" width="25" />
-				</p:dialog>
-
-				<h:form id="form">
-
-					<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
-					<div style="text-align: center;">
-						<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
-					</div>
-					<div style="margin: 6px">
-						<h:outputText value="#{constraintAction.project.name}: Design Constraints" styleClass="header" />
-					</div>
-					<p:dataTable id="table" emptyMessage="No Constraints Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_designConstraint" value="#{constraintAction.designConstraints}" selectionMode="single" rowKey="#{_designConstraint.id}"
-						selection="#{constraintAction.designConstraint}">
-						<p:ajax event="rowSelect" listener="#{constraintAction.onRowSelect}" update="editButton deleteButton" />
-						<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-
-						<f:facet name="header">
-							<h:outputText value="Design Constraints" />
-						</f:facet>
-
-						<p:column style="width:50px" sortBy="#{_designConstraint.artifact}">
 							<f:facet name="header">
-								<h:outputText value="Id" style="font-size:0.93em" />
+								<h:outputText value="Design Constraints" />
 							</f:facet>
-							<h:outputText value="#{_designConstraint.artifact}" style="font-size:0.9em" />
-						</p:column>
 
-						<p:column style="width:300px">
-							<f:facet name="header">
-								<h:outputText value="Constraint Name" style="font-size:0.93em" />
+							<p:column style="width:50px" sortBy="#{_designConstraint.artifact}">
+								<f:facet name="header">
+									<h:outputText value="Id" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_designConstraint.artifact}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:300px">
+								<f:facet name="header">
+									<h:outputText value="Constraint Name" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_designConstraint.name}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:350px">
+								<f:facet name="header">
+									<h:outputText value="Description" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_designConstraint.descriptionAbbrv}" style="font-size:0.9em" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton id="newButton" value="New Constraint" disabled="#{not constraintAction.editable}" update=":editForm:editPanel" action="#{constraintAction.add}" oncomplete="PF('editDialog').show()" title="New Constraint" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not constraintAction.selected or not constraintAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not constraintAction.selected or not constraintAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:spacer width="6" />
+								<p:button id="viewButton" value="View All" outcome="/constraintlist" icon="ui-icon-search" title="View or Print Constraints List">
+									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+									<f:param name="id" value="#{constraintAction.id}" />
+								</p:button>
+								<p:spacer width="10" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
+									<pe:exporter type="xlsx" target="table" fileName="#{constraintAction.project.name}_constraints" orientation="landscape" />
+								</h:commandLink>
+
 							</f:facet>
-							<h:outputText value="#{_designConstraint.name}" style="font-size:0.9em" />
-						</p:column>
+						</p:dataTable>
+						<div style="margin: 5px">
+							<h:outputText value="Items: #{constraintAction.itemCount}" />
+						</div>
 
-						<p:column style="width:350px">
-							<f:facet name="header">
-								<h:outputText value="Description" style="font-size:0.93em" />
-							</f:facet>
-							<h:outputText value="#{_designConstraint.descriptionAbbrv}" style="font-size:0.9em" />
-						</p:column>
-
-						<f:facet name="footer">
-							<p:commandButton id="newButton" value="New Constraint" disabled="#{not constraintAction.editable}" update=":editForm:editPanel" action="#{constraintAction.add}" oncomplete="PF('editDialog').show()" title="New Constraint" />
-							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" disabled="#{not constraintAction.selected or not constraintAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
-							<p:spacer width="6" />
-							<p:commandButton id="deleteButton" value="Delete" disabled="#{not constraintAction.selected or not constraintAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-							<p:spacer width="6" />
-							<p:button id="viewButton" value="View All" outcome="/constraintlist" icon="ui-icon-search" title="View or Print Constraints List">
-								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
-								<f:param name="id" value="#{constraintAction.id}" />
-							</p:button>
-							<p:spacer width="10" />
-							<h:commandLink>
-								<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-								<pe:exporter type="xlsx" target="table" fileName="#{constraintAction.project.name}_constraints" orientation="landscape" />
-							</h:commandLink>
-
-						</f:facet>
-					</p:dataTable>
-					<div style="margin: 5px">
-						<h:outputText value="Items: #{constraintAction.itemCount}"/>
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{constraintAction.close}" styleClass="center-75" title="Close view" />
+						</div>
 					</div>
+				</div>
+			</div>
+		</h:form>
 
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{constraintAction.close}" styleClass="center-75" title="Close view" />
-					</div>
-				</h:form>
-
-			</p:layoutUnit>
-		</p:layout>
-
-		<p:dialog id="dialog" header="Edit Constraint" widgetVar="editDialog" minWidth="600" resizable="true" position="25,25" modal="true" styleClass="modalDialog">
+		<p:dialog id="dialog" header="Edit Constraint" widgetVar="editDialog" minWidth="600" resizable="true" position="25,25" modal="true" responsive="true">
 			<h:form id="editForm">
 				<p:messages severity="error" />
 				<h:panelGrid id="editPanel" columns="2" columnClasses="left-120,left">
@@ -117,7 +104,7 @@
 					<p:outputLabel for="description" value="Description:" />
 					<pe:ckEditor id="description" value="#{constraintAction.designConstraint.description}" width="800px" height="400px" toolbar="#{toolbarControls}" label="Action Description" required="true" requiredMessage="Action is required">
 						<p:ajax event="save" listener="#{constraintAction.save}" update=":form:messages" />
-					</pe:ckEditor>					
+					</pe:ckEditor>
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
@@ -138,14 +125,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-
-		<p:dialog header="Constraint Help" widgetVar="helpDialog" minWidth="450" resizable="true" modal="false">
-			<h:panelGrid id="helpPanel" columns="1">
-				<h:outputText value="Constraint help content:" escape="false" />
-			</h:panelGrid>
-		</p:dialog>
-		
-		
 
 	</ui:define>
 </ui:composition>
