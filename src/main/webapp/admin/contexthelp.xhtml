@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+	<ui:define name="title">Manage Help Content</ui:define>
+
+	<ui:define name="content">
+
+		<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('editDialog').hide();
+		}
+
+		function handleImportComplete(xhr, status, args) {
+			if(!args.validationFailed)
+				PF('importDialog').hide();
+		}		
+		</script>
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit position="north" header="#{appManager.displayName}">
+				<h:form>
+					<ui:include src="/includes/menu.xhtml" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+
+				<h:form id="form">
+
+					<p:messages id="messages" autoUpdate="true" />
+					<div class="ui-grid">
+						<div class="ui-grid-row">
+							<div class="ui-grid-col-8" style="text-align: left; margin: 0px auto 0px 40px">
+								<h:outputText value="#{helpManager.getHelp('HelpContentForm')}" escape="false" style="font-size: 1.1em" />
+							</div>
+							<div class="ui-grid-col-4" style="text-align: right; margin: 5px">
+								<h:graphicImage value="/images/help_icon.gif" height="18" title="HelpContentHelp" onclick="PF('helpDialog').show()" />
+							</div>
+						</div>
+					</div>
+					<p:spacer height="10" />
+
+					<h:panelGrid columns="1" style="width:100%">
+
+						<p:dataTable id="table" emptyMessage="No Help Content Defined" resizableColumns="true" scrollable="true" var="_help" value="#{helpContentAction.helpItems}" selectionMode="single" rowKey="#{_help.id}" selection="#{helpContentAction.helpItem}" paginator="true" paginatorPosition="top" rows="15"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="15,25,50" sortOrder="descending" paginatorAlwaysVisible="true">
+							<p:ajax event="rowSelect" listener="#{helpContentAction.onRowSelect}" update="@(:input)" />
+							<p:ajax event="rowDblselect" listener="#{helpContentAction.onRowSelect}" update=":editForm" oncomplete="PF('editDialog').show()" />
+							<f:facet name="header">
+								<h:outputText value="Help Content" />
+							</f:facet>
+
+							<p:column style="width:160px" sortBy="#{_help.keyword}">
+								<f:facet name="header">
+									<h:outputText value="Help Key" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_help.keyword}" style="font-size:0.9em" />
+							</p:column>
+
+							<p:column style="width:600px">
+								<f:facet name="header">
+									<h:outputText value="Help Content" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{_help.content}" escape="true" style="font-size:0.9em" />
+							</p:column>
+
+							<f:facet name="footer">
+								<p:commandButton value="New Help Item" update=":editForm:editPanel" action="#{helpContentAction.add}" oncomplete="PF('editDialog').show()" title="Add new Help Item" />
+								<p:spacer width="6" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not helpContentAction.selected}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
+								<p:spacer width="6" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not helpContentAction.selected}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:spacer width="6" />
+								<p:commandButton value="Import Help Content" update=":importForm" oncomplete="PF('importDialog').show()" title="Import Help Content" />
+								<p:spacer width="10" />
+								<h:commandLink>
+									<p:graphicImage value="/images/excel_logo.svg" height="24" title="Export to Excel" style="vertical-align:middle" />
+									<pe:exporter type="xlsx" target="table" fileName="helpcontent" orientation="landscape" />
+								</h:commandLink>
+							</f:facet>
+						</p:dataTable>
+						<div>
+							<h:outputText id="filterCount" value="Items: #{helpContentAction.itemCount}" />
+						</div>
+					</h:panelGrid>
+
+					<div style="text-align: right; margin: 0 10px 0 0">
+						<p:commandButton value="#{msg.buttonClose}" action="#{helpContentAction.close}" style="width:80px" title="Close view" />
+					</div>
+				</h:form>
+			</p:layoutUnit>
+			<p:layoutUnit position="south">
+				<h:form>
+					<ui:include src="/includes/footer.xhtml" />
+				</h:form>
+			</p:layoutUnit>			
+		</p:layout>
+
+		<p:dialog id="editDlg" header="Edit Help Content" widgetVar="editDialog" modal="true" styleClass="formDialog" position="30,30">
+			<h:form id="editForm">
+				<p:messages severity="warn,error" />
+				<h:panelGrid id="editPanel" columns="1" columnClasses="left,left">
+
+					<p:outputLabel for="helpKey" value="Help Key:" />
+					<p:inputText id="helpKey" value="#{helpContentAction.helpItem.keyword}" size="35" maxlength="30" label="Help Key" required="true" />
+
+					<p:outputLabel for="helpContent" value="Help Content:" />
+					<pe:ckEditor id="helpContent" value="#{helpContentAction.helpItem.content}" toolbar="#{toolbarControls}" customConfig="#{request.contextPath}/resources/js/ckeditor-config.js" width="900px" height="500px" requiredMessage="Help Content is required" required="true">
+						<p:ajax event="save" listener="#{helpContentAction.save}" update=":editForm" />
+					</pe:ckEditor>
+
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="#{msg.buttonOk}" actionListener="#{helpContentAction.save}" styleClass="center-75" update=":form:table :form:filterCount :editForm" style="width:80px" title="Save Help Contents" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:spacer width="6" />
+							<p:commandButton value="#{msg.buttonCancel}" immediate="true" onclick="PF('editDialog').hide()" icon="ui-icon ui-icon-close" styleClass="center-75" />
+							<p:spacer width="6" />
+							<p:commandButton value="#{msg.buttonApply}" actionListener="#{helpContentAction.save}" styleClass="center-75" update=":form:table :form:filterCount :editForm" style="width:80px" title="Save Help Contents" icon="ui-icon ui-icon-check" />
+
+						</p:outputPanel>
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="importDlg" header="Import Help Content" widgetVar="importDialog" minWidth="600" resizable="true" modal="true">
+			<h:form id="importForm" enctype="multipart/form-data">
+				<p:messages />
+				<h:panelGrid>
+					<h:outputText value="Click Choose to browse for the Help Content File (Excel Format)" styleClass="help" />
+					<h:outputText value="Click Upload to upload file for import" styleClass="help" />
+					<h:outputText value="Close the dialog" styleClass="help" />
+				</h:panelGrid>
+				<p:panel id="uploadPanel" header="Upload Help Content">
+					<p:fileUpload fileUploadListener="#{helpContentAction.handleHelpContentUpload}" mode="advanced" update=":form:table :importForm" sizeLimit="5000000" allowTypes="/(\.|\/)(xls|xlsx)$/" />
+					<p:spacer height="60" />
+					<f:facet name="footer">
+						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
+							<p:commandButton value="#{msg.buttonClose}" onclick="PF('importDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+						</p:outputPanel>
+					</f:facet>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd">
+			<h:form>
+				<div style="margin: 0 auto; text-align: right">
+					<p:commandButton value="Yes" update=":form:table :form:filterCount" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" actionListener="#{helpContentAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</div>
+			</h:form>
+		</p:confirmDialog>
+
+		<ui:include src="/includes/helppanel.xhtml">
+			<ui:param name="helpResource" value="#{helpManager.getHelp('HelpContentHelp')}" />
+		</ui:include>
+
+	</ui:define>
+</ui:composition>

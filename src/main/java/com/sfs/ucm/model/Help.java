@@ -23,45 +23,80 @@ package com.sfs.ucm.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- * Help
- * 
- * @author lbbishop
- * 
- */
+import org.apache.commons.lang.StringUtils;
+
 @Entity
 @Table(name = "help")
 public class Help extends EntityBase implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@NotNull(message = "keyval is required")
-	@Size(min = 3, max = 40)
-	@Column(name = "keyval", length = 40, nullable = false)
-	private String keyval;
+	@NotNull(message = "Keyword is required")
+	@Size(max = 30)
+	@Column(name = "keyword", length = 30, nullable = false)
+	private String keyword;
 
-	@NotNull(message = "value is required")
-	@Column(name = "value", columnDefinition = "TEXT", nullable = false)
-	private String value;
+	@NotNull(message = "Content is required")
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name = "content", columnDefinition = "CLOB")
+	private String content;
+
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default constructor
 	 */
 	public Help() {
 		super();
+		init();
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param keyword
+	 */
+	public Help(String keyword) {
+		super();
+		init();
+		this.keyword = keyword;
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param keyword
+	 * 
+	 * @param content
+	 */
+	public Help(String keyword, String content) {
+		super();
+		init();
+		this.keyword = keyword;
+		this.content = content;
+	}
+
+	/**
+	 * init method
+	 */
+	private void init() {
+		this.keyword = "";
+		this.content = "";
 	}
 
 	/**
@@ -80,45 +115,92 @@ public class Help extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @param key
-	 * @param value
+	 * @return the keyword
 	 */
-	public Help(String keyval, String value) {
-		super();
-		this.keyval = keyval;
-		this.value = value;
+	public String getKeyword() {
+		return keyword;
 	}
 
 	/**
-	 * @return the keyval
+	 * @param keyword
+	 *            the keyword to set
 	 */
-	public String getKeyval() {
-		return keyval;
-	}
-
-	/**
-	 * @param keyval
-	 *            the keyval to set
-	 */
-	public void setKeyval(String keyval) {
-		if (keyval != null) {
-			this.keyval = keyval.trim();
+	public void setKeyword(String keyword) {
+		if (keyword != null) {
+			this.keyword = keyword.trim();
 		}
 	}
 
 	/**
-	 * @return the value
+	 * @return the content
 	 */
-	public String getValue() {
-		return value;
+	public String getContent() {
+		return content;
 	}
 
 	/**
-	 * @param value
-	 *            the value to set
+	 * Short form
+	 * 
+	 * @return the helpContent
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public String getContentAbbrv() {
+		String content = null;
+		if (StringUtils.isNotEmpty(this.content)) {
+			content = StringUtils.abbreviate(this.content, 100);
+		}
+		return content;
+	}
+
+	/**
+	 * @param helpContent
+	 *            the helpContent to set. Add CSS style class to paragraph, unordered lists, and ordered lists.
+	 * 
+	 */
+	public void setContent(String content) {
+
+		this.content = content;
+		// if (StringUtils.isNotEmpty(this.content)) {
+		// this.content = StringUtils.replace(this.content, "<p>", "<p class=\"tooltip-inline\">");
+		// this.content = StringUtils.replace(this.content, "<ul>", "<ul class=\"tooltip-inline\">");
+		// this.content = StringUtils.replace(this.content, "<ol>", "<ol class=\"tooltip-inline\">");
+		// this.content = StringUtils.replace(this.content, "<div>", "<div class=\"tooltip-inline\">");
+		// }
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Help other = (Help) obj;
+		if (keyword == null) {
+			if (other.keyword != null)
+				return false;
+		}
+		else if (!keyword.equals(other.keyword))
+			return false;
+		return true;
 	}
 
 	/*
@@ -131,10 +213,10 @@ public class Help extends EntityBase implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Help [id=");
 		builder.append(id);
-		builder.append(", keyval=");
-		builder.append(keyval);
-		builder.append(", value=");
-		builder.append(value);
+		builder.append(", keyword=");
+		builder.append(keyword);
+		builder.append(", content=");
+		builder.append(StringUtils.abbreviate(content, 60));
 		builder.append("]");
 		return builder.toString();
 	}

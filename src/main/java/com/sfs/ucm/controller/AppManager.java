@@ -21,20 +21,24 @@
  */
 package com.sfs.ucm.controller;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.Properties;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 import com.sfs.ucm.data.Constants;
 import com.sfs.ucm.data.Literal;
+import com.sfs.ucm.exception.UCMException;
 
 @Named("appManager")
 @ApplicationScoped
 public class AppManager implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String name;
 
 	private String releaseVersion;
@@ -45,7 +49,7 @@ public class AppManager implements Serializable {
 	private int menuHeight;
 	private int tableScrollHeight;
 	private int listScrollHeight; // scroll height for viewing all artifacts
-	
+
 	public AppManager() {
 		this.name = Literal.APPNAME.toString();
 		this.releaseVersion = "0.9.7";
@@ -54,7 +58,7 @@ public class AppManager implements Serializable {
 		this.growlLife = Constants.GROWL_LIFE;
 		this.menuHeight = Constants.MENU_HEIGHT;
 		this.tableScrollHeight = Constants.TABLE_SCROLL_HEIGHT;
-		this.listScrollHeight = Constants.LIST_SCROLL_HEIGHT;		
+		this.listScrollHeight = Constants.LIST_SCROLL_HEIGHT;
 	}
 
 	/**
@@ -65,7 +69,8 @@ public class AppManager implements Serializable {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -154,7 +159,8 @@ public class AppManager implements Serializable {
 	}
 
 	/**
-	 * @param tableScrollHeight the tableScrollHeight to set
+	 * @param tableScrollHeight
+	 *            the tableScrollHeight to set
 	 */
 	public void setTableScrollHeight(int tableScrollHeight) {
 		this.tableScrollHeight = tableScrollHeight;
@@ -168,10 +174,89 @@ public class AppManager implements Serializable {
 	}
 
 	/**
-	 * @param listScrollHeight the listScrollHeight to set
+	 * @param listScrollHeight
+	 *            the listScrollHeight to set
 	 */
 	public void setListScrollHeight(int listScrollHeight) {
 		this.listScrollHeight = listScrollHeight;
+	}
+
+	/**
+	 * Retrieve the current environment (local, dev, qual, prod)
+	 * 
+	 * <p>
+	 * The environment is obtained from build.properties found in the top level Java classpath.
+	 * 
+	 * @return formatted date string representing the environment
+	 * @throws UCMException
+	 */
+	public String getEnv() throws UCMException {
+
+		// Read properties file.
+		Properties properties = new Properties();
+
+		try {
+			properties.load(AppManager.class.getClassLoader().getResourceAsStream("build.properties"));
+		}
+		catch (FileNotFoundException e) {
+			throw new UCMException(e);
+		}
+		catch (IOException e) {
+			throw new UCMException(e);
+		}
+		catch (Exception e) {
+			throw new UCMException(e);
+		}
+
+		return properties.getProperty("environment");
+
+	}
+
+	/**
+	 * Retrieve the application property value
+	 * 
+	 * <p>
+	 * The property value is obtained from app.properties found in the top level Java classpath. The following keys are supported:
+	 * <ul>
+	 * <li>mail.host - returns the platform specific mail host server</li>
+	 * <li>mail.servicerequest.group - returns metagroup members (userId) used for Service Request recipients</li>
+	 * <li>mail.feedback.group - returns metagroup members (userId) used for Feedback recipients</li>
+	 * <li>mail.test.recipient - returns recipient userId for test mail messages</li>
+	 * <li>mail.reply.address - returns fully qualified mail reply address</li>
+	 * <li>mail.domain - returns the mail domain name (e.g. mail.sandia.gov) for the current environment</li>
+	 * <li>mail.port - the mail server port</li>
+	 * <li>host.url - returns the application host URL for the current environment</li>
+	 * <li>metagroup.uri - returns the metagroup utility URI (you must append a group name for group lookup)</li>
+	 * <li>mailto.application.support - person or distribution list for application support needs</li>
+	 * <li>ws.credential.username - web service credential: username</li>
+	 * <li>ws.credential.password - web service credential: password</li>
+	 * </ul>
+	 * 
+	 * @return application property value or null if not found
+	 * @throws UCMException
+	 */
+	public String getApplicationProperty(final String key) throws UCMException {
+
+		String value = null;
+
+		// Read properties file.
+		Properties properties = new Properties();
+
+		try {
+			properties.load(AppManager.class.getClassLoader().getResourceAsStream("app.properties"));
+			value = properties.getProperty(key);
+		}
+		catch (FileNotFoundException e) {
+			throw new UCMException(e);
+		}
+		catch (IOException e) {
+			throw new UCMException(e);
+		}
+		catch (Exception e) {
+			throw new UCMException(e);
+		}
+
+		return value;
 	}
 
 }

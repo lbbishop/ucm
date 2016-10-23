@@ -46,12 +46,27 @@ public final class Literal {
 	}
 
 	/**
+	 * Environments
+	 */
+	public static final Literal ENV_LOCAL = new Literal("local");
+	public static final Literal ENV_DEV = new Literal("dev");
+	public static final Literal ENV_QUAL = new Literal("qual");
+	public static final Literal ENV_PROD = new Literal("prod");
+	
+	
+	/**
+	 * Log file
+	 */
+	public static final Literal LOG_FILE = new Literal("server.log");
+	public static final Literal LOG_DIR = new Literal("c:/wildfly-9.0.1.Final/standalong/log");
+	
+	/**
 	 * resource message bundle
 	 */
 	public static final Literal RESOURCE_BUNDLE = new Literal("com.sfs.ucm.i18n.messages");
-	
+
 	/**
-	 *  authorization group types
+	 * authorization group types
 	 */
 	public static final Literal GROUPTYPE_SECURITY_LEVEL = new Literal("SECURITY_LEVEL");
 
