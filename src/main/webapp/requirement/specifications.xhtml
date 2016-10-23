@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Supplementary Requirement Specifications</ui:define>
+	<ui:define name="title">Supplementary Specification Specifications</ui:define>
 	<ui:define name="content">
 
 		<script type="text/javascript">
 		function handleComplete(xhr, status, args) {
 			if(!args.validationFailed)
-				PF('requirementDialog').hide();
+				PF('specificationDialog').hide();
 		}
 		function handleBusinessRuleSave(xhr, status, args) {
 			if(!args.validationFailed)
@@ -32,69 +32,62 @@
 							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
 						</div>
 						<div style="margin: 6px">
-							<h:outputText value="#{specificationAction.project.name}: Supplementary Requirement Specifications" styleClass="header" />
+							<h:outputText value="#{specificationAction.project.name}: Supplementary Specification Specifications" styleClass="header" />
 						</div>
-						<p:dataTable id="table" emptyMessage="No Requirements Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_requirement" value="#{specificationAction.requirements}" selectionMode="single" rowKey="#{_requirement.id}"
-							selection="#{specificationAction.requirement}">
+						<p:dataTable id="table" emptyMessage="No Specifications Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_specification" value="#{specificationAction.specifications}" selectionMode="single" rowKey="#{_specification.id}"
+							selection="#{specificationAction.specification}">
 							<p:ajax event="rowSelect" listener="#{specificationAction.onRowSelect}" update="editButton deleteButton :form:table:addRuleButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('requirementDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('specificationDialog').show()" />
 
 							<f:facet name="header">
-								<h:outputText value="Supplementary Requirement Specifications" />
+								<h:outputText value="Supplementary Specification Specifications" />
 							</f:facet>
 
-							<p:column style="width:50px;vertical-align:top" sortBy="#{_requirement.artifact}">
+							<p:column style="width:50px;vertical-align:top" sortBy="#{_specification.artifact}">
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
-								<h:outputText value="#{_requirement.artifact}" style="font-size:0.9em" />
+								<h:outputText value="#{_specification.artifact}" style="font-size:0.9em" />
 							</p:column>
 
 							<p:column style="width:260px;vertical-align:top">
 								<f:facet name="header">
-									<h:outputText value="Requirement Name" style="font-size:0.93em" />
+									<h:outputText value="Specification Name" style="font-size:0.93em" />
 								</f:facet>
-								<h:outputText value="#{_requirement.name}" style="font-size:0.9em" />
+								<h:outputText value="#{_specification.name}" style="font-size:0.9em" />
 							</p:column>
 
 							<p:column style="width:100px;vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Package" style="font-size:0.93em" />
 								</f:facet>
-								<h:outputText value="#{_requirement.projectPackage.name}" style="font-size:0.9em" />
+								<h:outputText value="#{_specification.projectPackage.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:80px;vertical-align:top" sortBy="#{_requirement.qualityType}">
+							<p:column style="width:80px;vertical-align:top" sortBy="#{_specification.qualityType}">
 								<f:facet name="header">
 									<h:outputText value="Quality Type" style="font-size:0.93em" />
 								</f:facet>
-								<h:outputText value="#{_requirement.qualityType}" style="font-size:0.9em" />
-							</p:column>
-
-							<p:column style="width:60px;vertical-align:top" sortBy="#{_requirement.statusType}">
-								<f:facet name="header">
-									<h:outputText value="Status" style="font-size:0.93em" />
-								</f:facet>
-								<h:outputText value="#{_requirement.statusType}" style="font-size:0.9em" />
+								<h:outputText value="#{_specification.qualityType}" style="font-size:0.9em" />
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="Add Requirement" disabled="#{not specificationAction.editable}" update=":editForm:editPanel" action="#{specificationAction.add}" oncomplete="PF('requirementDialog').show()" title="Add new Requirement" />
+								<p:commandButton value="Add Specification" disabled="#{not specificationAction.editable}" update=":editForm:editPanel" action="#{specificationAction.add}" oncomplete="PF('specificationDialog').show()" title="Add new Specification" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not specificationAction.selected or not specificationAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('requirementDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not specificationAction.selected or not specificationAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('specificationDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not specificationAction.selected or not specificationAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="20" />
 								<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not specificationAction.selected or not specificationAction.editable}" update=":ruleForm:rulePanel" action="#{specificationAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()" title="Add new Business Rule" />
 								<p:spacer width="6" />
-								<p:button id="viewButton" value="View all" outcome="/requirementlist" icon="ui-icon-search" title="View or Print Requirements">
+								<p:button id="viewButton" value="View all" outcome="/specificationlist" icon="ui-icon-search" title="View or Print Specifications">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{specificationAction.id}" />
 								</p:button>
 								<p:spacer width="10" />
 								<h:commandLink>
 									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
-									<pe:exporter type="xlsx" target="table" fileName="#{specificationAction.project.name}_requirements" orientation="landscape" />
+									<pe:exporter type="xlsx" target="table" fileName="#{specificationAction.project.name}_specifications" orientation="landscape" />
 								</h:commandLink>
 							</f:facet>
 						</p:dataTable>
@@ -108,52 +101,52 @@
 		</h:form>
 
 
-		<p:dialog header="Edit Requirement" widgetVar="requirementDialog" resizable="true" modal="true" responsive="true">
+		<p:dialog header="Edit Specification" widgetVar="specificationDialog" resizable="true" modal="true" responsive="true">
 			<h:form id="editForm">
 				<p:messages severity="error" />
 				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
-					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="A unique identifier of this requirement" />
-					<h:outputText id="identifier" value="#{specificationAction.requirement.artifact}" />
+					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="A unique identifier of this specification" />
+					<h:outputText id="identifier" value="#{specificationAction.specification.artifact}" />
 
-					<p:outputLabel id="nameLabel" for="name" value="Name:" title="A brief name of this requirement" />
-					<p:inputText id="name" value="#{specificationAction.requirement.name}" size="90" maxlength="100" requiredMessage="Name is required" required="true" />
+					<p:outputLabel id="nameLabel" for="name" value="Name:" title="A brief name of this specification" />
+					<p:inputText id="name" value="#{specificationAction.specification.name}" size="90" maxlength="100" requiredMessage="Name is required" required="true" />
 
-					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="Provide a detailed specification of this requirement" />
-					<p:editor id="description" value="#{specificationAction.requirement.description}" style="width:600px" width="600" height="180" controls="#{editorControls}" widgetVar="descriptionEditorWidget" requiredMessage="Description is required" required="true" />
+					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="Provide a detailed specification of this specification" />
+					<p:editor id="description" value="#{specificationAction.specification.description}" style="width:600px" width="600" height="180" controls="#{editorControls}" widgetVar="descriptionEditorWidget" requiredMessage="Description is required" required="true" />
 
-					<p:outputLabel id="packageLabel" for="package" value="Package:" title="Assign a functional category to this requirement" />
-					<p:selectOneMenu id="package" value="#{specificationAction.requirement.projectPackage}" effect="fade" style="width:140px" converter="#{projectPackageConverter}">
+					<p:outputLabel id="packageLabel" for="package" value="Package:" title="Assign a functional category to this specification" />
+					<p:selectOneMenu id="package" value="#{specificationAction.specification.projectPackage}" effect="fade" style="width:140px" converter="#{projectPackageConverter}">
 						<f:selectItem itemLabel="Select Package" itemValue="" />
 						<f:selectItems value="#{projectPackages}" var="_package" itemValue="#{_package}" itemLabel="#{_package.name}" />
 					</p:selectOneMenu>
 
 					<p:outputLabel id="qualityTypeLabel" for="qualityType" value="Quality Type:" title="The non-functional, quality aspects of the system" />
-					<p:selectOneMenu id="qualityType" value="#{specificationAction.requirement.qualityType}" effect="fade" required="true" style="width:160px" requiredMessage="Quality Type is required">
+					<p:selectOneMenu id="qualityType" value="#{specificationAction.specification.qualityType}" effect="fade" required="true" style="width:160px" requiredMessage="Quality Type is required">
 						<f:selectItem itemLabel="Select Quality Type" itemValue="" />
 						<f:selectItems value="#{qualityTypes}" var="_quality" itemValue="#{_quality}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel id="difficultyLabel" for="difficulty" value="Difficulty:" title="The relative difficulty of defining and implementing this requirement" />
-					<p:selectOneMenu id="difficulty" value="#{specificationAction.requirement.difficultyType}" effect="fade" style="width:140px">
+					<p:outputLabel id="difficultyLabel" for="difficulty" value="Difficulty:" title="The relative difficulty of defining and implementing this specification" />
+					<p:selectOneMenu id="difficulty" value="#{specificationAction.specification.difficultyType}" effect="fade" style="width:140px">
 						<f:selectItem itemLabel="Select Difficulty" itemValue="" />
 						<f:selectItems value="#{difficultyTypes}" var="_difficulty" itemValue="#{_difficulty}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel id="featureLabel" for="featureSelect" value="Feature:" title="The feature linked to this requirement" />
-					<p:selectOneMenu id="featureSelect" value="#{specificationAction.requirement.feature}" converter="#{featureConverter}" style="width:400px" effect="fade">
+					<p:outputLabel id="featureLabel" for="featureSelect" value="Feature:" title="The feature linked to this specification" />
+					<p:selectOneMenu id="featureSelect" value="#{specificationAction.specification.feature}" converter="#{featureConverter}" style="width:400px" effect="fade">
 						<f:selectItem itemLabel="Select Feature" itemValue="" />
 						<f:selectItems value="#{projectFeatures}" var="feature" itemLabel="#{feature.name}" itemValue="#{feature}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel id="issuesLabel" for="issues" value="Issues:" title="Any outstanding issues associated with this requirement" />
-					<p:inputTextarea id="issues" value="#{specificationAction.requirement.issues}" rows="4" cols="120" />
+					<p:outputLabel id="issuesLabel" for="issues" value="Issues:" title="Any outstanding issues associated with this specification" />
+					<p:inputTextarea id="issues" value="#{specificationAction.specification.issues}" rows="4" cols="120" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
 							<p:commandButton value="Save" update="@(form)" actionListener="#{specificationAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
 							<p:spacer width="6" />
-							<p:commandButton value="Cancel" onclick="PF('requirementDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+							<p:commandButton value="Cancel" onclick="PF('specificationDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
 				</p:panelGrid>
@@ -173,28 +166,22 @@
 				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
-					<h:outputText id="identifier" value="#{specificationAction.requirementRule.artifact}" />
+					<h:outputText id="identifier" value="#{specificationAction.specificationRule.artifact}" />
 
 					<p:outputLabel for="ruleName" value="Rule Name:" />
-					<p:inputText id="ruleName" value="#{specificationAction.requirementRule.name}" size="55" maxlength="40" label="Name" required="true" />
-
-					<p:outputLabel for="businessRule" value="Business Rule:" />
-					<p:editor id="businessRule" value="#{specificationAction.requirementRule.rule}" style="width:600px" width="600" height="150" controls="#{editorControls}" label="Business Rule" required="true" />
+					<p:inputText id="ruleName" value="#{specificationAction.specificationRule.name}" size="55" maxlength="40" label="Name" required="true" />
 
 					<p:outputLabel for="ruleType" value="Rule Type:" />
-					<p:selectOneMenu id="ruleType" value="#{specificationAction.requirementRule.ruleType}" effect="fade" required="true">
+					<p:selectOneMenu id="ruleType" value="#{specificationAction.specificationRule.ruleType}" effect="fade" required="true">
 						<f:selectItem itemLabel="Select Rule Type" itemValue="" />
 						<f:selectItems value="#{ruleTypes}" var="_type" itemValue="#{_type}" />
 					</p:selectOneMenu>
+					
+					<p:outputLabel for="whenCondition" value="When:" />
+					<p:editor id="whenCondition" value="#{specificationAction.specificationRule.when}" style="width:600px" width="600" height="150" controls="#{editorControls}" label="Business Rule" required="true" />
 
-					<p:outputLabel for="ruleStatus" value="Status:" />
-					<p:selectOneMenu id="ruleStatus" value="#{specificationAction.requirementRule.statusType}" effect="fade" required="true">
-						<f:selectItem itemLabel="Select Status" itemValue="" />
-						<f:selectItems value="#{statusTypes}" var="_status" itemValue="#{_status}" />
-					</p:selectOneMenu>
-
-					<p:outputLabel for="implementation" value="Implementation:" />
-					<p:editor id="implementation" value="#{specificationAction.requirementRule.implementation}" style="width:600px" width="600" height="150" controls="#{editorControls}" />
+					<p:outputLabel for="thenResult" value="Then:" />
+					<p:editor id="thenResult" value="#{specificationAction.specificationRule.then}" style="width:600px" width="600" height="150" controls="#{editorControls}" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">

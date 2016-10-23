@@ -28,7 +28,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -80,10 +79,10 @@ public class Issue extends EntityBase implements Serializable {
 	private Long id;
 
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
-	@NotNull(message = "Name is required")
+	@NotNull(message = "Title is required")
 	@Size(max = 100)
-	@Column(name = "name", length = 100, nullable = false)
-	private String name;
+	@Column(name = "title", length = 100, nullable = false)
+	private String title;
 
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
 	@NotNull(message = "Description is required")
@@ -123,13 +122,6 @@ public class Issue extends EntityBase implements Serializable {
 	@Column(name = "send_notification", nullable = false)
 	private Boolean sendNotification;
 
-	@OneToOne(optional = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "resource_id", nullable = true)
-	private Resource resource;
-
-	@Size(max = 25)
-	@Column(name = "external_id", length = 25, nullable = true)
-	private String externalId;
 
 	@ManyToOne
 	private Project project;
@@ -157,7 +149,6 @@ public class Issue extends EntityBase implements Serializable {
 	 */
 	private void init() {
 		this.sendNotification = false;
-		this.issueType = IssueType.Task;
 		this.assignee = new ProjectMember();
 	}
 
@@ -214,26 +205,26 @@ public class Issue extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the name
+	 * @return the title
 	 */
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 
 	/**
-	 * @return the abbreviated name
+	 * @return the abbreviated title
 	 */
-	public String getNameAbbrv() {
-		return StringUtils.abbreviate(this.name, Constants.ABBRV_NAME_LEN);
+	public String getTitleAbbrv() {
+		return StringUtils.abbreviate(this.title, Constants.ABBRV_NAME_LEN);
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param title
+	 *            the title to set
 	 */
-	public void setName(String name) {
-		if (name != null) {
-			this.name = name.trim();
+	public void setTitle(String title) {
+		if (title != null) {
+			this.title = title.trim();
 		}
 	}
 
@@ -272,21 +263,6 @@ public class Issue extends EntityBase implements Serializable {
 	 */
 	public void setStatusType(StatusType statusType) {
 		this.statusType = statusType;
-	}
-
-	/**
-	 * @return the externalId
-	 */
-	public String getExternalId() {
-		return externalId;
-	}
-
-	/**
-	 * @param externalId
-	 *            the externalId to set
-	 */
-	public void setExternalId(String externalId) {
-		this.externalId = externalId;
 	}
 
 	/**
@@ -365,25 +341,10 @@ public class Issue extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the resource
-	 */
-	public Resource getResource() {
-		return resource;
-	}
-
-	/**
-	 * @param resource
-	 *            the resource to set
-	 */
-	public void setResource(Resource resource) {
-		this.resource = resource;
-	}
-
-	/**
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
 	public String getArtifact() {
-		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_TASK.toString(), this.identifier);
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_ISSUE.toString(), this.identifier);
 	}
 
 	/*
@@ -395,7 +356,7 @@ public class Issue extends EntityBase implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
 
@@ -413,11 +374,11 @@ public class Issue extends EntityBase implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Issue other = (Issue) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (title == null) {
+			if (other.title != null)
 				return false;
 		}
-		else if (!name.equals(other.name))
+		else if (!title.equals(other.title))
 			return false;
 		return true;
 	}
@@ -430,12 +391,12 @@ public class Issue extends EntityBase implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Task [id=");
+		builder.append("Issue	 [id=");
 		builder.append(id);
 		builder.append(", identifier=");
 		builder.append(identifier);
-		builder.append(", name=");
-		builder.append(name);
+		builder.append(", title=");
+		builder.append(title);
 		builder.append(", description=");
 		builder.append(description);
 		builder.append(", statusType=");
@@ -450,10 +411,6 @@ public class Issue extends EntityBase implements Serializable {
 		builder.append(assignee);
 		builder.append(", sendNotification=");
 		builder.append(sendNotification);
-		builder.append(", resource=");
-		builder.append(resource);
-		builder.append(", externalId=");
-		builder.append(externalId);
 		builder.append("]");
 		return builder.toString();
 	}

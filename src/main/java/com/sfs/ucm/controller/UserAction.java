@@ -45,7 +45,6 @@ import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthRole;
 import com.sfs.ucm.model.AuthUser;
-import com.sfs.ucm.model.Preference;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.UserUpdated;
@@ -133,10 +132,6 @@ public class UserAction extends ActionBase implements Serializable {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.authUser = new AuthUser(ModelUtils.getNextIdentifier(this.authUsers));
-
-		// set default user preferences
-		this.authUser.addPreference(new Preference(Literal.PREF_DISPLAYTOOLTIPS.toString(), true));
-
 	}
 
 	/**

@@ -21,6 +21,7 @@
  */
 package com.sfs.ucm.controller;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +42,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 
 import com.sfs.ucm.data.Literal;
@@ -49,6 +52,7 @@ import com.sfs.ucm.data.StatusType;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Issue;
+import com.sfs.ucm.model.IssueAttachment;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.ProjectMember;
 import com.sfs.ucm.security.AccessManager;
@@ -114,6 +118,12 @@ public class IssueAction extends ActionBase implements Serializable {
 
 	private int newIssueCount;
 
+	private List<AuthUser> projectUsers;
+
+	private StreamedContent attachmentFile;
+
+	private IssueAttachment attachment;
+
 	@Inject
 	public void init() {
 		this.issue = new Issue();
@@ -137,6 +147,7 @@ public class IssueAction extends ActionBase implements Serializable {
 
 			// load resources
 			loadList();
+			loadProjectUsers(this.project);
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
@@ -162,7 +173,7 @@ public class IssueAction extends ActionBase implements Serializable {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.issue = new Issue(ModelUtils.getNextIdentifier(this.issues));
-		this.issue.setStatusType(StatusType.New);
+		this.issue.setStatusType(StatusType.Open);
 		this.projectUser = null;
 	}
 
@@ -254,6 +265,28 @@ public class IssueAction extends ActionBase implements Serializable {
 		this.projectUser = this.issue.getAssignee().getAuthUser();
 	}
 
+	/**
+	 * File Upload Handler
+	 * 
+	 * @param event
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void handleFileUpload(FileUploadEvent event) {
+
+		// extract filename
+		File file = new File(event.getFile().getFileName());
+
+		logger.info("Uploading file: {}, type: {}", file.getName(), event.getFile().getContentType());
+		this.attachment.setFilename(file.getName());
+		this.attachment.setVersion(1);
+		this.attachment.setContents(event.getFile().getContents());
+		this.attachment.setContentType(event.getFile().getContentType());
+
+		this.facesContextMessage.infoMessage("Uploaded file {0}", event.getFile().getFileName());
+
+	}
+
+	// =================== accessors ===========================
 	/**
 	 * Assessor
 	 * 
@@ -363,6 +396,44 @@ public class IssueAction extends ActionBase implements Serializable {
 	}
 
 	/**
+	 * @return the projectUsers
+	 */
+	public List<AuthUser> getProjectUsers() {
+		return projectUsers;
+	}
+
+	/**
+	 * @return the attachment
+	 */
+	public IssueAttachment getAttachment() {
+		return attachment;
+	}
+
+	/**
+	 * @param attachment
+	 *            the attachment to set
+	 */
+	public void setAttachment(IssueAttachment attachment) {
+		this.attachment = attachment;
+	}
+
+	/**
+	 * @return the attachmentFile
+	 */
+	public StreamedContent getAttachmentFile() {
+		return attachmentFile;
+	}
+
+	/**
+	 * @param attachmentFile
+	 *            the attachmentFile to set
+	 */
+	public void setAttachmentFile(StreamedContent attachmentFile) {
+		this.attachmentFile = attachmentFile;
+	}
+
+	// ================= private methods =======================
+	/**
 	 * Validate issue
 	 * <ul>
 	 * <li>If new issue check for duplicate</li>
@@ -375,8 +446,8 @@ public class IssueAction extends ActionBase implements Serializable {
 		logger.info("validate issue {}", this.issue);
 		if (this.issue.getId() == null) {
 			if (this.issues.contains(this.issue)) {
-				this.facesContextMessage.errorMessage("{0} already exists", this.issue.getName());
-				logger.error("{} already exists", this.issue.getName());
+				this.facesContextMessage.errorMessage("{0} already exists", this.issue.getTitle());
+				logger.error("{} already exists", this.issue.getTitle());
 				isvalid = false;
 				RequestContext requestContext = RequestContext.getCurrentInstance();
 				requestContext.addCallbackParam("validationFailed", !isvalid);
@@ -435,7 +506,7 @@ public class IssueAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * Helper method to calculate total estimated hours for new issues
+	 * Helper method to calculate total estimated hours for open issues
 	 * 
 	 * @return total hours
 	 */
@@ -443,7 +514,7 @@ public class IssueAction extends ActionBase implements Serializable {
 
 		double hours = 0.0;
 		for (Issue issue : this.issues) {
-			if (issue.getStatusType().equals(StatusType.New)) {
+			if (issue.getStatusType().equals(StatusType.Open)) {
 				if (issue.getEstimatedEffort() != null) {
 					hours += issue.getEstimatedEffort().doubleValue();
 				}
@@ -461,11 +532,24 @@ public class IssueAction extends ActionBase implements Serializable {
 
 		int cnt = 0;
 		for (Issue issue : this.issues) {
-			if (issue.getStatusType().equals(StatusType.New)) {
+			if (issue.getStatusType().equals(StatusType.Open)) {
 				cnt++;
 			}
 		}
 		return cnt;
+	}
+
+	/**
+	 * Load resources
+	 * 
+	 * @param project
+	 */
+	private void loadProjectUsers(final Project project) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AuthUser> c = cb.createQuery(AuthUser.class);
+		Root<ProjectMember> obj = c.from(ProjectMember.class);
+		c.select(obj.<AuthUser> get("authUser")).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("authUser").get("name")));
+		this.projectUsers = em.createQuery(c).getResultList();
 	}
 
 }

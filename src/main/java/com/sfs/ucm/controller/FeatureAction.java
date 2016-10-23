@@ -47,6 +47,7 @@ import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Feature;
 import com.sfs.ucm.model.Project;
+import com.sfs.ucm.model.StakeholderRequest;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.util.Authenticated;
@@ -102,6 +103,8 @@ public class FeatureAction extends ActionBase implements Serializable {
 
 	private boolean selected;
 
+	private List<StakeholderRequest> stakeholderRequests;
+
 	/**
 	 * Controller initialization
 	 */
@@ -120,12 +123,13 @@ public class FeatureAction extends ActionBase implements Serializable {
 		try {
 			// begin work unit
 			begin();
-			
+
 			this.project = em.find(Project.class, id);
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 
 			loadList();
+			loadStakeholderRequests(this.project);
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
@@ -245,6 +249,13 @@ public class FeatureAction extends ActionBase implements Serializable {
 	}
 
 	/**
+	 * @return the stakeholderRequests
+	 */
+	public List<StakeholderRequest> getStakeholderRequests() {
+		return stakeholderRequests;
+	}
+
+	/**
 	 * @return the selected
 	 */
 	public boolean isSelected() {
@@ -307,6 +318,19 @@ public class FeatureAction extends ActionBase implements Serializable {
 		c.select(obj).where(cb.equal(obj.get("project"), this.project)).orderBy(cb.asc(obj.get("id")));
 		this.features = em.createQuery(c).getResultList();
 
+	}
+
+	/**
+	 * Load resources
+	 * 
+	 * @param project
+	 */
+	private void loadStakeholderRequests(final Project project) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<StakeholderRequest> c = cb.createQuery(StakeholderRequest.class);
+		Root<StakeholderRequest> obj = c.from(StakeholderRequest.class);
+		c.select(obj).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("id")));
+		this.stakeholderRequests = em.createQuery(c).getResultList();
 	}
 
 }

@@ -137,7 +137,7 @@ public class Project extends EntityBase implements Serializable {
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<Requirement> requirements;
+	private Collection<Specification> specifications;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
@@ -153,9 +153,6 @@ public class Project extends EntityBase implements Serializable {
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<UseCase> useCases;
-
-	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<Resource> resources;
 
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "project", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
@@ -199,17 +196,15 @@ public class Project extends EntityBase implements Serializable {
 		this.designConstraints = new HashSet<DesignConstraint>();
 		this.features = new HashSet<Feature>();
 		this.glossaryTerms = new HashSet<GlossaryTerm>();
-		this.requirements = new HashSet<Requirement>();
+		this.specifications = new HashSet<Specification>();
 		this.risks = new HashSet<Risk>();
 		this.stakeholders = new HashSet<Stakeholder>();
 		this.stakeholderRequests = new HashSet<StakeholderRequest>();
 		this.useCases = new HashSet<UseCase>();
 		this.issues = new HashSet<Issue>();
-		this.resources = new HashSet<Resource>();
 		this.settings = new HashSet<Setting>();
 		this.open = true;
 	}
-
 
 	/**
 	 * @return the id
@@ -329,25 +324,25 @@ public class Project extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * Add Requirement to Project
+	 * Add Specification to Project
 	 * 
-	 * @param Requirement
-	 *            the Requirement to add
+	 * @param Specification
+	 *            the Specification to add
 	 */
-	public void addRequirement(Requirement requirement) {
-		requirement.setProject(this);
-		this.requirements.add(requirement);
+	public void addSpecification(Specification specification) {
+		specification.setProject(this);
+		this.specifications.add(specification);
 	}
 
 	/**
-	 * Remove Requirement
+	 * Remove Specification
 	 * 
-	 * @param Requirement
-	 *            the Requirement
+	 * @param Specification
+	 *            the Specification
 	 */
-	public void removeRequirement(Requirement requirement) {
-		requirement.setProject(null);
-		this.requirements.remove(requirement);
+	public void removeSpecification(Specification specification) {
+		specification.setProject(null);
+		this.specifications.remove(specification);
 	}
 
 	/**
@@ -434,8 +429,6 @@ public class Project extends EntityBase implements Serializable {
 		this.settings.remove(setting);
 	}
 
-	
-
 	/**
 	 * @return the risks
 	 */
@@ -451,10 +444,10 @@ public class Project extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the requirements
+	 * @return the specifications
 	 */
-	public Collection<Requirement> getRequirements() {
-		return requirements;
+	public Collection<Specification> getSpecifications() {
+		return specifications;
 	}
 
 	/**
@@ -576,8 +569,6 @@ public class Project extends EntityBase implements Serializable {
 		this.description = description;
 	}
 
-	
-
 	/**
 	 * @return the productVision
 	 */
@@ -655,9 +646,6 @@ public class Project extends EntityBase implements Serializable {
 		this.actors.remove(actor);
 	}
 
-
-
-
 	/**
 	 * @return the url
 	 */
@@ -701,41 +689,11 @@ public class Project extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the resources
-	 */
-	public Collection<Resource> getResources() {
-		return resources;
-	}
-
-	/**
-	 * Add a model resource
-	 * 
-	 * @param resource
-	 */
-	public void addResource(Resource resource) {
-		resource.setProject(this);
-		this.resources.add(resource);
-	}
-
-	/**
-	 * Remove a model resource
-	 * 
-	 * @param resource
-	 */
-	public void removeResource(Resource resource) {
-		resource.setProject(null);
-		this.resources.remove(resource);
-	}
-
-	
-	/**
 	 * @return the useCases
 	 */
 	public Collection<UseCase> getUseCases() {
 		return useCases;
 	}
-
-	
 
 	/**
 	 * @return the securityMarking
@@ -752,8 +710,6 @@ public class Project extends EntityBase implements Serializable {
 		this.securityMarking = securityMarking;
 	}
 
-	
-
 	/**
 	 * @return the visibleToPublic
 	 */
@@ -768,8 +724,6 @@ public class Project extends EntityBase implements Serializable {
 	public void setVisibleToPublic(Boolean visibleToPublic) {
 		this.visibleToPublic = visibleToPublic;
 	}
-
-	
 
 	/**
 	 * @return the glossary
@@ -802,8 +756,6 @@ public class Project extends EntityBase implements Serializable {
 	public void setOpen(Boolean open) {
 		this.open = open;
 	}
-
-	
 
 	/**
 	 * @return the testPlan

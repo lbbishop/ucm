@@ -19,17 +19,48 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.sfs.ucm.util;
+package com.sfs.ucm.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
 
-import javax.inject.Qualifier;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-@Qualifier
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ProjectUserInit {
+import org.hibernate.envers.Audited;
+
+@Audited
+@Entity
+@DiscriminatorValue("Issue")
+public class IssueAttachment extends AbstractAttachment implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@ManyToOne
+	@JoinColumn(name = "issue_id")
+	protected Issue issue;
+
+	/**
+	 * Constructor
+	 */
+	public IssueAttachment() {
+		super();
+	}
+
+	/**
+	 * @return the issue
+	 */
+	public Issue getIssue() {
+		return issue;
+	}
+
+	/**
+	 * @param issue
+	 *            the issue to set
+	 */
+	public void setIssue(Issue issue) {
+		this.issue = issue;
+	}
+
 }

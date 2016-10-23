@@ -53,10 +53,8 @@ import com.sfs.ucm.model.TestSet;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProjectMemberUpdated;
 import com.sfs.ucm.util.ProjectSecurityInit;
 import com.sfs.ucm.util.ProjectUpdated;
-import com.sfs.ucm.util.ProjectUserInit;
 import com.sfs.ucm.view.FacesContextMessage;
 
 /**
@@ -85,14 +83,6 @@ public class TestSetAction extends ActionBase implements Serializable {
 	Event<Project> projectEventSrc;
 
 	@Inject
-	@ProjectMemberUpdated
-	Event<Project> projectMemberEventSrc;
-
-	@Inject
-	@ProjectUserInit
-	Event<Project> projectUserSrc;
-
-	@Inject
 	@ProjectSecurityInit
 	Event<Project> projectSecurityMarkingSrc;
 
@@ -117,6 +107,8 @@ public class TestSetAction extends ActionBase implements Serializable {
 	private AuthUser user;
 
 	private Project project;
+	
+	private List<AuthUser> projectUsers;
 
 	/**
 	 * Controller initialization
@@ -139,11 +131,10 @@ public class TestSetAction extends ActionBase implements Serializable {
 			this.testPlan = em.find(TestPlan.class, id);
 			this.project = this.testPlan.getProject();
 			loadList();
+			loadProjectUsers(this.project);
 
 			// update producers
-			this.projectUserSrc.fire(this.project);
 			this.projectSecurityMarkingSrc.fire(this.project);
-			this.projectMemberEventSrc.fire(this.project);
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 		}
@@ -326,6 +317,13 @@ public class TestSetAction extends ActionBase implements Serializable {
 	}
 
 	/**
+	 * @return the projectUsers
+	 */
+	public List<AuthUser> getProjectUsers() {
+		return projectUsers;
+	}
+
+	/**
 	 * Validate testSet
 	 * <ul>
 	 * <li>If new testSet check for duplicate</li>
@@ -376,6 +374,19 @@ public class TestSetAction extends ActionBase implements Serializable {
 		}
 
 		return projectMember;
+	}
+	
+	/**
+	 * Load resources
+	 * 
+	 * @param project
+	 */
+	private void loadProjectUsers(final Project project) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AuthUser> c = cb.createQuery(AuthUser.class);
+		Root<ProjectMember> obj = c.from(ProjectMember.class);
+		c.select(obj.<AuthUser> get("authUser")).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("authUser").get("name")));
+		this.projectUsers = em.createQuery(c).getResultList();
 	}
 
 }

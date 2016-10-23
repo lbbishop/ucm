@@ -58,16 +58,16 @@ import com.sfs.ucm.data.QualityType;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
- * Non-functional (Supplemental) Requirement
+ * Non-functional (Supplemental) Specification Specification
  * 
  * @author lbbishop
  * 
  */
-@Table(name = "requirement")
+@Table(name = "specification")
 @Entity
 @Indexed
 @Audited
-public class Requirement extends EntityBase implements Serializable {
+public class Specification extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -111,13 +111,13 @@ public class Requirement extends EntityBase implements Serializable {
 	private Feature feature;
 
 	@IndexedEmbedded
-	@OneToMany(mappedBy = "requirement", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<RequirementRule> requirementRules;
+	@OneToMany(mappedBy = "specification", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<SpecificationRule> specificationRules;
 
 	/**
 	 * Default constructor
 	 */
-	public Requirement() {
+	public Specification() {
 		super();
 		init();
 	}
@@ -125,7 +125,7 @@ public class Requirement extends EntityBase implements Serializable {
 	/**
 	 * Identifier constructor
 	 */
-	public Requirement(int identifier) {
+	public Specification(int identifier) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 		init();
@@ -135,7 +135,7 @@ public class Requirement extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.requirementRules = new HashSet<RequirementRule>();
+		this.specificationRules = new HashSet<SpecificationRule>();
 	}
 
 	/**
@@ -174,9 +174,9 @@ public class Requirement extends EntityBase implements Serializable {
 	 * @param useCaseRule
 	 *            the UseCaseRule to add
 	 */
-	public void addRequirementRule(RequirementRule requirementRule) {
-		requirementRule.setRequirement(this);
-		this.requirementRules.add(requirementRule);
+	public void addSpecificationRule(SpecificationRule specificationRule) {
+		specificationRule.setSpecification(this);
+		this.specificationRules.add(specificationRule);
 	}
 
 	/**
@@ -185,23 +185,23 @@ public class Requirement extends EntityBase implements Serializable {
 	 * @param useCaseRule
 	 *            the UseCaseRule to remove
 	 */
-	public void removeRequirementRule(RequirementRule requirementRule) {
-		requirementRule.setRequirement(null);
-		this.requirementRules.remove(requirementRule);
+	public void removeSpecificationRule(SpecificationRule specificationRule) {
+		specificationRule.setSpecification(null);
+		this.specificationRules.remove(specificationRule);
 	}
 
 	/**
-	 * @return the requirementRules
+	 * @return the specificationRules
 	 */
-	public Collection<RequirementRule> getRequirementRules() {
-		return requirementRules;
+	public Collection<SpecificationRule> getSpecificationRules() {
+		return specificationRules;
 	}
 
 	/**
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
 	public String getArtifact() {
-		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_REQUIREMENT.toString(), this.identifier);
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_SPECIFICATION.toString(), this.identifier);
 	}
 
 	/**
@@ -328,7 +328,7 @@ public class Requirement extends EntityBase implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append(", id=");
 		builder.append(id);
-		builder.append("Requirement [identifier=");
+		builder.append("Specification [identifier=");
 		builder.append(identifier);
 		builder.append(", description=");
 		builder.append(description);
@@ -366,7 +366,7 @@ public class Requirement extends EntityBase implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Requirement other = (Requirement) obj;
+		Specification other = (Specification) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;

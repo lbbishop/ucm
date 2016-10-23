@@ -53,8 +53,6 @@ import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectStakeholderInit;
-import com.sfs.ucm.util.ProjectStakeholderRequestUpdated;
 import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
 
@@ -82,14 +80,6 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	Event<Project> projectEvent;
 
 	@Inject
-	@ProjectStakeholderInit
-	Event<Project> projectStakeholderSrc;
-
-	@Inject
-	@ProjectStakeholderRequestUpdated
-	private Event<Project> stakeholderRequestSrc;
-
-	@Inject
 	@ProjectSecurityInit
 	Event<Project> projectSecurityMarkingSrc;
 
@@ -112,6 +102,8 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	private Project project;
 
 	private boolean selected;
+	
+	private List<Stakeholder> stakeholders;
 
 	/**
 	 * Controller initialization
@@ -132,12 +124,11 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 			this.project = em.find(Project.class, id);
 
 			// update producers
-			this.projectStakeholderSrc.fire(project);
 			this.projectSecurityMarkingSrc.fire(this.project);
 
-			// refresh list
 			loadList();
-
+			loadStakeholders(this.project);
+			
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 		}
 		catch (Exception e) {
@@ -186,7 +177,6 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 
 			// update producers
 			this.projectEvent.fire(this.project);
-			this.stakeholderRequestSrc.fire(this.project);
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
@@ -217,7 +207,6 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 
 				// update producers
 				this.projectEvent.fire(this.project);
-				this.stakeholderRequestSrc.fire(this.project);
 			}
 		}
 		catch (Exception e) {
@@ -291,6 +280,13 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	}
 
 	/**
+	 * @return the stakeholders
+	 */
+	public List<Stakeholder> getStakeholders() {
+		return stakeholders;
+	}
+
+	/**
 	 * Stakeholder value change
 	 * <p>
 	 * Add this StakeholderRquest to the selected Stakeholder
@@ -347,4 +343,16 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 		this.stakeholderRequests = em.createQuery(c).getResultList();
 	}
 
+	/**
+	 * Load resources
+	 * 
+	 * @param project
+	 */
+	private void loadStakeholders(final Project project) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Stakeholder> c = cb.createQuery(Stakeholder.class);
+		Root<Stakeholder> obj = c.from(Stakeholder.class);
+		c.select(obj).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("id")));
+		this.stakeholders = em.createQuery(c).getResultList();
+	}
 }

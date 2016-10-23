@@ -51,7 +51,7 @@ import com.sfs.ucm.model.EnvironmentalFactors;
 import com.sfs.ucm.model.Feature;
 import com.sfs.ucm.model.ProductVision;
 import com.sfs.ucm.model.Project;
-import com.sfs.ucm.model.Requirement;
+import com.sfs.ucm.model.Specification;
 import com.sfs.ucm.model.StakeholderRequest;
 import com.sfs.ucm.model.TechnicalFactors;
 import com.sfs.ucm.model.TestPlan;
@@ -185,9 +185,9 @@ public class ProjectAction extends ActionBase implements Serializable {
 				em.remove(useCaseIter.next());
 			}
 
-			Iterator<Requirement> requirementIter = this.project.getRequirements().iterator();
-			while (requirementIter.hasNext()) {
-				em.remove(requirementIter.next());
+			Iterator<Specification> specificationIter = this.project.getSpecifications().iterator();
+			while (specificationIter.hasNext()) {
+				em.remove(specificationIter.next());
 			}
 
 			Iterator<Feature> featureIter = this.project.getFeatures().iterator();

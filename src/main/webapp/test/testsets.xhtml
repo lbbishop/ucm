@@ -117,7 +117,7 @@
 					<p:outputLabel for="testerSelect" value="Tester:" />
 					<p:selectOneMenu id="testerSelect" value="#{testSetAction.user}" style="width:200px" converter="#{authUserConverter}" valueChangeListener="#{testSetAction.onUserChange}" effect="fade" title="The testset tester" required="true" requiredMessage="Tester is required">
 						<f:selectItem itemLabel="Select User" itemValue="" />
-						<f:selectItems value="#{projectUsers}" var="user" itemLabel="#{user.name}" itemValue="#{user}" />
+						<f:selectItems value="#{testSetAction.projectUsers}" var="user" itemLabel="#{user.name}" itemValue="#{user}" />
 						<p:ajax />
 					</p:selectOneMenu>
 

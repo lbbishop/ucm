@@ -32,7 +32,6 @@ import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -57,7 +56,6 @@ import com.sfs.ucm.model.UseCase;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.util.Authenticated;
-import com.sfs.ucm.util.ProjectActorInit;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
@@ -102,10 +100,6 @@ public class AlternativeFlowAction extends ActionBase implements Serializable {
 	@Service
 	private ProjectService projectService;
 
-	@Inject
-	@ProjectActorInit
-	private Event<Project> projectActorSrc;
-
 	private UseCase useCase;
 
 	private Flow alternativeFlow;
@@ -143,9 +137,6 @@ public class AlternativeFlowAction extends ActionBase implements Serializable {
 			loadUseCase();
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
-
-			// update project actor producer
-			this.projectActorSrc.fire(this.useCase.getProject());
 		}
 		catch (Exception e) {
 			throw new UCMException(e);

@@ -28,5 +28,5 @@ package com.sfs.ucm.data;
  * 
  */
 public enum IssueType {
-	Defect, Enhancement, Feature, Task
+	defect, enhancement, newfeature, question, wontfix
 }

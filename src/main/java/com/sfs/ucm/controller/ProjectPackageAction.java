@@ -52,7 +52,6 @@ import com.sfs.ucm.model.ProjectPackage;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProjectPackageUpdated;
 import com.sfs.ucm.util.ProjectSecurityInit;
 import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
@@ -86,10 +85,6 @@ public class ProjectPackageAction extends ActionBase implements Serializable {
 	@Inject
 	@Authenticated
 	private AuthUser authUser;
-
-	@Inject
-	@ProjectPackageUpdated
-	Event<Project> projectPackageSrc;
 
 	@Inject
 	private AccessManager accessManager;
@@ -175,7 +170,6 @@ public class ProjectPackageAction extends ActionBase implements Serializable {
 			// refresh list
 			loadList();
 
-			projectPackageSrc.fire(this.project);
 			projectEvent.fire(this.project);
 			this.selected = false;
 		}
@@ -213,7 +207,6 @@ public class ProjectPackageAction extends ActionBase implements Serializable {
 
 				// update producers
 				projectEvent.fire(this.project);
-				projectPackageSrc.fire(this.project);
 
 				// refresh list
 				loadList();

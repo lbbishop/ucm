@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import com.sfs.ucm.model.Requirement;
+import com.sfs.ucm.model.Specification;
 
 /**
  * Requirement Converter
@@ -50,10 +50,10 @@ public class RequirementConverter implements Converter, Serializable {
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
-		Requirement obj = null;
+		Specification obj = null;
 		if (!value.trim().equals("")) {
 			Long id = Long.valueOf(value);
-			obj = em.find(Requirement.class, id);
+			obj = em.find(Specification.class, id);
 		}
 		return obj;
 	}
@@ -62,7 +62,7 @@ public class RequirementConverter implements Converter, Serializable {
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
 		String sval = "";
 		if (value != null && !value.equals("")) {
-			Requirement obj = (Requirement) value;
+			Specification obj = (Specification) value;
 			if (obj != null && obj.getId() != null) {
 				sval = obj.getId().toString();
 			}

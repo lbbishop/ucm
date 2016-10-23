@@ -45,8 +45,8 @@ import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Project;
-import com.sfs.ucm.model.Requirement;
-import com.sfs.ucm.model.RequirementTest;
+import com.sfs.ucm.model.Specification;
+import com.sfs.ucm.model.SpecificationTest;
 import com.sfs.ucm.model.TestPlan;
 import com.sfs.ucm.model.TestSet;
 import com.sfs.ucm.security.AccessManager;
@@ -100,9 +100,9 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 
 	private boolean editable;
 
-	private RequirementTest requirementTest;
+	private SpecificationTest specificationTest;
 
-	private List<RequirementTest> requirementTests;
+	private List<SpecificationTest> specificationTests;
 
 	private TestSet testSet;
 
@@ -113,7 +113,7 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	 */
 	@Inject
 	public void init() {
-		this.requirementTest = new RequirementTest();
+		this.specificationTest = new SpecificationTest();
 		this.selected = false;
 
 		begin();
@@ -161,7 +161,7 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
-		this.requirementTest = new RequirementTest(ModelUtils.getNextIdentifier(this.requirementTests));
+		this.specificationTest = new SpecificationTest(ModelUtils.getNextIdentifier(this.specificationTests));
 	}
 
 	/**
@@ -170,8 +170,8 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void clearTestResults() {
 
-		for (RequirementTest requirementTest : this.requirementTests) {
-			requirementTest.setTestResultType(null);
+		for (SpecificationTest specificationTest : this.specificationTests) {
+			specificationTest.setTestResultType(null);
 		}
 
 		// refresh list
@@ -194,10 +194,10 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() {
 		try {
-			this.testSet.removeRequirementTest(this.requirementTest);
-			em.remove(this.requirementTest);
-			logger.info("deleted {}", this.requirementTest.getArtifact());
-			this.facesContextMessage.infoMessage("{0} deleted successfully", this.requirementTest.getArtifact());
+			this.testSet.removeSpecificationTest(this.specificationTest);
+			em.remove(this.specificationTest);
+			logger.info("deleted {}", this.specificationTest.getArtifact());
+			this.facesContextMessage.infoMessage("{0} deleted successfully", this.specificationTest.getArtifact());
 
 			// refresh list
 			loadList();
@@ -218,14 +218,14 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void save() {
 		try {
-			this.requirementTest.setModifiedBy(authUser.getUsername());
-			if (this.requirementTest.getId() == null) {
-				this.testSet.addRequirementTest(this.requirementTest);
+			this.specificationTest.setModifiedBy(authUser.getUsername());
+			if (this.specificationTest.getId() == null) {
+				this.testSet.addSpecificationTest(this.specificationTest);
 			}
 
 			em.persist(this.testSet);
-			logger.info("saved {}", this.requirementTest.getArtifact());
-			this.facesContextMessage.infoMessage("{0} saved successfully", this.requirementTest.getArtifact());
+			logger.info("saved {}", this.specificationTest.getArtifact());
+			this.facesContextMessage.infoMessage("{0} saved successfully", this.specificationTest.getArtifact());
 
 			// refresh list
 			loadList();
@@ -241,30 +241,30 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	}
 
 	/**
-	 * RequirementTests producer
+	 * SpecificationTests producer
 	 * 
 	 * @return List
 	 */
-	public List<RequirementTest> getRequirementTests() {
-		return this.requirementTests;
+	public List<SpecificationTest> getSpecificationTests() {
+		return this.specificationTests;
 	}
 
 	/**
-	 * get RequirementTest
+	 * get SpecificationTest
 	 * 
-	 * @return requirementTest
+	 * @return specificationTest
 	 */
-	public RequirementTest getRequirementTest() {
-		return requirementTest;
+	public SpecificationTest getSpecificationTest() {
+		return specificationTest;
 	}
 
 	/**
-	 * set RequirementTest
+	 * set SpecificationTest
 	 * 
-	 * @param requirementTest
+	 * @param specificationTest
 	 */
-	public void setRequirementTest(RequirementTest requirementTest) {
-		this.requirementTest = requirementTest;
+	public void setSpecificationTest(SpecificationTest specificationTest) {
+		this.specificationTest = specificationTest;
 	}
 
 	/**
@@ -283,11 +283,11 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	}
 
 	/**
-	 * @param requirementTests
-	 *            the requirementTests to set
+	 * @param specificationTests
+	 *            the specificationTests to set
 	 */
-	public void setRequirementTests(List<RequirementTest> requirementTests) {
-		this.requirementTests = requirementTests;
+	public void setSpecificationTests(List<SpecificationTest> specificationTests) {
+		this.specificationTests = specificationTests;
 	}
 
 	/**
@@ -321,13 +321,13 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 
 		logger.debug("updateTests called");
 
-		// requirement tests
-		List<Requirement> requirements = findRequirements(this.testSet.getTestPlan().getProject());
+		// specification tests
+		List<Specification> specifications = findSpecifications(this.testSet.getTestPlan().getProject());
 
-		for (Requirement requirement : requirements) {
-			if (!checkForDuplicate(requirement)) {
-				RequirementTest requirementTest = new RequirementTest(requirement.getIdentifier(), requirement);
-				this.testSet.addRequirementTest(requirementTest);
+		for (Specification specification : specifications) {
+			if (!checkForDuplicate(specification)) {
+				SpecificationTest specificationTest = new SpecificationTest(specification.getIdentifier(), specification);
+				this.testSet.addSpecificationTest(specificationTest);
 				em.persist(this.testSet);
 			}
 		}
@@ -340,13 +340,13 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	/**
 	 * Check for duplicate artifact
 	 * 
-	 * @param requirement
+	 * @param specification
 	 * @return flag true if validation is successful
 	 */
-	private boolean checkForDuplicate(Requirement requirement) {
+	private boolean checkForDuplicate(Specification specification) {
 		boolean duplicate = false;
-		for (RequirementTest requirementTest : this.requirementTests) {
-			if (requirement.equals(requirementTest.getRequirement())) {
+		for (SpecificationTest specificationTest : this.specificationTests) {
+			if (specification.equals(specificationTest.getSpecification())) {
 				duplicate = true;
 				break;
 			}
@@ -355,31 +355,31 @@ public class SpecificationTestAction extends ActionBase implements Serializable 
 	}
 
 	/**
-	 * load requirementTests
+	 * load specificationTests
 	 */
 	private void loadList() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<RequirementTest> c = cb.createQuery(RequirementTest.class);
-		Root<RequirementTest> obj = c.from(RequirementTest.class);
+		CriteriaQuery<SpecificationTest> c = cb.createQuery(SpecificationTest.class);
+		Root<SpecificationTest> obj = c.from(SpecificationTest.class);
 		c.select(obj).where(cb.equal(obj.get("testSet"), this.testSet)).orderBy(cb.asc(obj.get("id")));
-		this.requirementTests = em.createQuery(c).getResultList();
+		this.specificationTests = em.createQuery(c).getResultList();
 	}
 
 	/**
-	 * Find project requirements
+	 * Find project specifications
 	 * 
 	 * @param project
-	 * @return List of Requirement
+	 * @return List of Specification
 	 */
-	private List<Requirement> findRequirements(Project project) {
+	private List<Specification> findSpecifications(Project project) {
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Requirement> c = cb.createQuery(Requirement.class);
-		Root<Requirement> obj = c.from(Requirement.class);
+		CriteriaQuery<Specification> c = cb.createQuery(Specification.class);
+		Root<Specification> obj = c.from(Specification.class);
 		c.select(obj).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("id")));
-		List<Requirement> requirements = em.createQuery(c).getResultList();
+		List<Specification> specifications = em.createQuery(c).getResultList();
 
-		return requirements;
+		return specifications;
 	}
 
 }

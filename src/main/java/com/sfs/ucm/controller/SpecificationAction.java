@@ -21,6 +21,7 @@
  */
 package com.sfs.ucm.controller;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
@@ -42,29 +43,31 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 
 import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Feature;
+import com.sfs.ucm.model.IssueAttachment;
 import com.sfs.ucm.model.Project;
-import com.sfs.ucm.model.Requirement;
-import com.sfs.ucm.model.RequirementRule;
-import com.sfs.ucm.model.RequirementRuleTest;
-import com.sfs.ucm.model.RequirementTest;
+import com.sfs.ucm.model.Specification;
+import com.sfs.ucm.model.SpecificationRule;
+import com.sfs.ucm.model.SpecificationRuleTest;
+import com.sfs.ucm.model.SpecificationTest;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectUserInit;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
 /**
- * Supplementary Specification Requirement Actions
+ * Supplementary Specification Specification Actions
  * 
  * @author lbbishop
  */
@@ -82,7 +85,6 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	@PersistenceContext(type = PersistenceContextType.EXTENDED)
 	private EntityManager em;
 
-	
 	@Inject
 	private AccessManager accessManager;
 
@@ -100,32 +102,32 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	private ProjectService projectService;
 
 	@Inject
-	@ProjectUserInit
-	private Event<Project> projectUserSrc;
-
-	@Inject
 	@ProjectSecurityInit
 	Event<Project> projectSecurityMarkingSrc;
 
-	private Requirement requirement;
+	private Specification specification;
 
-	private RequirementRule requirementRule;
+	private SpecificationRule specificationRule;
 
-	private List<Requirement> requirements;
-	
+	private List<Specification> specifications;
+
 	private List<Feature> features;
 
 	private Project project;
 
 	private boolean selected;
 
+	private StreamedContent attachmentFile;
+
+	private IssueAttachment attachment;
+
 	/**
 	 * Controller initialization
 	 */
 	@Inject
 	public void init() {
-		this.requirement = new Requirement();
-		this.requirementRule = new RequirementRule();
+		this.specification = new Specification();
+		this.specificationRule = new SpecificationRule();
 		this.selected = false;
 	}
 
@@ -138,7 +140,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 		try {
 			// begin work unit
 			begin();
-			
+
 			this.project = em.find(Project.class, id);
 
 			loadList();
@@ -172,7 +174,7 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
-		this.requirement = new Requirement(ModelUtils.getNextIdentifier(this.requirements));
+		this.specification = new Specification(ModelUtils.getNextIdentifier(this.specifications));
 	}
 
 	/**
@@ -182,8 +184,8 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addBusinessRule() {
-		Long cnt = getRequirementRuleCount();
-		this.requirementRule = new RequirementRule(cnt.intValue() + 1);
+		Long cnt = getSpecificationRuleCount();
+		this.specificationRule = new SpecificationRule(cnt.intValue() + 1);
 	}
 
 	/**
@@ -203,30 +205,30 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void remove() throws UCMException {
 		try {
-			// remove any requirement rule tests
-			for (RequirementRule requirementRule : this.requirement.getRequirementRules()) {
-				List<RequirementRuleTest> requirementRuleTests = findRequirementRuleTests(requirementRule);
-				Iterator<RequirementRuleTest> requirementRuleTestIter = requirementRuleTests.iterator();
-				while (requirementRuleTestIter.hasNext()) {
-					em.remove(requirementRuleTestIter.next());
+			// remove any specification rule tests
+			for (SpecificationRule specificationRule : this.specification.getSpecificationRules()) {
+				List<SpecificationRuleTest> specificationRuleTests = findSpecificationRuleTests(specificationRule);
+				Iterator<SpecificationRuleTest> specificationRuleTestIter = specificationRuleTests.iterator();
+				while (specificationRuleTestIter.hasNext()) {
+					em.remove(specificationRuleTestIter.next());
 				}
 			}
 
 			// remove any parent test classes
-			List<RequirementTest> requirementTests = findRequirementTests(this.requirement);
-			Iterator<RequirementTest> requirementTestIter = requirementTests.iterator();
-			while (requirementTestIter.hasNext()) {
-				em.remove(requirementTestIter.next());
+			List<SpecificationTest> specificationTests = findSpecificationTests(this.specification);
+			Iterator<SpecificationTest> specificationTestIter = specificationTests.iterator();
+			while (specificationTestIter.hasNext()) {
+				em.remove(specificationTestIter.next());
 			}
 
-			this.project.removeRequirement(this.requirement);
-			em.remove(this.requirement);
-			logger.info("deleted {}", this.requirement.getArtifact());
-			this.facesContextMessage.infoMessage("{0} deleted successfully", this.requirement.getArtifact());
+			this.project.removeSpecification(this.specification);
+			em.remove(this.specification);
+			logger.info("deleted {}", this.specification.getArtifact());
+			this.facesContextMessage.infoMessage("{0} deleted successfully", this.specification.getArtifact());
 
 			// refresh list
 			loadList();
-			
+
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -241,15 +243,15 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	public void save() throws UCMException {
 		try {
 			if (validate()) {
-				this.requirement.setModifiedBy(authUser.getUsername());
-				if (this.requirement.getId() == null) {
-					this.project.addRequirement(this.requirement);
+				this.specification.setModifiedBy(authUser.getUsername());
+				if (this.specification.getId() == null) {
+					this.project.addSpecification(this.specification);
 				}
 
 				em.persist(this.project);
-				
-				logger.info("saved {}", this.requirement.getArtifact());
-				this.facesContextMessage.infoMessage("{0} saved successfully", this.requirement.getArtifact());
+
+				logger.info("saved {}", this.specification.getArtifact());
+				this.facesContextMessage.infoMessage("{0} saved successfully", this.specification.getArtifact());
 
 				// refresh list
 				loadList();
@@ -270,19 +272,53 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	public void saveBusinessRule() {
 		try {
 			if (validate()) {
-				this.requirementRule.setModifiedBy(authUser.getUsername());
-				if (this.requirementRule.getId() == null) {
-					this.requirement.addRequirementRule(this.requirementRule);
+				this.specificationRule.setModifiedBy(authUser.getUsername());
+				if (this.specificationRule.getId() == null) {
+					this.specification.addSpecificationRule(this.specificationRule);
 				}
-				em.persist(this.requirement);
-				logger.info("Saved {}", this.requirementRule.getArtifact());
-				this.facesContextMessage.infoMessage("{0} saved successfully", this.requirementRule.getArtifact());
+				em.persist(this.specification);
+				logger.info("Saved {}", this.specificationRule.getArtifact());
+				this.facesContextMessage.infoMessage("{0} saved successfully", this.specificationRule.getArtifact());
 				this.selected = true;
 			}
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
 		}
+	}
+
+	/**
+	 * File Upload Handler
+	 * 
+	 * @param event
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void handleFileUpload(FileUploadEvent event) {
+
+		// extract filename
+		File file = new File(event.getFile().getFileName());
+
+		logger.info("Uploading file: {}, type: {}", file.getName(), event.getFile().getContentType());
+		this.attachment.setFilename(file.getName());
+		this.attachment.setVersion(1);
+		this.attachment.setContents(event.getFile().getContents());
+		this.attachment.setContentType(event.getFile().getContentType());
+
+		this.facesContextMessage.infoMessage("Uploaded file {0}", event.getFile().getFileName());
+
+	}
+
+	/**
+	 * Feature value change
+	 * <p>
+	 * Add this Specification to the selected Feature
+	 * 
+	 * @param e
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void featureValueChange(ValueChangeEvent e) {
+		Feature feature = (Feature) e.getNewValue();
+		feature.addSpecification(this.specification);
 	}
 
 	/**
@@ -293,52 +329,53 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * @param features the features to set
+	 * @param features
+	 *            the features to set
 	 */
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
 	}
 
 	/**
-	 * Requirements producer
+	 * Specifications producer
 	 * 
 	 * @return List
 	 */
-	public List<Requirement> getRequirements() {
-		return this.requirements;
+	public List<Specification> getSpecifications() {
+		return this.specifications;
 	}
 
 	/**
-	 * get Requirement
+	 * get Specification
 	 * 
-	 * @return requirement
+	 * @return specification
 	 */
-	public Requirement getRequirement() {
-		return requirement;
+	public Specification getSpecification() {
+		return specification;
 	}
 
 	/**
-	 * set Requirement
+	 * set Specification
 	 * 
-	 * @param requirement
+	 * @param specification
 	 */
-	public void setRequirement(Requirement requirement) {
-		this.requirement = requirement;
+	public void setSpecification(Specification specification) {
+		this.specification = specification;
 	}
 
 	/**
-	 * @return the requirementRule
+	 * @return the specificationRule
 	 */
-	public RequirementRule getRequirementRule() {
-		return requirementRule;
+	public SpecificationRule getSpecificationRule() {
+		return specificationRule;
 	}
 
 	/**
-	 * @param requirementRule
-	 *            the requirementRule to set
+	 * @param specificationRule
+	 *            the specificationRule to set
 	 */
-	public void setRequirementRule(RequirementRule requirementRule) {
-		this.requirementRule = requirementRule;
+	public void setSpecificationRule(SpecificationRule specificationRule) {
+		this.specificationRule = specificationRule;
 	}
 
 	/**
@@ -370,33 +407,52 @@ public class SpecificationAction extends ActionBase implements Serializable {
 		return editable;
 	}
 
+	// ===================== private methods ==========================
+
 	/**
-	 * Feature value change
-	 * <p>
-	 * Add this Requirement to the selected Feature
-	 * 
-	 * @param e
+	 * @return the attachmentFile
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void featureValueChange(ValueChangeEvent e) {
-		Feature feature = (Feature) e.getNewValue();
-		feature.addRequirement(this.requirement);
+	public StreamedContent getAttachmentFile() {
+		return attachmentFile;
 	}
 
 	/**
-	 * Validate requirement
+	 * @param attachmentFile
+	 *            the attachmentFile to set
+	 */
+	public void setAttachmentFile(StreamedContent attachmentFile) {
+		this.attachmentFile = attachmentFile;
+	}
+
+	/**
+	 * @return the attachment
+	 */
+	public IssueAttachment getAttachment() {
+		return attachment;
+	}
+
+	/**
+	 * @param attachment
+	 *            the attachment to set
+	 */
+	public void setAttachment(IssueAttachment attachment) {
+		this.attachment = attachment;
+	}
+
+	/**
+	 * Validate specification
 	 * <ul>
-	 * <li>If new requirement check for duplicate</li>
+	 * <li>If new specification check for duplicate</li>
 	 * </ul>
 	 * 
 	 * @return flag true if validation is successful
 	 */
 	private boolean validate() {
 		boolean isvalid = true;
-		if (this.requirement.getId() == null) {
-			if (this.requirements.contains(this.requirement)) {
-				this.facesContextMessage.errorMessage("{0} already exists", StringUtils.abbreviate(this.requirement.getName(), 25));
-				logger.error("{} already exists", this.requirement.getName());
+		if (this.specification.getId() == null) {
+			if (this.specifications.contains(this.specification)) {
+				this.facesContextMessage.errorMessage("{0} already exists", StringUtils.abbreviate(this.specification.getName(), 25));
+				logger.error("{} already exists", this.specification.getName());
 				isvalid = false;
 				RequestContext requestContext = RequestContext.getCurrentInstance();
 				requestContext.addCallbackParam("validationFailed", !isvalid);
@@ -407,52 +463,52 @@ public class SpecificationAction extends ActionBase implements Serializable {
 	}
 
 	/**
-	 * load requirements
+	 * load specifications
 	 */
 	private void loadList() throws UCMException {
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Requirement> c = cb.createQuery(Requirement.class);
-		Root<Requirement> obj = c.from(Requirement.class);
+		CriteriaQuery<Specification> c = cb.createQuery(Specification.class);
+		Root<Specification> obj = c.from(Specification.class);
 		c.select(obj).where(cb.equal(obj.get("project"), this.project)).orderBy(cb.asc(obj.get("id")));
-		this.requirements = em.createQuery(c).getResultList();
+		this.specifications = em.createQuery(c).getResultList();
 
 	}
 
 	/**
 	 * find tests associated with this artifact
 	 */
-	private List<RequirementTest> findRequirementTests(Requirement requirement) {
+	private List<SpecificationTest> findSpecificationTests(Specification specification) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<RequirementTest> c = cb.createQuery(RequirementTest.class);
-		Root<RequirementTest> obj = c.from(RequirementTest.class);
-		c.select(obj).where(cb.equal(obj.get("requirement"), requirement));
+		CriteriaQuery<SpecificationTest> c = cb.createQuery(SpecificationTest.class);
+		Root<SpecificationTest> obj = c.from(SpecificationTest.class);
+		c.select(obj).where(cb.equal(obj.get("specification"), specification));
 		return em.createQuery(c).getResultList();
 	}
 
 	/**
 	 * find tests associated with this artifact
 	 */
-	private List<RequirementRuleTest> findRequirementRuleTests(RequirementRule requirementRule) {
+	private List<SpecificationRuleTest> findSpecificationRuleTests(SpecificationRule specificationRule) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<RequirementRuleTest> c = cb.createQuery(RequirementRuleTest.class);
-		Root<RequirementRuleTest> obj = c.from(RequirementRuleTest.class);
-		c.select(obj).where(cb.equal(obj.get("requirementRule"), requirementRule));
+		CriteriaQuery<SpecificationRuleTest> c = cb.createQuery(SpecificationRuleTest.class);
+		Root<SpecificationRuleTest> obj = c.from(SpecificationRuleTest.class);
+		c.select(obj).where(cb.equal(obj.get("specificationRule"), specificationRule));
 		return em.createQuery(c).getResultList();
 	}
 
 	/**
-	 * Get count of requirement rules
+	 * Get count of specification rules
 	 * 
 	 * @return count
 	 */
-	private Long getRequirementRuleCount() {
+	private Long getSpecificationRuleCount() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> c = cb.createQuery(Long.class);
-		c.select(cb.count(c.from(RequirementRule.class)));
+		c.select(cb.count(c.from(SpecificationRule.class)));
 		return em.createQuery(c).getSingleResult();
 	}
-	
+
 	/**
 	 * Load resources
 	 * 

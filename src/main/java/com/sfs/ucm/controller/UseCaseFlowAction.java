@@ -59,7 +59,6 @@ import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.service.UseCaseService;
 import com.sfs.ucm.util.Authenticated;
-import com.sfs.ucm.util.ProjectActorInit;
 import com.sfs.ucm.util.ProjectSecurityInit;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
@@ -112,10 +111,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 	private boolean editable;
 
 	@Inject
-	@ProjectActorInit
-	private Event<Project> projectActorSrc;
-
-	@Inject
 	@ProjectSecurityInit
 	Event<Project> projectSecurityMarkingSrc;
 
@@ -161,7 +156,6 @@ public class UseCaseFlowAction extends ActionBase implements Serializable {
 			loadAlternativeFlows();
 
 			// update project actor producer
-			this.projectActorSrc.fire(this.useCase.getProject());
 			this.projectSecurityMarkingSrc.fire(this.project);
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);

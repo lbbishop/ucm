@@ -53,13 +53,6 @@
 								<h:outputText value="#{_feature.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:60px" sortBy="#{_feature.productRelease.version}">
-								<f:facet name="header">
-									<h:outputText value="Release" style="font-size:0.93em" />
-								</f:facet>
-								<h:outputText value="#{_feature.productRelease.version}" style="font-size:0.9em" />
-							</p:column>
-
 							<p:column style="width:60px" sortBy="#{_feature.priorityType}">
 								<f:facet name="header">
 									<h:outputText value="Priority" style="font-size:0.93em" />
@@ -86,7 +79,7 @@
 							</f:facet>
 						</p:dataTable>
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{featureAction.close}"  icon="ui-icon-close" title="Close view" />
+							<p:commandButton value="Close" action="#{featureAction.close}" icon="ui-icon-close" title="Close view" />
 						</div>
 					</div>
 				</div>
@@ -100,50 +93,36 @@
 
 					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="The unique feature identifier" />
 					<h:outputText id="identifier" value="#{featureAction.feature.artifact}" />
-					<pe:tooltip for="identifierLabel" />
 
 					<p:outputLabel id="featureNameLabel" for="featureName" value="Feature Name:" title="Provide a brief descriptive title of the feature" />
 					<p:inputText id="featureName" value="#{featureAction.feature.name}" size="80" maxlength="100" requiredMessage="Name is required" required="true" />
-					<pe:tooltip for="featureNameLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="A natural language description of the feature" />
 					<p:editor id="description" value="#{featureAction.feature.description}" style="width:600px" width="600" height="250" controls="#{editorControls}" requiredMessage="Description is required" required="true" />
-					<pe:tooltip for="descriptionLabel" styleClass="customTooltip" />
-
-					<p:outputLabel id="productReleaseLabel" for="productReleaseSelect" value="Product Release:" title="The intended product release version" />
-					<p:selectOneMenu id="productReleaseSelect" value="#{featureAction.feature.productRelease}" converter="#{productReleaseConverter}" style="width:160px" effect="fade" required="true" requiredMessage="Product Release is required">
-						<f:selectItem itemLabel="Select Release" itemValue="" />
-						<f:selectItems value="#{productReleases}" var="productRelease" itemLabel="#{productRelease.version}" itemValue="#{productRelease}" />
-					</p:selectOneMenu>
-					<pe:tooltip for="productReleaseLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="stakeholderRequestLabel" for="stakeholderRequest" value="Stakeholder Request:" title="The stakeholder request requiring this feature" />
 					<p:selectOneMenu id="stakeholderRequest" value="#{featureAction.feature.stakeholderRequest}" converter="#{stakeholderRequestConverter}" style="width:450px" effect="fade">
 						<f:selectItem itemLabel="Select Stakeholder Request" itemValue="" />
-						<f:selectItems value="#{projectStakeholderRequests}" var="strq" itemLabel="#{strq.artifact}:#{strq.name}" itemValue="#{strq}" />
+						<f:selectItems value="#{featureAction.stakeholderRequests}" var="strq" itemLabel="#{strq.artifact}:#{strq.name}" itemValue="#{strq}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="stakeholderRequestLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="priorityLabel" for="priority" value="Priority:" title="The relative priority of this feature compared to other features" />
 					<p:selectOneMenu id="priority" value="#{featureAction.feature.priorityType}" effect="fade" style="width:160px">
 						<f:selectItem itemLabel="Select Priority" itemValue="" />
 						<f:selectItems value="#{priorityTypes}" var="_priority" itemValue="#{_priority}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="priorityLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="stabilityLabel" for="stability" value="Stability:" title="The relative maturity and understanding of this feature" />
 					<p:selectOneMenu id="stability" value="#{featureAction.feature.stabilityType}" effect="fade" style="width:160px">
 						<f:selectItem itemLabel="Select Stability" itemValue="" />
 						<f:selectItems value="#{stabilityTypes}" var="_stability" itemValue="#{_stability}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="stabilityLabel" styleClass="customTooltip" />
 
 					<p:outputLabel id="difficultyLabel" for="difficulty" value="Difficulty:" title="The relative difficulty of defining and implementing this feature" />
 					<p:selectOneMenu id="difficulty" value="#{featureAction.feature.difficultyType}" effect="fade" style="width:160px">
 						<f:selectItem itemLabel="Select Difficulty" itemValue="" />
 						<f:selectItems value="#{difficultyTypes}" var="_difficulty" itemValue="#{_difficulty}" />
 					</p:selectOneMenu>
-					<pe:tooltip for="difficultyLabel" styleClass="customTooltip" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
@@ -153,14 +132,23 @@
 						</p:outputPanel>
 					</f:facet>
 				</p:panelGrid>
+				
+				<pe:tooltip for="identifier" />
+				<pe:tooltip for="featureName" styleClass="customTooltip" />
+				<pe:tooltip for="description" styleClass="customTooltip" />
+				<pe:tooltip for="stakeholderRequest" styleClass="customTooltip" />
+				<pe:tooltip for="priority" styleClass="customTooltip" />
+				<pe:tooltip for="stability" styleClass="customTooltip" />
+				<pe:tooltip for="difficulty" styleClass="customTooltip" />
+
 			</h:form>
 		</p:dialog>
 
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{featureAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{featureAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

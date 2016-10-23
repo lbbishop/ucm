@@ -48,19 +48,11 @@ public final class Literal {
 	/**
 	 * resource message bundle
 	 */
-	public static final Literal RESOURCE_BUNDLE = new Literal("com.sfs.captor.i18n.messages");
+	public static final Literal RESOURCE_BUNDLE = new Literal("com.sfs.ucm.i18n.messages");
+	
 	/**
-	 * Default Theme
+	 *  authorization group types
 	 */
-	public static final Literal THEME_DEFAULT = new Literal("aristo");
-	/**
-	 * User preference keys
-	 * 
-	 */
-	public static final Literal PREF_THEME = new Literal("theme");
-	public static final Literal PREF_DISPLAYTOOLTIPS = new Literal("DisplayTooltips");
-
-	// authorization group types
 	public static final Literal GROUPTYPE_SECURITY_LEVEL = new Literal("SECURITY_LEVEL");
 
 	/**
@@ -123,44 +115,35 @@ public final class Literal {
 	public static final Literal PREFIX_ESTIMATE = new Literal("EST");
 	public static final Literal PREFIX_FEATURE = new Literal("FEAT");
 	public static final Literal PREFIX_FLOWSTEPRULE = new Literal("FSRL");
-	public static final Literal PREFIX_FEATURERESOURCE = new Literal("FRES");
 	public static final Literal PREFIX_BASICFLOW = new Literal("BFLW");
 	public static final Literal PREFIX_ALTERNATIVEFLOW = new Literal("AFLW");
 	public static final Literal PREFIX_SUBFLOW = new Literal("SFLW");
 	public static final Literal PREFIX_HLP = new Literal("HLP");
 	public static final Literal PREFIX_ITERATION = new Literal("ITR");
 	public static final Literal PREFIX_ITERATIONACTIVITY = new Literal("IACT");
-	public static final Literal PREFIX_MODELRESOURCE = new Literal("MDLR");
 	public static final Literal PREFIX_NOTE = new Literal("NOTE");
-	public static final Literal PREFIX_PROCESSRESOURCE = new Literal("PRES");
-	public static final Literal PREFIX_PRODUCTRELEASE = new Literal("PR");
 	public static final Literal PREFIX_PRODUCTVISION = new Literal("PV");
 	public static final Literal PREFIX_PROJECTPACKAGE = new Literal("PKG");
 	public static final Literal PREFIX_PROJECTMEMBER = new Literal("PM");
-	public static final Literal PREFIX_REQUIREMENT = new Literal("REQ");
-	public static final Literal PREFIX_REQUIREMENTTEST = new Literal("REQT");
-	public static final Literal PREFIX_REQUIREMENTRESOURCE = new Literal("RQRS");
-	public static final Literal PREFIX_REQUIREMENTRULE = new Literal("RQRL");
-	public static final Literal PREFIX_REQUIREMENTRULETEST = new Literal("RQRT");
+	public static final Literal PREFIX_SPECIFICATION = new Literal("SPEC");
+	public static final Literal PREFIX_SPECIFICATIONTEST = new Literal("SPT");
+	public static final Literal PREFIX_SPECIFICATIONRULE = new Literal("SPRL");
+	public static final Literal PREFIX_SPECIFICATIONRULETEST = new Literal("SPRT");
 	public static final Literal PREFIX_RISK = new Literal("RSK");
 	public static final Literal PREFIX_SCENARIO = new Literal("SCN");
 	public static final Literal PREFIX_STAKEHOLDER = new Literal("STK");
 	public static final Literal PREFIX_STAKEHOLDERREQUEST = new Literal("STRQ");
-	public static final Literal PREFIX_TASK = new Literal("TSK");
+	public static final Literal PREFIX_ISSUE = new Literal("ISS");
 	public static final Literal PREFIX_BUSINESSRULE = new Literal("BR");
 	public static final Literal PREFIX_CONSTRAINT = new Literal("CST");
 	public static final Literal PREFIX_GLOSSARY = new Literal("GLS");
 	public static final Literal PREFIX_TESTCASE = new Literal("TC");
 	public static final Literal PREFIX_TESTSET = new Literal("TSET");
-	public static final Literal PREFIX_BUSINESSPROCESS = new Literal("BP");
 	public static final Literal PREFIX_UNITTEST = new Literal("UT");
 	public static final Literal PREFIX_USECASE = new Literal("UC");
-	public static final Literal PREFIX_USECASERESOURCE = new Literal("UCRS");
 	public static final Literal PREFIX_USECASERULE = new Literal("UCRL");
 	public static final Literal PREFIX_USECASERULETEST = new Literal("UCRT");
 	public static final Literal PREFIX_USER = new Literal("USR");
-	public static final Literal PREFIX_USERSTORY = new Literal("US");
-	public static final Literal PREFIX_VIEWSET = new Literal("VST");
 
 	// environmental perceived impact
 	public static final Literal ECF_IMPACT_NOIMPACT = new Literal("No Impact"); // 0

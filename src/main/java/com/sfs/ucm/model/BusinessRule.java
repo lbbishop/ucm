@@ -181,6 +181,34 @@ public class BusinessRule extends EntityBase implements Serializable {
 		this.ruleType = ruleType;
 	}
 
+	/**
+	 * @return the when
+	 */
+	public String getWhen() {
+		return when;
+	}
+
+	/**
+	 * @param when the when to set
+	 */
+	public void setWhen(String when) {
+		this.when = when;
+	}
+
+	/**
+	 * @return the then
+	 */
+	public String getThen() {
+		return then;
+	}
+
+	/**
+	 * @param then the then to set
+	 */
+	public void setThen(String then) {
+		this.then = then;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

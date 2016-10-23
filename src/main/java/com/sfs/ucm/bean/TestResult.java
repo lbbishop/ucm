@@ -75,10 +75,10 @@ public class TestResult {
 
 		// artifact
 		if (testType.equals(TestType.Requirement.toString())) {
-			this.artifact = ModelUtils.buildArtifactIdentifier(Literal.PREFIX_REQUIREMENTTEST.toString(), this.identifier);
+			this.artifact = ModelUtils.buildArtifactIdentifier(Literal.PREFIX_SPECIFICATIONTEST.toString(), this.identifier);
 		}
 		else if (testType.equals(TestType.RequirementRule.toString())) {
-			this.artifact = ModelUtils.buildArtifactIdentifier(Literal.PREFIX_REQUIREMENTRULETEST.toString(), this.identifier);
+			this.artifact = ModelUtils.buildArtifactIdentifier(Literal.PREFIX_SPECIFICATIONRULETEST.toString(), this.identifier);
 		}
 		else if (testType.equals(TestType.TestCase.toString())) {
 			this.artifact = ModelUtils.buildArtifactIdentifier(Literal.PREFIX_TESTCASE.toString(), this.identifier);

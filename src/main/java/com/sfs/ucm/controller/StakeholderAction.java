@@ -52,7 +52,6 @@ import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectStakeholderUpdated;
 import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
 
@@ -79,10 +78,6 @@ public class StakeholderAction extends ActionBase implements Serializable {
 	@Inject
 	@ProjectUpdated
 	private Event<Project> projectEvent;
-
-	@Inject
-	@ProjectStakeholderUpdated
-	private Event<Project> projectStakeholderSrc;
 
 	@Inject
 	private Logger logger;
@@ -208,7 +203,6 @@ public class StakeholderAction extends ActionBase implements Serializable {
 
 			// update producers
 			this.projectEvent.fire(this.project);
-			this.projectStakeholderSrc.fire(this.project);
 
 			this.selected = false;
 		}

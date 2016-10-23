@@ -50,7 +50,6 @@ import com.sfs.ucm.model.Project;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProjectActorUpdated;
 import com.sfs.ucm.util.ProjectSecurityInit;
 import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
@@ -79,10 +78,6 @@ public class ActorAction extends ActionBase implements Serializable {
 	@Inject
 	@ProjectSecurityInit
 	private Event<Project> projectSecurityMarkingSrc;
-
-	@Inject
-	@ProjectActorUpdated
-	private Event<Project> projectActorSrc;
 
 	@Inject
 	@Authenticated
@@ -169,7 +164,6 @@ public class ActorAction extends ActionBase implements Serializable {
 			loadList();
 
 			// update producers
-			this.projectActorSrc.fire(project);
 			this.projectEvent.fire(this.project);
 			this.selected = false;
 		}
@@ -203,7 +197,6 @@ public class ActorAction extends ActionBase implements Serializable {
 				this.selected = true;
 
 				// update producers
-				this.projectActorSrc.fire(project);
 				this.projectEvent.fire(this.project);
 			}
 		}

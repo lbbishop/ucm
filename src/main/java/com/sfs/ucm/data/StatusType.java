@@ -28,5 +28,5 @@ package com.sfs.ucm.data;
  * 
  */
 public enum StatusType {
-	New, InProgress, Implemented, Verified, Tested, Closed
+	Open, Closed
 }

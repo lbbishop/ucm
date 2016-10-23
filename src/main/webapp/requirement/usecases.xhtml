@@ -116,9 +116,8 @@
 					<p:outputLabel id="actorLabel" for="actor" value="Primary Actor:" title="The primary actor of this UseCase (other than System). A UseCase can have many Actors but must have one Primary Actor" />
 					<p:selectOneMenu id="actor" value="#{useCaseAction.useCase.primaryActor}" converter="#{actorConverter}" effect="fade" style="width:160px" required="true" requiredMessage="Primary Actor is required">
 						<f:selectItem itemLabel="Select Actor" itemValue="" />
-						<f:selectItems value="#{projectActors}" var="primaryActor" itemLabel="#{primaryActor.name}" itemValue="#{primaryActor}" />
+						<f:selectItems value="#{useCaseAction.actors}" var="primaryActor" itemLabel="#{primaryActor.name}" itemValue="#{primaryActor}" />
 					</p:selectOneMenu>
-
 
 					<p:outputLabel id="objectiveLabel" for="objective" value="Objective:" title="What is the objective or goal of the successful execution of this use case?" />
 					<p:inputTextarea id="objective" value="#{useCaseAction.useCase.objective}" cols="100" rows="3" label="Objective" required="true" requiredMessage="Objective is required" />
@@ -132,13 +131,13 @@
 					<p:outputLabel id="packageLabel" for="package" value="Package:" title="You can categorize use cases by defining a package" />
 					<p:selectOneMenu id="package" value="#{useCaseAction.useCase.projectPackage}" effect="fade" style="width:160px" converter="#{projectPackageConverter}">
 						<f:selectItem itemLabel="Select Package" itemValue="" />
-						<f:selectItems value="#{projectPackages}" var="_package" itemValue="#{_package}" itemLabel="#{_package.name}" />
+						<f:selectItems value="#{useCaseAction.projectPackages}" var="_package" itemValue="#{_package}" itemLabel="#{_package.name}" />
 					</p:selectOneMenu>
 
 					<p:outputLabel id="featureLabel" for="featureSelect" value="Feature:" title="The feature linked to this UseCase" />
 					<p:selectOneMenu id="featureSelect" value="#{useCaseAction.useCase.feature}" converter="#{featureConverter}" style="width:450px" effect="fade">
 						<f:selectItem itemLabel="Select Feature" itemValue="" />
-						<f:selectItems value="#{projectFeatures}" var="feature" itemLabel="#{feature.artifact}:#{feature.name}" itemValue="#{feature}" />
+						<f:selectItems value="#{useCaseAction.features}" var="feature" itemLabel="#{feature.artifact}:#{feature.name}" itemValue="#{feature}" />
 					</p:selectOneMenu>
 
 					<p:outputLabel id="preconditionsLabel" for="preconditions" value="Preconditions:" title="State any preconditions to the realization of this use case" />

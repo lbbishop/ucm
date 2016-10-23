@@ -50,7 +50,7 @@ import com.sfs.ucm.data.TestType;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Project;
-import com.sfs.ucm.model.RequirementTest;
+import com.sfs.ucm.model.SpecificationTest;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.service.TestService;
 import com.sfs.ucm.service.UseCaseService;
@@ -254,7 +254,7 @@ public class TestCoverageAction extends ActionBase implements Serializable {
 		{
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<TestResult> c = cb.createQuery(TestResult.class);
-			Root<RequirementTest> obj = c.from(RequirementTest.class);
+			Root<SpecificationTest> obj = c.from(SpecificationTest.class);
 			c.select(cb.construct(TestResult.class, obj.get("identifier"), cb.literal(TestType.Requirement.toString()), obj.get("testSet").get("name"), obj.get("requirement").get("name"),
 					obj.get("testSet").get("tester").get("authUser").get("name"), obj.get("modifiedDate"), obj.get("testResultType")));
 			c.where(cb.equal(obj.get("testSet").get("testPlan").get("project"), project), obj.get("testResultType").in(passFail)).orderBy(cb.asc(obj.get("identifier")));

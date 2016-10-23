@@ -42,15 +42,15 @@ import com.sfs.ucm.data.TestResultType;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
- * Requirement Rule Test
+ * Specification Rule Test
  * 
  * @author lbbishop
  * 
  */
-@Table(name = "requirementruletest")
+@Table(name = "specificationruletest")
 @Entity
 @Audited
-public class RequirementRuleTest extends EntityBase implements Serializable {
+public class SpecificationRuleTest extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -59,8 +59,8 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 	protected Long id;
 
 	@OneToOne
-	@JoinColumn(name = "requirementrule_id", nullable = true)
-	private RequirementRule requirementRule;
+	@JoinColumn(name = "specificationrule_id", nullable = true)
+	private SpecificationRule specificationRule;
 
 	@ManyToOne
 	@JoinColumn(name = "testset_id")
@@ -73,14 +73,14 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public RequirementRuleTest() {
+	public SpecificationRuleTest() {
 		super();
 	}
 
 	/**
 	 * Constructor
 	 */
-	public RequirementRuleTest(int identifier) {
+	public SpecificationRuleTest(int identifier) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 	}
@@ -88,17 +88,17 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public RequirementRuleTest(int identifier, RequirementRule requirementRule) {
+	public SpecificationRuleTest(int identifier, SpecificationRule specificationRule) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
-		this.requirementRule = requirementRule;
+		this.specificationRule = specificationRule;
 	}
 
 	/**
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
 	public String getArtifact() {
-		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_REQUIREMENTRULETEST.toString(), this.identifier);
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_SPECIFICATIONRULETEST.toString(), this.identifier);
 	}
 
 	/**
@@ -147,18 +147,18 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the requirementRule
+	 * @return the specificationRule
 	 */
-	public RequirementRule getRequirementRule() {
-		return requirementRule;
+	public SpecificationRule getSpecificationRule() {
+		return specificationRule;
 	}
 
 	/**
-	 * @param requirementRule
-	 *            the requirementRule to set
+	 * @param specificationRule
+	 *            the specificationRule to set
 	 */
-	public void setRequirementRule(RequirementRule requirementRule) {
-		this.requirementRule = requirementRule;
+	public void setSpecificationRule(SpecificationRule specificationRule) {
+		this.specificationRule = specificationRule;
 	}
 
 	/*
@@ -169,10 +169,10 @@ public class RequirementRuleTest extends EntityBase implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("RequirementRuleTest [id=");
+		builder.append("SpecificationRuleTest [id=");
 		builder.append(id);
-		builder.append(", requirementRule=");
-		builder.append(requirementRule);
+		builder.append(", specificationRule=");
+		builder.append(specificationRule);
 		builder.append(", testResultType=");
 		builder.append(testResultType);
 		builder.append("]");

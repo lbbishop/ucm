@@ -35,7 +35,7 @@ import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
- * Requirement Rule
+ * Specification Rule
  * 
  * @author lbbishop
  * 
@@ -43,26 +43,26 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@DiscriminatorValue("REQUIREMENT_RULE")
-public class RequirementRule extends AbstractBusinessRule implements Serializable {
+@DiscriminatorValue("specification_rule")
+public class SpecificationRule extends AbstractBusinessRule implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne
-	@JoinColumn(name = "requirement_id")
-	private Requirement requirement;
+	@JoinColumn(name = "specification_id")
+	private Specification specification;
 
 	/**
 	 * Constructor
 	 */
-	public RequirementRule() {
+	public SpecificationRule() {
 		super();
 	}
 
 	/**
 	 * Constructor
 	 */
-	public RequirementRule(int identifier) {
+	public SpecificationRule(int identifier) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 	}
@@ -71,22 +71,22 @@ public class RequirementRule extends AbstractBusinessRule implements Serializabl
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
 	public String getArtifact() {
-		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_REQUIREMENTRULE.toString(), this.identifier);
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_SPECIFICATIONRULE.toString(), this.identifier);
 	}
 
 	/**
-	 * @return the requirement
+	 * @return the specification
 	 */
-	public Requirement getRequirement() {
-		return requirement;
+	public Specification getSpecification() {
+		return specification;
 	}
 
 	/**
-	 * @param requirement
-	 *            the requirement to set
+	 * @param specification
+	 *            the specification to set
 	 */
-	public void setRequirement(Requirement requirement) {
-		this.requirement = requirement;
+	public void setSpecification(Specification specification) {
+		this.specification = specification;
 	}
 
 }

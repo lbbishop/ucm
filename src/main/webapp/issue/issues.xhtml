@@ -161,7 +161,7 @@
 					<p:outputLabel id="assignedToLabel" for="assignedToSelect" value="Assigned To:" title="Person assigned this issue" />
 					<p:selectOneMenu id="assignedToSelect" value="#{issueAction.projectUser}" style="width:200px" valueChangeListener="#{issueAction.onAssignedToChange}" converter="#{authUserConverter}" effect="fade" required="true" requiredMessage="Assignee is required">
 						<f:selectItem itemLabel="Select User" itemValue="" />
-						<f:selectItems value="#{projectUsers}" var="user" itemLabel="#{user.name}" itemValue="#{user}" />
+						<f:selectItems value="#{issueAction.projectUsers}" var="user" itemLabel="#{user.name}" itemValue="#{user}" />
 						<p:ajax event="change" />
 					</p:selectOneMenu>
 

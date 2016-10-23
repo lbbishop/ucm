@@ -56,7 +56,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @XmlAccessorType(XmlAccessType.NONE)
 @Entity
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-
 @Table(name = "attachment")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorOptions(force = true)
@@ -83,7 +82,7 @@ public class Attachment extends EntityBase implements Serializable {
 
 	@XmlElement
 	@Lob
-	@Column(name = "contents", nullable = false)
+	@Column(name = "contents", columnDefinition = "BLOB", nullable = false)
 	protected byte[] contents;
 
 	@XmlElement

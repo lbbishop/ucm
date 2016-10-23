@@ -113,7 +113,7 @@ public class Feature extends EntityBase implements Serializable {
 	private Project project;
 
 	@OneToMany(mappedBy = "feature", cascade = { CascadeType.PERSIST })
-	private Collection<Requirement> requirements;
+	private Collection<Specification> specifications;
 
 	@OneToMany(mappedBy = "feature", cascade = { CascadeType.PERSIST })
 	private Collection<UseCase> useCases;
@@ -139,7 +139,7 @@ public class Feature extends EntityBase implements Serializable {
 	 * class init method
 	 */
 	private void init() {
-		this.requirements = new HashSet<Requirement>();
+		this.specifications = new HashSet<Specification>();
 		this.useCases = new HashSet<UseCase>();
 	}
 
@@ -288,23 +288,23 @@ public class Feature extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * add requirement
+	 * add specification
 	 * 
-	 * @param requirement
+	 * @param specification
 	 */
-	public void addRequirement(Requirement requirement) {
-		requirement.setFeature(this);
-		this.requirements.add(requirement);
+	public void addSpecification(Specification specification) {
+		specification.setFeature(this);
+		this.specifications.add(specification);
 	}
 
 	/**
-	 * remove requirement
+	 * remove specification
 	 * 
-	 * @param requirement
+	 * @param specification
 	 */
-	public void removeRequirement(Requirement requirement) {
-		requirement.setFeature(null);
-		this.requirements.remove(requirement);
+	public void removeSpecification(Specification specification) {
+		specification.setFeature(null);
+		this.specifications.remove(specification);
 	}
 
 	/**
@@ -330,10 +330,10 @@ public class Feature extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the requirements
+	 * @return the specifications
 	 */
-	public Collection<Requirement> getRequirements() {
-		return requirements;
+	public Collection<Specification> getSpecifications() {
+		return specifications;
 	}
 
 	/**

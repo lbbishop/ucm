@@ -2,7 +2,6 @@ package com.sfs.ucm.view;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -12,8 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.sfs.ucm.model.Resource;
 
 /**
  * The Image servlet for serving from database.
@@ -46,25 +43,25 @@ public class ImageServlet extends HttpServlet {
 			return;
 		}
 
-		// Lookup Image by ImageId in database.
-		Long id = Long.valueOf(imageId);
-		Resource resource = em.find(Resource.class,  id); 
-		//em.createQuery("from Resource r where mr.id = :id", Resource.class).setParameter("id", id).getSingleResult();
-
-		// Check if image is actually retrieved from database.
-		if (resource == null) {
-			// Do your thing if the image does not exist in database.
-			// Throw an exception, or send 404, or show default/warning image, or just ignore it.
-			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
-			return;
-		}
-
-		// Init servlet response.
-		response.reset();
-		response.setBufferSize(DEFAULT_BUFFER_SIZE);
-		response.setContentType(resource.getContentType());
-		response.setHeader("Content-Length", String.valueOf(resource.getContents().length));
-		response.setHeader("Content-Disposition", "inline; filename=\"" + resource.getName() + "\"");
+//		// Lookup Image by ImageId in database.
+//		Long id = Long.valueOf(imageId);
+//		Resource resource = em.find(Resource.class,  id); 
+//		//em.createQuery("from Resource r where mr.id = :id", Resource.class).setParameter("id", id).getSingleResult();
+//
+//		// Check if image is actually retrieved from database.
+//		if (resource == null) {
+//			// Do your thing if the image does not exist in database.
+//			// Throw an exception, or send 404, or show default/warning image, or just ignore it.
+//			response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
+//			return;
+//		}
+//
+//		// Init servlet response.
+//		response.reset();
+//		response.setBufferSize(DEFAULT_BUFFER_SIZE);
+//		response.setContentType(resource.getContentType());
+//		response.setHeader("Content-Length", String.valueOf(resource.getContents().length));
+//		response.setHeader("Content-Disposition", "inline; filename=\"" + resource.getName() + "\"");
 
 		// Prepare streams.
 		BufferedInputStream input = null;
@@ -72,7 +69,7 @@ public class ImageServlet extends HttpServlet {
 
 		try {
 			// Open streams
-			input = new BufferedInputStream(new ByteArrayInputStream(resource.getContents()), DEFAULT_BUFFER_SIZE);
+			//input = new BufferedInputStream(new ByteArrayInputStream(resource.getContents()), DEFAULT_BUFFER_SIZE);
 			output = new BufferedOutputStream(response.getOutputStream(), DEFAULT_BUFFER_SIZE);
 
 			// Write file contents to response.

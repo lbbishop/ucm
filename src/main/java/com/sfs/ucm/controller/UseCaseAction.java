@@ -21,6 +21,7 @@
  */
 package com.sfs.ucm.controller;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
@@ -41,16 +42,21 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 
 import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.exception.UCMException;
+import com.sfs.ucm.model.Actor;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Feature;
 import com.sfs.ucm.model.Flow;
 import com.sfs.ucm.model.Project;
+import com.sfs.ucm.model.ProjectPackage;
 import com.sfs.ucm.model.UseCase;
+import com.sfs.ucm.model.UseCaseAttachment;
 import com.sfs.ucm.model.UseCaseRule;
 import com.sfs.ucm.model.UseCaseRuleTest;
 import com.sfs.ucm.security.AccessManager;
@@ -114,6 +120,14 @@ public class UseCaseAction extends ActionBase implements Serializable {
 
 	private boolean renamed;
 
+	private List<Actor> actors;
+
+	private List<ProjectPackage> projectPackages;
+
+	private StreamedContent attachmentFile;
+
+	private UseCaseAttachment attachment;
+
 	/**
 	 * Controller initialization
 	 */
@@ -133,11 +147,13 @@ public class UseCaseAction extends ActionBase implements Serializable {
 		try {
 			// begin work unit
 			begin();
-			
+
 			this.project = em.find(Project.class, id);
 
 			loadList();
 			loadFeatures(this.project);
+			loadActors(this.project);
+			loadProjectPackages(this.project);
 
 			// get list of basic flows as candidate extended flows
 			this.extendedFlows = findExtendedFlows(this.project);
@@ -258,6 +274,27 @@ public class UseCaseAction extends ActionBase implements Serializable {
 			throw new UCMException(e);
 		}
 	}
+	
+	/**
+	 * File Upload Handler
+	 * 
+	 * @param event
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void handleFileUpload(FileUploadEvent event) {
+
+		// extract filename
+		File file = new File(event.getFile().getFileName());
+
+		logger.info("Uploading file: {}, type: {}", file.getName(), event.getFile().getContentType());
+		this.attachment.setFilename(file.getName());
+		this.attachment.setVersion(1);
+		this.attachment.setContents(event.getFile().getContents());
+		this.attachment.setContentType(event.getFile().getContentType());
+
+		this.facesContextMessage.infoMessage("Uploaded file {0}", event.getFile().getFileName());
+
+	}
 
 	/**
 	 * Row selection event
@@ -361,6 +398,51 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	}
 
 	/**
+	 * @return the actors
+	 */
+	public List<Actor> getActors() {
+		return actors;
+	}
+
+	/**
+	 * @return the projectPackages
+	 */
+	public List<ProjectPackage> getProjectPackages() {
+		return projectPackages;
+	}
+
+	/**
+	 * @return the attachmentFile
+	 */
+	public StreamedContent getAttachmentFile() {
+		return attachmentFile;
+	}
+
+	/**
+	 * @param attachmentFile
+	 *            the attachmentFile to set
+	 */
+	public void setAttachmentFile(StreamedContent attachmentFile) {
+		this.attachmentFile = attachmentFile;
+	}
+
+	/**
+	 * @return the attachment
+	 */
+	public UseCaseAttachment getAttachment() {
+		return attachment;
+	}
+
+	/**
+	 * @param attachment
+	 *            the attachment to set
+	 */
+	public void setAttachment(UseCaseAttachment attachment) {
+		this.attachment = attachment;
+	}
+
+	// ================= private methods =====================
+	/**
 	 * Validate useCase
 	 * <ul>
 	 * <li>If new useCase check for duplicate</li>
@@ -442,5 +524,31 @@ public class UseCaseAction extends ActionBase implements Serializable {
 		c.where(cb.equal(obj.get("project"), project));
 		c.orderBy(cb.asc(obj.get("id")));
 		this.features = em.createQuery(c).getResultList();
+	}
+
+	/**
+	 * load resources
+	 * 
+	 * @param project
+	 */
+	private void loadActors(final Project project) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Actor> c = cb.createQuery(Actor.class);
+		Root<Actor> obj = c.from(Actor.class);
+		c.select(obj).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("name")));
+		this.actors = em.createQuery(c).getResultList();
+	}
+
+	/**
+	 * load resources
+	 * 
+	 * @param project
+	 */
+	private void loadProjectPackages(Project project) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<ProjectPackage> c = cb.createQuery(ProjectPackage.class);
+		Root<ProjectPackage> obj = c.from(ProjectPackage.class);
+		c.select(obj).where(cb.equal(obj.get("project"), project)).orderBy(cb.asc(obj.get("name")));
+		this.projectPackages = em.createQuery(c).getResultList();
 	}
 }

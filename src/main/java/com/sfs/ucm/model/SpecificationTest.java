@@ -44,15 +44,15 @@ import com.sfs.ucm.data.TestResultType;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
- * Non-functional (Supplemental) Requirement test
+ * Non-functional (Supplemental) Specification test
  * 
  * @author lbbishop
  * 
  */
-@Table(name = "requirementtest")
+@Table(name = "specificationtest")
 @Entity
 @Audited
-public class RequirementTest extends EntityBase implements Serializable {
+public class SpecificationTest extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -73,8 +73,8 @@ public class RequirementTest extends EntityBase implements Serializable {
 	private String notes;
 
 	@OneToOne
-	@JoinColumn(name = "requirement_id", nullable = true)
-	private Requirement requirement;
+	@JoinColumn(name = "specification_id", nullable = true)
+	private Specification specification;
 
 	@ManyToOne
 	private TestSet testSet;
@@ -82,7 +82,7 @@ public class RequirementTest extends EntityBase implements Serializable {
 	/**
 	 * Default constructor
 	 */
-	public RequirementTest() {
+	public SpecificationTest() {
 		super();
 		init();
 	}
@@ -90,18 +90,18 @@ public class RequirementTest extends EntityBase implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public RequirementTest(int identifier, Requirement requirement) {
+	public SpecificationTest(int identifier, Specification specification) {
 		super();
 		init();
 		this.identifier = Integer.valueOf(identifier);
-		this.requirement = requirement;
+		this.specification = specification;
 
 	}
 
 	/**
 	 * Identifier constructor
 	 */
-	public RequirementTest(int identifier) {
+	public SpecificationTest(int identifier) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 		init();
@@ -133,7 +133,7 @@ public class RequirementTest extends EntityBase implements Serializable {
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
 	public String getArtifact() {
-		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_REQUIREMENTTEST.toString(), this.identifier);
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_SPECIFICATIONTEST.toString(), this.identifier);
 	}
 
 	/**
@@ -182,18 +182,18 @@ public class RequirementTest extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the requirement
+	 * @return the specification
 	 */
-	public Requirement getRequirement() {
-		return requirement;
+	public Specification getSpecification() {
+		return specification;
 	}
 
 	/**
-	 * @param requirement
-	 *            the requirement to set
+	 * @param specification
+	 *            the specification to set
 	 */
-	public void setRequirement(Requirement requirement) {
-		this.requirement = requirement;
+	public void setSpecification(Specification specification) {
+		this.specification = specification;
 	}
 
 	/**

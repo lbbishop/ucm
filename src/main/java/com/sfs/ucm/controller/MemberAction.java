@@ -53,7 +53,6 @@ import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
 import com.sfs.ucm.util.ProjectUpdated;
-import com.sfs.ucm.util.ProjectUserUpdated;
 import com.sfs.ucm.util.UserUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
 
@@ -101,10 +100,6 @@ public class MemberAction extends ActionBase implements Serializable {
 	@Inject
 	@ProjectSecurityInit
 	private Event<Project> projectSecurityMarkingSrc;
-	
-	@Inject
-	@ProjectUserUpdated
-	private Event<Project> projectUserSrc;
 
 	private List<ProjectMember> projectMembers;
 
@@ -183,7 +178,6 @@ public class MemberAction extends ActionBase implements Serializable {
 
 			// fire update events
 			this.projectEventSrc.fire(project);
-			this.projectUserSrc.fire(project);
 			
 			this.selected = false;
 		}
@@ -209,7 +203,6 @@ public class MemberAction extends ActionBase implements Serializable {
 				
 				// fire update events
 				this.projectEventSrc.fire(project);
-				this.projectUserSrc.fire(project);
 				
 				this.facesContextMessage.infoMessage("messages", "{0} saved successfully", this.projectMember.getArtifact());
 				logger.info("saved: {}", this.projectMember.getArtifact());

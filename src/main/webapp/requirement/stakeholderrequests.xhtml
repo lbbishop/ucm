@@ -103,7 +103,7 @@
 					<p:outputLabel id="stakeholderLabel" for="stakeholder" value="Stakeholder:" title="The stakeholder making this request" />
 					<p:selectOneMenu id="stakeholder" value="#{stakeholderRequestAction.stakeholderRequest.stakeholder}" style="width:200px" converter="#{stakeholderConverter}" effect="fade">
 						<f:selectItem itemLabel="Select Stakeholder" itemValue="" />
-						<f:selectItems value="#{projectStakeholders}" var="stk" itemLabel="#{stk.role}" itemValue="#{stk}" />
+						<f:selectItems value="#{stakeholderRequestAction.stakeholders}" var="stk" itemLabel="#{stk.role}" itemValue="#{stk}" />
 					</p:selectOneMenu>
 
 					<f:facet name="footer">

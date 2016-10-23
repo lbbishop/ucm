@@ -79,7 +79,7 @@ public class TestSet extends EntityBase implements Serializable {
 	private TestPlan testPlan;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<RequirementTest> requirementTests;
+	private Collection<SpecificationTest> specificationTests;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	@NotAudited
@@ -87,7 +87,7 @@ public class TestSet extends EntityBase implements Serializable {
 	private Collection<TestCase> testCases;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private Collection<RequirementRuleTest> requirementRuleTests;
+	private Collection<SpecificationRuleTest> specificationRuleTests;
 
 	@OneToMany(mappedBy = "testSet", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<UseCaseRuleTest> useCaseRuleTests;
@@ -144,9 +144,9 @@ public class TestSet extends EntityBase implements Serializable {
 	 */
 	private void init() {
 		this.tester = new ProjectMember();
-		this.requirementTests = new HashSet<RequirementTest>();
+		this.specificationTests = new HashSet<SpecificationTest>();
 		this.testCases = new HashSet<TestCase>();
-		this.requirementRuleTests = new HashSet<RequirementRuleTest>();
+		this.specificationRuleTests = new HashSet<SpecificationRuleTest>();
 		this.useCaseRuleTests = new HashSet<UseCaseRuleTest>();
 	}
 
@@ -260,32 +260,32 @@ public class TestSet extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the requirementRuleTests
+	 * @return the specificationRuleTests
 	 */
-	public Collection<RequirementRuleTest> getRequirementRuleTests() {
-		return requirementRuleTests;
+	public Collection<SpecificationRuleTest> getSpecificationRuleTests() {
+		return specificationRuleTests;
 	}
 
 	/**
-	 * Add requirement rule test
+	 * Add specification rule test
 	 * 
-	 * @param requirementRuleTest
-	 *            the requirementRuleTests to add
+	 * @param specificationRuleTest
+	 *            the specificationRuleTests to add
 	 */
-	public void addRequirementRuleTest(RequirementRuleTest requirementRuleTest) {
-		requirementRuleTest.setTestSet(this);
-		this.requirementRuleTests.add(requirementRuleTest);
+	public void addSpecificationRuleTest(SpecificationRuleTest specificationRuleTest) {
+		specificationRuleTest.setTestSet(this);
+		this.specificationRuleTests.add(specificationRuleTest);
 	}
 
 	/**
-	 * Remove requirement rule test
+	 * Remove specification rule test
 	 * 
-	 * @param requirementRuleTest
-	 *            the requirementRuleTests to remove
+	 * @param specificationRuleTest
+	 *            the specificationRuleTests to remove
 	 */
-	public void removeRequirementRuleTest(RequirementRuleTest requirementRuleTest) {
-		requirementRuleTest.setTestSet(null);
-		this.requirementRuleTests.remove(requirementRuleTest);
+	public void removeSpecificationRuleTest(SpecificationRuleTest specificationRuleTest) {
+		specificationRuleTest.setTestSet(null);
+		this.specificationRuleTests.remove(specificationRuleTest);
 	}
 
 	/**
@@ -318,32 +318,32 @@ public class TestSet extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the requirementTests
+	 * @return the specificationTests
 	 */
-	public Collection<RequirementTest> getRequirementTests() {
-		return requirementTests;
+	public Collection<SpecificationTest> getSpecificationTests() {
+		return specificationTests;
 	}
 
 	/**
-	 * Add requirement test
+	 * Add specification test
 	 * 
-	 * @param requirementTest
-	 *            the requirementTests to add
+	 * @param specificationTest
+	 *            the specificationTests to add
 	 */
-	public void addRequirementTest(RequirementTest requirementTest) {
-		requirementTest.setTestSet(this);
-		this.requirementTests.add(requirementTest);
+	public void addSpecificationTest(SpecificationTest specificationTest) {
+		specificationTest.setTestSet(this);
+		this.specificationTests.add(specificationTest);
 	}
 
 	/**
-	 * Remove requirement test
+	 * Remove specification test
 	 * 
-	 * @param requirementTest
-	 *            the requirementTests to remove
+	 * @param specificationTest
+	 *            the specificationTests to remove
 	 */
-	public void removeRequirementTest(RequirementTest requirementTest) {
-		requirementTest.setTestSet(null);
-		this.requirementTests.remove(requirementTest);
+	public void removeSpecificationTest(SpecificationTest specificationTest) {
+		specificationTest.setTestSet(null);
+		this.specificationTests.remove(specificationTest);
 	}
 
 	/**
