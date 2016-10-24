@@ -36,35 +36,35 @@
 								<h:outputText value="#{useCaseAction.project.name}: UseCases" />
 							</f:facet>
 
-							<p:column style="width:50px;vertical-align:top" sortBy="#{_useCase.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:240px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="UseCase Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:140px;vertical-align:top" sortBy="#{_useCase.primaryActor.name}">
+							<p:column style="vertical-align:top" sortBy="#{_useCase.primaryActor.name}">
 								<f:facet name="header">
 									<h:outputText value="Primary Actor" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.primaryActor.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:70px;vertical-align:top" sortBy="#{_useCase.projectPackage.name}">
+							<p:column style="vertical-align:top" sortBy="#{_useCase.projectPackage.name}">
 								<f:facet name="header">
 									<h:outputText value="Package" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.projectPackage.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:40px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="NFlows" style="font-size:0.93em" />
 								</f:facet>
@@ -92,7 +92,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{useCaseAction.close}"  icon="ui-icon-close" title="Close view" />
+							<p:commandButton value="Close" action="#{useCaseAction.close}" icon="ui-icon-close" title="Close view" />
 						</div>
 					</div>
 				</div>
@@ -189,8 +189,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  action="#{useCaseAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" action="#{useCaseAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

@@ -24,25 +24,25 @@
 							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
 						</div>
 
-						<p:dataTable id="table" var="_stakeholder" value="#{stakeholderAction.stakeholders}">
+						<p:dataTable id="table" var="_stakeholder" value="#{stakeholderAction.stakeholders}" reflow="true">
 
 							<f:facet name="header">
 							#{stakeholderAction.project.name}: Project Stakeholders (#{projectSecurityMarking})
 						</f:facet>
 
-							<p:column headerText="Id" style="width:50px;vertical-align:top" sortBy="#{_stakeholder.artifact}">
+							<p:column headerText="Id" >
 								<h:outputText value="#{_stakeholder.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Stakeholder Role" style="width:150px;vertical-align:top" sortBy="#{_stakeholder.role}">
+							<p:column headerText="Stakeholder Role" style="vertical-align:top" sortBy="#{_stakeholder.role}">
 								<h:outputText value="#{_stakeholder.role}" styleClass="wordWrap" escape="false" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Representative" style="width:150px;vertical-align:top">
+							<p:column headerText="Representative" style="vertical-align:top">
 								<h:outputText value="#{_stakeholder.representative}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Responsibilities" style="width:350px;vertical-align:top">
+							<p:column headerText="Responsibilities" style="vertical-align:top">
 								<h:outputText value="#{_stakeholder.responsibilities}" styleClass="wordWrap" escape="false" style="font-size:0.9em" />
 							</p:column>
 

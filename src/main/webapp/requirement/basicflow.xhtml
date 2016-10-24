@@ -29,7 +29,7 @@
 				<div class="ui-g-12">
 					<div class="card">
 						<div style="text-align: right; margin: 10px">
-							<h:commandLink value="Close" action="#{useCaseFlowAction.close}"  icon="ui-icon-close" title="Close view" />
+							<h:commandLink value="Close" action="#{useCaseFlowAction.close}" icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:flowPanel" />
@@ -44,69 +44,65 @@
 							<div style="text-align: center;">
 								<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
 							</div>
-							<h:panelGrid columns="2" columnClasses="left,left">
-								<p:panelGrid columns="2" columnClasses="left-140,left-500">
-									<h:outputLabel for="useCaseFlow" value="Flow Name: " style="font-weight:bold" />
-									<h:outputText id="useCaseFlow" value="#{useCaseFlowAction.useCase.basicFlow.name}" style="font-weight:bold" />
 
-									<h:outputLabel for="objective" value="Objective: " />
-									<h:outputText id="objective" value="#{useCaseFlowAction.useCase.objective}" />
+							<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
+								<h:outputLabel for="useCaseFlow" value="Flow Name: " style="font-weight:bold" />
+								<h:outputText id="useCaseFlow" value="#{useCaseFlowAction.useCase.basicFlow.name}" style="font-weight:bold" />
 
-									<h:outputLabel for="primaryActor" value="Primary Actor: " />
-									<h:outputText id="primaryActor" value="#{useCaseFlowAction.useCase.primaryActor.name}" />
+								<h:outputLabel for="objective" value="Objective: " />
+								<h:outputText id="objective" value="#{useCaseFlowAction.useCase.objective}" />
 
-									<h:outputLabel for="triggerEvent" value="Trigger Event: " />
-									<h:outputText id="triggerEvent" value="#{useCaseFlowAction.useCase.triggerEvent}" />
+								<h:outputLabel for="primaryActor" value="Primary Actor: " />
+								<h:outputText id="primaryActor" value="#{useCaseFlowAction.useCase.primaryActor.name}" />
 
-									<h:outputLabel for="preConditions" value="Preconditions: " />
-									<h:outputText id="preConditions" value="#{useCaseFlowAction.useCase.preconditions}" />
+								<h:outputLabel for="triggerEvent" value="Trigger Event: " />
+								<h:outputText id="triggerEvent" value="#{useCaseFlowAction.useCase.triggerEvent}" />
 
-									<h:outputLabel for="extendedFlow" value="Extended Flow: " />
-									<h:outputText id="extendedFlow" value="#{useCaseFlowAction.useCase.extendedFlow.name}" />
+								<h:outputLabel for="preConditions" value="Preconditions: " />
+								<h:outputText id="preConditions" value="#{useCaseFlowAction.useCase.preconditions}" />
 
-									<h:outputLabel for="productRelease" value="Product Release: " />
-									<h:outputText id="productRelease" value="#{useCaseFlowAction.useCase.productRelease.version}" />
+								<h:outputLabel for="extendedFlow" value="Extended Flow: " />
+								<h:outputText id="extendedFlow" value="#{useCaseFlowAction.useCase.extendedFlow.name}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="1" layout="grid" columnClasses="ui-g-12" styleClass="ui-panelgrid-blank form-group">
+								<p:outputLabel value="Alternative Flows:" />
+								<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
+									<p:selectOneMenu id="alternativeFlows" value="#{useCaseFlowAction.selectedAlternativeFlow}" converter="#{flowConverter}" style="width:350px" effect="fade">
+										<f:selectItem itemLabel="Select Alternative Flow" itemValue="" />
+										<f:selectItems value="#{useCaseFlowAction.alternativeFlows}" var="flow" itemLabel="#{flow.name}" itemValue="#{flow}" />
+										<p:ajax update="altFlowEditButton" />
+									</p:selectOneMenu>
+									<p:button id="altFlowEditButton" value="Edit" outcome="/alternativeflow">
+										<f:param name="id" value="#{useCaseFlowAction.selectedAlternativeFlow.id}" />
+									</p:button>
 								</p:panelGrid>
-
-								<h:panelGrid columns="1" columnClasses="left">
-									<p:outputLabel value="Alternative Flows:" />
-									<h:panelGrid columns="2" columnClasses="left,left">
-										<p:selectOneMenu id="alternativeFlows" value="#{useCaseFlowAction.selectedAlternativeFlow}" converter="#{flowConverter}" style="width:350px" effect="fade">
-											<f:selectItem itemLabel="Select Alternative Flow" itemValue="" />
-											<f:selectItems value="#{useCaseFlowAction.alternativeFlows}" var="flow" itemLabel="#{flow.name}" itemValue="#{flow}" />
-											<p:ajax update="altFlowEditButton" />
-										</p:selectOneMenu>
-										<p:button id="altFlowEditButton" value="Edit" outcome="/alternativeflow">
-											<f:param name="id" value="#{useCaseFlowAction.selectedAlternativeFlow.id}" />
-										</p:button>
-									</h:panelGrid>
-								</h:panelGrid>
-							</h:panelGrid>
+							</p:panelGrid>
 
 							<p:spacer height="10" />
 
-							<p:dataTable id="table" emptyMessage="No Flow Steps Defined" resizableColumns="true" var="_step" value="#{useCaseFlowAction.basicFlow.flowSteps}" selectionMode="single" rowKey="#{_step.id}" selection="#{useCaseFlowAction.basicFlowStep}">
+							<p:dataTable id="table" emptyMessage="No Flow Steps Defined" resizableColumns="true" var="_step" value="#{useCaseFlowAction.basicFlow.flowSteps}" selectionMode="single" rowKey="#{_step.id}" selection="#{useCaseFlowAction.basicFlowStep}" reflow="true">
 								<p:ajax event="rowSelect" listener="#{useCaseFlowAction.onBasicFlowRowSelect}" update="editButton deleteButton insertButton addRuleButton addFlowButton" />
 
 								<f:facet name="header">
 									<h:outputText value="#{useCaseFlowAction.useCase.basicFlow.name}" />
 								</f:facet>
 
-								<p:column style="width:30px;vertical-align: top;">
+								<p:column style="vertical-align: top;">
 									<f:facet name="header">
 										<h:outputText value="Step" style="font-size:0.95em" />
 									</f:facet>
 									<h:outputText value="#{_step.stepNumber}" />
 								</p:column>
 
-								<p:column style="width:80px;vertical-align: top;">
+								<p:column style="vertical-align: top;">
 									<f:facet name="header">
 										<h:outputText value="Actor" style="font-size:0.95em" />
 									</f:facet>
 									<h:outputText value="#{_step.actor.name}" />
 								</p:column>
 
-								<p:column style="width:400px">
+								<p:column>
 									<f:facet name="header">
 										<h:outputText value="Action Description" style="font-size:0.95em" />
 									</f:facet>
@@ -116,12 +112,11 @@
 								<f:facet name="footer">
 									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
 									<p:spacer width="4" />
-									<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel"  oncomplete="PF('editDialog').show()" title="Edit flow step" />
+									<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit flow step" />
 									<p:spacer width="4" />
-									<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-close"  onclick="PF('cd').show()" title="Delete selected basic flow step" />
+									<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete selected basic flow step" />
 									<p:spacer width="4" />
-									<p:commandButton id="insertButton" value="Insert" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.insertFlowStep}"  oncomplete="PF('editDialog').show()"
-										title="Insert new step above selection" />
+									<p:commandButton id="insertButton" value="Insert" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()" title="Insert new step above selection" />
 									<p:spacer width="4" />
 									<p:commandButton id="addFlowButton" value="Add Alternative Flow" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":flowForm:flowPanel" action="#{useCaseFlowAction.addAlternativeFlow}" oncomplete="PF('flowDialog').show()"
 										title="Add new Alternative Flow" />
@@ -137,7 +132,7 @@
 						</p:panel>
 
 						<div style="text-align: right; margin: 10px">
-							<h:commandLink value="Close" action="#{useCaseFlowAction.close}"  icon="ui-icon-close" title="Close view" />
+							<h:commandLink value="Close" action="#{useCaseFlowAction.close}" icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:flowPanel" />
@@ -169,9 +164,9 @@
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
-							<p:commandButton value="#{msg.buttonSave}" actionListener="#{useCaseFlowAction.saveBasicFlow}" update="@(form)"  oncomplete="handleEditDialogComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:commandButton value="#{msg.buttonSave}" actionListener="#{useCaseFlowAction.saveBasicFlow}" update="@(form)" oncomplete="handleEditDialogComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
 							<p:spacer width="6" />
-							<p:commandButton value="#{msg.buttonCancel}" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close"  />
+							<p:commandButton value="#{msg.buttonCancel}" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
 				</p:panelGrid>
@@ -253,8 +248,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update=":form:table :form:messages"  actionListener="#{useCaseFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No"  onclick="PF('cd').hide()" type="button" />
+					<p:commandButton value="Yes" update=":form:table :form:messages" actionListener="#{useCaseFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

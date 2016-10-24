@@ -10,7 +10,7 @@
 					<div class="card">
 
 						<div style="text-align: right; margin: 10px">
-							<h:link value="Close" outcome="/usecases"  icon="ui-icon-close" title="Close view">
+							<h:link value="Close" outcome="/usecases" icon="ui-icon-close" title="Close view">
 								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 								<f:param name="id" value="#{useCaseAction.id}" />
 							</h:link>
@@ -32,35 +32,35 @@
 								<h:outputText value="#{useCaseAction.project.name}: UseCases (#{projectSecurityMarking})" />
 							</f:facet>
 
-							<p:column style="width:30px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:120px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="UseCase Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.name}" styleClass="wordWrap" escape="false" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:70px;vertical-align:top" sortBy="#{_useCase.projectPackage.name}">
+							<p:column style="vertical-align:top" sortBy="#{_useCase.projectPackage.name}">
 								<f:facet name="header">
 									<h:outputText value="Package" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.projectPackage.name}" styleClass="wordWrap" escape="false" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:80px;vertical-align:top" sortBy="#{_useCase.primaryActor.name}">
+							<p:column style="vertical-align:top" sortBy="#{_useCase.primaryActor.name}">
 								<f:facet name="header">
 									<h:outputText value="Primary Actor" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_useCase.primaryActor.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:160px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Objective" style="font-size:0.93em" />
 								</f:facet>

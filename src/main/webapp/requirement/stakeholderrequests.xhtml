@@ -31,7 +31,7 @@
 							<h:outputText value="#{stakeholderRequestAction.project.name}: Stakeholder Requests" styleClass="header" />
 						</div>
 						<p:dataTable id="table" emptyMessage="No Requests Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_stakeholderRequest" value="#{stakeholderRequestAction.stakeholderRequests}" selectionMode="single" rowKey="#{_stakeholderRequest.id}"
-							selection="#{stakeholderRequestAction.stakeholderRequest}">
+							selection="#{stakeholderRequestAction.stakeholderRequest}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{stakeholderRequestAction.onRowSelect}" update="editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
@@ -39,21 +39,21 @@
 								<h:outputText value="Stakeholder Requests" />
 							</f:facet>
 
-							<p:column style="width:50px" sortBy="#{_stakeholderRequest.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholderRequest.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:400px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Stakeholder Request" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholderRequest.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:150px" sortBy="#{_stakeholderRequest.stakeholder.role}">
+							<p:column sortBy="#{_stakeholderRequest.stakeholder.role}">
 								<f:facet name="header">
 									<h:outputText value="Stakeholder Role" style="font-size:0.93em" />
 								</f:facet>
@@ -124,8 +124,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{stakeholderRequestAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{stakeholderRequestAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

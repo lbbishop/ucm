@@ -8,7 +8,7 @@
 				<div class="ui-g-12">
 					<div class="card">
 						<div style="text-align: right; margin: 10px">
-							<h:link value="Close" outcome="/usecaserules"  icon="ui-icon-close" title="Close view">
+							<h:link value="Close" outcome="/usecaserules" icon="ui-icon-close" title="Close view">
 								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 								<f:param name="id" value="#{useCaseRuleAction.id}" />
 							</h:link>
@@ -23,33 +23,33 @@
 
 						<p:growl id="messages" showDetail="false" life="#{appManager.growlLife}" />
 
-						<p:dataTable id="table" emptyMessage="No Requirement Rules Defined" resizableColumns="true" var="_rule" value="#{useCaseRuleAction.flowStepRules}">
+						<p:dataTable id="table" emptyMessage="No Requirement Rules Defined" resizableColumns="true" var="_rule" value="#{useCaseRuleAction.flowStepRules}" reflow="true">
 
 							<f:facet name="header">
 							#{useCaseRuleAction.project.name}: UseCase Business Rules (#{projectSecurityMarking})
 						</f:facet>
 
-							<p:column headerText="Id" style="width:30px;vertical-align: top;" sortBy="#{_rule.artifact}">
+							<p:column headerText="Id" style="vertical-align: top;" sortBy="#{_rule.artifact}">
 								<h:outputText value="#{_rule.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Flow" style="width:100px;vertical-align: top;">
+							<p:column headerText="Flow" style="vertical-align: top;">
 								<h:outputText value="#{_rule.flowStep.flow.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Step" style="width:30px;vertical-align: top;">
+							<p:column headerText="Step" style="vertical-align: top;">
 								<h:outputText value="#{_rule.flowStep.stepNumber}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Business Rule Name" style="width:100px;vertical-align: top;">
+							<p:column headerText="Business Rule Name" style="vertical-align: top;">
 								<h:outputText value="#{_rule.name}" styleClass="wordWrap" escape="false" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Rule Definition" style="width:140px;vertical-align: top;">
+							<p:column headerText="Rule Definition" style="vertical-align: top;">
 								<h:outputText value="#{_rule.rule}" styleClass="wordWrap" escape="false" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Rule Type" style="width:50px;vertical-align: top;" sortBy="#{_rule.ruleType}">
+							<p:column headerText="Rule Type" style="vertical-align: top;" sortBy="#{_rule.ruleType}">
 								<h:outputText value="#{_rule.ruleType}" style="font-size:0.9em" />
 							</p:column>
 
@@ -60,7 +60,7 @@
 						</div>
 
 						<div style="text-align: right; margin: 10px">
-							<h:link value="Close" outcome="/usecaserules"  icon="ui-icon-close" title="Close view">
+							<h:link value="Close" outcome="/usecaserules" icon="ui-icon-close" title="Close view">
 								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 								<f:param name="id" value="#{useCaseRuleAction.id}" />
 							</h:link>

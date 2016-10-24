@@ -23,7 +23,7 @@
 						<div style="text-align: right; margin: 10px">
 							<h:commandLink value="Save" actionListener="#{alternativeFlowAction.save}" />
 							<p:spacer width="10" />
-							<h:link value="Close" outcome="/home"  icon="ui-icon-close" title="Close view" />
+							<h:link value="Close" outcome="/home" icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:panel" />
@@ -37,7 +37,7 @@
 								<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
 							</div>
 
-							<p:panelGrid columns="2" columnClasses="left-140,left-600">
+							<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 								<p:outputLabel for="flowName" value="Alternative Flow: " style="font-weight:bold" />
 								<p:inputText id="flowName" value="#{alternativeFlowAction.alternativeFlow.name}" size="80" maxlength="80" />
@@ -61,7 +61,7 @@
 
 							<p:spacer height="10" />
 
-							<p:dataTable id="table" emptyMessage="No Flow Steps Defined" resizableColumns="true" var="_step" value="#{alternativeFlowAction.alternativeFlow.flowSteps}" selectionMode="single" rowKey="#{_step.id}" selection="#{alternativeFlowAction.alternativeFlowStep}">
+							<p:dataTable id="table" emptyMessage="No Flow Steps Defined" resizableColumns="true" var="_step" value="#{alternativeFlowAction.alternativeFlow.flowSteps}" selectionMode="single" rowKey="#{_step.id}" selection="#{alternativeFlowAction.alternativeFlowStep}" reflow="true">
 								<p:ajax event="rowSelect" listener="#{alternativeFlowAction.onFlowStepRowSelect}" update="@(:input)" />
 
 								<f:facet name="header">
@@ -92,11 +92,11 @@
 								<f:facet name="footer">
 									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not alternativeFlowAction.editable}" update=":editForm:editPanel" action="#{alternativeFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
 									<p:spacer width="6" />
-									<p:commandButton id="editButton" value="Edit" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-pencil"  update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit flow step" />
+									<p:commandButton id="editButton" value="Edit" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit flow step" />
 									<p:spacer width="6" />
-									<p:commandButton id="deleteButton" value="Delete" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-close"  onclick="PF('cd').show()" title="Delete selected flow step" />
+									<p:commandButton id="deleteButton" value="Delete" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete selected flow step" />
 									<p:spacer width="6" />
-									<p:commandButton id="insertButton" value="Insert" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}"  update=":editForm:editPanel" action="#{alternativeFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()"
+									<p:commandButton id="insertButton" value="Insert" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" update=":editForm:editPanel" action="#{alternativeFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()"
 										title="Insert new step above selection" />
 									<p:spacer width="6" />
 									<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" update=":ruleForm:rulePanel" action="#{alternativeFlowAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()"
@@ -115,7 +115,7 @@
 						<div style="text-align: right; margin: 10px">
 							<h:commandLink value="Save" actionListener="#{alternativeFlowAction.save}" />
 							<p:spacer width="10" />
-							<h:link value="Close" outcome="/home"  icon="ui-icon-close" title="Close view" />
+							<h:link value="Close" outcome="/home" icon="ui-icon-close" title="Close view" />
 							<p:spacer width="10" />
 							<h:commandLink value="Print">
 								<p:printer target=":form:panel" />
@@ -130,7 +130,7 @@
 		<p:dialog id="dialog" header="Edit Flow Step" widgetVar="editDialog" resizable="true" modal="true" responsive="true" position="25,25">
 			<h:form id="editForm">
 				<p:messages id="editMessages" severity="error" />
-				<h:panelGrid id="editPanel" columns="2" columnClasses="left-100,left">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="stepNumber" value="Step:" />
 					<h:outputText id="stepNumber" value="#{alternativeFlowAction.alternativeFlowStep.stepNumber}" />
@@ -151,14 +151,14 @@
 							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Edit Business Rule" widgetVar="ruleDialog" minWidth="750" resizable="true" modal="true" styleClass="modalDialog">
 			<h:form id="ruleForm">
 				<p:messages id="ruleMessages" severity="error" />
-				<h:panelGrid id="rulePanel" columns="2" columnClasses="left-100,left">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel for="identifier" value="Identifier:" />
 					<h:outputText id="identifier" value="#{alternativeFlowAction.flowStepRule.artifact}" />
@@ -194,15 +194,15 @@
 							<p:commandButton value="Cancel" onclick="PF('ruleDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{alternativeFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()" type="button"  />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{alternativeFlowAction.removeFlowStep}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

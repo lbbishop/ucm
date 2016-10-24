@@ -31,7 +31,8 @@
 							<h:outputText value="#{featureAction.project.name}: Product Features" styleClass="header" />
 						</div>
 
-						<p:dataTable id="table" emptyMessage="No Features Defined" resizableColumns="false" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_feature" value="#{featureAction.features}" selectionMode="single" rowKey="#{_feature.id}" selection="#{featureAction.feature}">
+						<p:dataTable id="table" emptyMessage="No Features Defined" resizableColumns="false" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_feature" value="#{featureAction.features}" selectionMode="single" rowKey="#{_feature.id}" selection="#{featureAction.feature}"
+							reflow="true">
 							<p:ajax event="rowSelect" listener="#{featureAction.onRowSelect}" update="editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('featureDialog').show()" />
 
@@ -39,21 +40,21 @@
 								<h:outputText value="#{featureAction.project.name}: Product Features" />
 							</f:facet>
 
-							<p:column style="width:40px" sortBy="#{_feature.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_feature.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:450px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Feature Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_feature.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:60px" sortBy="#{_feature.priorityType}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Priority" style="font-size:0.93em" />
 								</f:facet>
@@ -132,7 +133,7 @@
 						</p:outputPanel>
 					</f:facet>
 				</p:panelGrid>
-				
+
 				<pe:tooltip for="identifier" />
 				<pe:tooltip for="featureName" styleClass="customTooltip" />
 				<pe:tooltip for="description" styleClass="customTooltip" />

@@ -38,21 +38,21 @@
 								<h:outputText value="Design Constraints" />
 							</f:facet>
 
-							<p:column style="width:50px" sortBy="#{_designConstraint.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_designConstraint.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:300px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Constraint Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_designConstraint.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:350px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Description" style="font-size:0.93em" />
 								</f:facet>
@@ -83,7 +83,7 @@
 						</div>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{constraintAction.close}"  title="Close view" />
+							<p:commandButton value="Close" action="#{constraintAction.close}" title="Close view" />
 						</div>
 					</div>
 				</div>
@@ -120,8 +120,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{constraintAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No"  onclick="PF('cd').hide()" type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{constraintAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

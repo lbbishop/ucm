@@ -36,21 +36,21 @@
 								<h:outputText value="#{glossaryTermAction.project.name}: Glossary of Terms" />
 							</f:facet>
 
-							<p:column style="width:50px;vertical-align:top" sortBy="#{_glossaryTerm.artifact}">
+							<p:column style="vertical-align:top" sortBy="#{_glossaryTerm.artifact}">
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_glossaryTerm.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:200px;vertical-align:top" sortBy="#{_glossaryTerm.term}">
+							<p:column style="vertical-align:top" sortBy="#{_glossaryTerm.term}">
 								<f:facet name="header">
 									<h:outputText value="Glossary Term" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_glossaryTerm.term}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:450px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Definition" style="font-size:0.93em" />
 								</f:facet>

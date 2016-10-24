@@ -52,41 +52,41 @@
 
 						<p:spacer height="10" />
 
-						<p:dataTable id="table" emptyMessage="No Flows Defined" resizableColumns="true" scrollable="true" scrollHeight="350" var="flow" value="#{alternativeFlowAction.useCase.alternativeFlows}" selectionMode="single" rowKey="#{flow.id}" selection="#{alternativeFlowAction.alternativeFlow}" reflow="true">
+						<p:dataTable id="table" emptyMessage="No Flows Defined" resizableColumns="true" scrollable="true" scrollHeight="350" var="flow" value="#{alternativeFlowAction.useCase.alternativeFlows}" selectionMode="single" rowKey="#{flow.id}" selection="#{alternativeFlowAction.alternativeFlow}"
+							reflow="true">
 							<p:ajax event="rowSelect" listener="#{alternativeFlowAction.onRowSelect}" update="deleteButton editButton" />
 
 							<f:facet name="header">
 								<h:outputText value="UseCase Alternative Flows" />
 							</f:facet>
 
-							<p:column style="width:250px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{flow.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:80px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Begin Step" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText id="beginStep" value="#{flow.startStep}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:80px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="End Step" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText id="endStep" value="#{flow.endStep}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:50px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Steps" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText id="numSteps" value="#{flow.flowSteps.size()}" style="font-size:0.9em" />
 							</p:column>
-
 
 							<f:facet name="footer">
 								<p:button id="editButton" value="Edit" outcome="/alternativeflow" disabled="#{not alternativeFlowAction.selected or not alternativeFlowAction.editable}" icon="ui-icon-pencil" title="Edit Alternative Flow">
@@ -105,7 +105,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{alternativeFlowAction.close}"  icon="ui-icon-close" title="Close view" />
+							<p:commandButton value="Close" action="#{alternativeFlowAction.close}" icon="ui-icon-close" title="Close view" />
 						</div>
 					</div>
 				</div>
@@ -115,8 +115,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{alternativeFlowAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{alternativeFlowAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

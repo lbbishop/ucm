@@ -10,7 +10,7 @@
 					<div class="card">
 
 						<div style="text-align: right; margin: 10px">
-							<h:link value="Close" outcome="/stakeholderrequests"  icon="ui-icon-close" title="Close view">
+							<h:link value="Close" outcome="/stakeholderrequests" icon="ui-icon-close" title="Close view">
 								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 								<f:param name="id" value="#{stakeholderRequestAction.id}" />
 							</h:link>
@@ -31,28 +31,28 @@
 							#{stakeholderRequestAction.project.name}: Stakeholder Requests (#{projectSecurityMarking})
 						</f:facet>
 
-							<p:column style="width:50px;vertical-align:top" sortBy="#{_stakeholderRequest.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholderRequest.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:100px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Stakeholder Request" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholderRequest.name}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:90px;vertical-align:top" sortBy="#{_stakeholderRequest.stakeholder.role}">
+							<p:column style="vertical-align:top" sortBy="#{_stakeholderRequest.stakeholder.role}">
 								<f:facet name="header">
 									<h:outputText value="Role" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholderRequest.stakeholder.role}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:250px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Stakeholder Request Description" style="font-size:0.93em" />
 								</f:facet>

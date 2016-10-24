@@ -40,28 +40,28 @@
 								<h:outputText value="#{stakeholderAction.project.name} Stakeholders" />
 							</f:facet>
 
-							<p:column style="width:50px;vertical-align:top" sortBy="#{_stakeholder.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholder.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:150px;vertical-align:top" sortBy="#{_stakeholder.role}">
+							<p:column style="vertical-align:top" sortBy="#{_stakeholder.role}">
 								<f:facet name="header">
 									<h:outputText value="Stakeholder Role" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholder.role}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:150px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Representative" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_stakeholder.representative}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:350px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Responsibilities" style="font-size:0.93em" />
 								</f:facet>
@@ -391,8 +391,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{stakeholderAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{stakeholderAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

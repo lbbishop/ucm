@@ -28,7 +28,7 @@
 						<div style="margin: 6px">
 							<h:outputText value="#{riskAction.project.name}: Project Risks" styleClass="header" />
 						</div>
-						<p:dataTable id="table" styleClass="dataTable" emptyMessage="No Risks Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_risk" value="#{riskAction.risks}" selectionMode="single" rowKey="#{_risk.id}" selection="#{riskAction.risk}">
+						<p:dataTable id="table" styleClass="dataTable" emptyMessage="No Risks Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_risk" value="#{riskAction.risks}" selectionMode="single" rowKey="#{_risk.id}" selection="#{riskAction.risk}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{riskAction.onRowSelect}" update="editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
@@ -36,28 +36,28 @@
 								<h:outputText value="#{riskAction.project.name} Risks" />
 							</f:facet>
 
-							<p:column style="width:50px;vertical-align:top" sortBy="#{_risk.artifact}">
+							<p:column style="vertical-align:top" sortBy="#{_risk.artifact}">
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_risk.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:80px;vertical-align:top" sortBy="#{_risk.riskLevelType}">
+							<p:column style="vertical-align:top" sortBy="#{_risk.riskLevelType}">
 								<f:facet name="header">
 									<h:outputText value="Risk Level" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_risk.riskLevelType}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:200px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Risk Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_risk.name}" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:340px;vertical-align:top">
+							<p:column style="vertical-align:top">
 								<f:facet name="header">
 									<h:outputText value="Description" style="font-size:0.93em" />
 								</f:facet>

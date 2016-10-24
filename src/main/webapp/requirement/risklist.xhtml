@@ -9,7 +9,7 @@
 				<div class="ui-g-12">
 					<div class="card">
 						<div style="text-align: right; margin: 10px">
-							<h:link value="Close" outcome="/risks"  icon="ui-icon-close" title="Close view">
+							<h:link value="Close" outcome="/risks" icon="ui-icon-close" title="Close view">
 								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 								<f:param name="id" value="#{riskAction.id}" />
 							</h:link>
@@ -26,29 +26,29 @@
 						<p:growl id="messages" life="#{appManager.growlLife}" />
 
 
-						<p:dataTable id="table" emptyMessage="No Risks Defined" styleClass="dataTable" resizableColumns="true" var="_risk" value="#{riskAction.risks}">
+						<p:dataTable id="table" emptyMessage="No Risks Defined" styleClass="dataTable" resizableColumns="true" var="_risk" value="#{riskAction.risks}" reflow="true">
 
 							<f:facet name="header">
 							#{riskAction.project.name}: Project Risks (#{projectSecurityMarking})
 						</f:facet>
 
-							<p:column headerText="Id" style="width:40px;vertical-align:top" sortBy="#{_risk.artifact}">
+							<p:column headerText="Id" style="vertical-align:top" sortBy="#{_risk.artifact}">
 								<h:outputText value="#{_risk.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Risk Level" style="width:60px;vertical-align:top" sortBy="#{_risk.riskLevelType}">
+							<p:column headerText="Risk Level" style="vertical-align:top" sortBy="#{_risk.riskLevelType}">
 								<h:outputText value="#{_risk.riskLevelType}" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Risk Name" style="width:80px;vertical-align:top">
+							<p:column headerText="Risk Name" style="vertical-align:top">
 								<h:outputText value="#{_risk.name}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Description" style="width:150px;vertical-align:top">
+							<p:column headerText="Description" style="vertical-align:top">
 								<h:outputText value="#{_risk.description}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Risk Mitigation" style="width:150px;vertical-align:top">
+							<p:column headerText="Risk Mitigation" style="vertical-align:top">
 								<h:outputText value="#{_risk.mitigation}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
@@ -59,7 +59,7 @@
 						</div>
 
 						<div style="text-align: right; margin: 10px">
-							<h:link value="Close" outcome="/risks"  icon="ui-icon-close" title="Close view">
+							<h:link value="Close" outcome="/risks" icon="ui-icon-close" title="Close view">
 								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 								<f:param name="id" value="#{riskAction.id}" />
 							</h:link>

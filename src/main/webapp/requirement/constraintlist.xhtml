@@ -28,15 +28,15 @@
 							#{constraintAction.project.name}: Design Constraints (#{projectSecurityMarking})
 							</f:facet>
 
-							<p:column headerText="Id" style="width:40px;vertical-align:top" sortBy="#{_designConstraint.artifact}">
+							<p:column headerText="Id" style="vertical-align:top" sortBy="#{_designConstraint.artifact}">
 								<h:outputText value="#{_designConstraint.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Constraint Name" style="width:150px;vertical-align:top">
+							<p:column headerText="Constraint Name" style="vertical-align:top">
 								<h:outputText value="#{_designConstraint.name}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Description" style="width:300px;vertical-align:top">
+							<p:column headerText="Description" style="vertical-align:top">
 								<h:outputText value="#{_designConstraint.description}" styleClass="wordWrap" escape="false" style="font-size:0.9em" />
 							</p:column>
 
