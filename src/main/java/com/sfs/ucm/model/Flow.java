@@ -34,6 +34,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -80,6 +81,10 @@ public class Flow extends EntityBase implements Serializable {
 
 	@Column(name = "end_step", nullable = true)
 	private Short endStep;
+
+	@Lob
+	@Column(name = "test_conditions", columnDefinition = "CLOB", nullable = true)
+	private String testConditions;
 
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "usecase_id")
@@ -289,6 +294,21 @@ public class Flow extends EntityBase implements Serializable {
 	 */
 	public int getNumSteps() {
 		return this.flowSteps.size();
+	}
+
+	/**
+	 * @return the testConditions
+	 */
+	public String getTestConditions() {
+		return testConditions;
+	}
+
+	/**
+	 * @param testConditions
+	 *            the testConditions to set
+	 */
+	public void setTestConditions(String testConditions) {
+		this.testConditions = testConditions;
 	}
 
 	/*

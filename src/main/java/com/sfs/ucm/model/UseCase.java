@@ -119,9 +119,6 @@ public class UseCase extends EntityBase implements Serializable {
 	@Column(name = "comments", columnDefinition = "CLOB", nullable = true)
 	private String comments;
 
-	@Column(name = "percent_complete", nullable = true)
-	private Long percentComplete;
-
 	@ManyToOne
 	private Project project;
 
@@ -353,21 +350,6 @@ public class UseCase extends EntityBase implements Serializable {
 	 */
 	public void setFeature(Feature feature) {
 		this.feature = feature;
-	}
-
-	/**
-	 * @return the percentComplete
-	 */
-	public Long getPercentComplete() {
-		return percentComplete;
-	}
-
-	/**
-	 * @param percentComplete
-	 *            the percentComplete to set
-	 */
-	public void setPercentComplete(Long percentComplete) {
-		this.percentComplete = percentComplete;
 	}
 
 	/**
@@ -605,8 +587,6 @@ public class UseCase extends EntityBase implements Serializable {
 		builder.append(triggerEvent);
 		builder.append(", comments=");
 		builder.append(comments);
-		builder.append(", percentComplete=");
-		builder.append(percentComplete);
 		builder.append(", primaryActor=");
 		builder.append(primaryActor);
 		builder.append(", project=");

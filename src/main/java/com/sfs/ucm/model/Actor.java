@@ -92,6 +92,22 @@ public class Actor extends EntityBase implements Serializable {
 	@Column(name = "needs", columnDefinition = "CLOB", nullable = true)
 	private String needs;
 
+	@Size(max = 255)
+	@Column(name = "interactions", length = 255, nullable = true)
+	private String interactions;
+
+	@Size(max = 255)
+	@Column(name = "resources", length = 255, nullable = true)
+	private String resources;
+
+	@Size(max = 255)
+	@Column(name = "background", length = 255, nullable = true)
+	private String background;
+
+	@Size(max = 255)
+	@Column(name = "business_knowledge", length = 255, nullable = true)
+	private String businessKnowledge;
+
 	@ManyToOne
 	private Project project;
 
@@ -266,6 +282,66 @@ public class Actor extends EntityBase implements Serializable {
 	 */
 	public void setNeeds(String needs) {
 		this.needs = needs;
+	}
+
+	/**
+	 * @return the interactions
+	 */
+	public String getInteractions() {
+		return interactions;
+	}
+
+	/**
+	 * @param interactions
+	 *            the interactions to set
+	 */
+	public void setInteractions(String interactions) {
+		this.interactions = interactions;
+	}
+
+	/**
+	 * @return the resources
+	 */
+	public String getResources() {
+		return resources;
+	}
+
+	/**
+	 * @param resources
+	 *            the resources to set
+	 */
+	public void setResources(String resources) {
+		this.resources = resources;
+	}
+
+	/**
+	 * @return the background
+	 */
+	public String getBackground() {
+		return background;
+	}
+
+	/**
+	 * @param background
+	 *            the background to set
+	 */
+	public void setBackground(String background) {
+		this.background = background;
+	}
+
+	/**
+	 * @return the businessKnowledge
+	 */
+	public String getBusinessKnowledge() {
+		return businessKnowledge;
+	}
+
+	/**
+	 * @param businessKnowledge
+	 *            the businessKnowledge to set
+	 */
+	public void setBusinessKnowledge(String businessKnowledge) {
+		this.businessKnowledge = businessKnowledge;
 	}
 
 	/*
