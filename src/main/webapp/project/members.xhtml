@@ -32,7 +32,8 @@
 							<h:outputText value="#{memberAction.project.name}: Project Members" styleClass="header" />
 						</div>
 
-						<p:dataTable id="table" emptyMessage="No Members Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_member" value="#{memberAction.projectMembers}" selectionMode="single" rowKey="#{_member.id}" selection="#{memberAction.projectMember}" reflow="true">
+						<p:dataTable id="table" emptyMessage="No Members Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_member" value="#{memberAction.projectMembers}" selectionMode="single" rowKey="#{_member.id}" selection="#{memberAction.projectMember}"
+							reflow="true">
 							<p:ajax event="rowSelect" listener="#{memberAction.onRowSelect}" update="editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
@@ -40,21 +41,21 @@
 								<h:outputText value="Project Members" />
 							</f:facet>
 
-							<p:column style="width:50px" sortBy="#{_member.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_member.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:250px" sortBy="#{_member.authUser.name}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Member Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_member.authUser.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:150px" sortBy="#{_member.primaryRole}">
+							<p:column sortBy="#{_member.primaryRole}">
 								<f:facet name="header">
 									<h:outputText value="Primary Role" style="font-size:0.93em" />
 								</f:facet>
@@ -116,8 +117,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{memberAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{memberAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

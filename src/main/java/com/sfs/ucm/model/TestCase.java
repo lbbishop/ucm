@@ -85,7 +85,7 @@ public class TestCase extends EntityBase implements Serializable {
 	private String description;
 
 	@Lob
-	@Column(name = "notes", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "notes", columnDefinition = "CLOB", nullable = true)
 	private String notes;
 
 	@Basic
@@ -94,7 +94,7 @@ public class TestCase extends EntityBase implements Serializable {
 	private java.util.Date testDate;
 
 	@Lob
-	@Column(name = "input_data", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "input_data", columnDefinition = "CLOB", nullable = true)
 	private String inputData;
 
 	@OneToOne

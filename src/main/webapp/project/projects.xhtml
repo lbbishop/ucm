@@ -25,7 +25,7 @@
 						<div style="margin: 6px">
 							<h:outputText value="Projects" styleClass="header" />
 						</div>
-						<p:dataTable id="table" emptyMessage="No Projects Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="proj" value="#{projectAction.projects}" selectionMode="single" rowKey="#{proj.id}" selection="#{projectAction.project}">
+						<p:dataTable id="table" emptyMessage="No Projects Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="proj" value="#{projectAction.projects}" selectionMode="single" rowKey="#{proj.id}" selection="#{projectAction.project}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{projectAction.onRowSelect}" update=":form:table editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
@@ -33,21 +33,21 @@
 								<h:outputText value="Projects" />
 							</f:facet>
 
-							<p:column style="width:150px" sortBy="#{proj.name}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Project Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{proj.name}" />
 							</p:column>
 
-							<p:column style="width:350px" sortBy="#{_project.descriptionAbbrv}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Description" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{proj.descriptionAbbrv}" />
 							</p:column>
 
-							<p:column style="width:120px" sortBy="#{_project.modifiedDate}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Last Modified" style="font-size:0.93em" />
 								</f:facet>
@@ -70,7 +70,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{projectAction.close}"  icon="ui-icon-close" />
+							<p:commandButton value="Close" action="#{projectAction.close}" icon="ui-icon-close" />
 						</div>
 					</div>
 				</div>
@@ -116,8 +116,8 @@
 		<p:confirmDialog message="Are you sure?" width="180" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{projectAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{projectAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

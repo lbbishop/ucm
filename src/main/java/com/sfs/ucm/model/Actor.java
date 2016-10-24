@@ -85,11 +85,11 @@ public class Actor extends EntityBase implements Serializable {
 
 	@NotNull(message = "Responsibilities is required")
 	@Lob
-	@Column(name = "responsibilities", columnDefinition = "TEXT", nullable = false)
+	@Column(name = "responsibilities", columnDefinition = "CLOB", nullable = false)
 	private String responsibilities;
 
 	@Lob
-	@Column(name = "needs", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "needs", columnDefinition = "CLOB", nullable = true)
 	private String needs;
 
 	@ManyToOne

@@ -17,32 +17,25 @@
 		}		
 		</script>
 
-		<p:layout fullPage="true">
+		<h:form id="form">
 
-			<p:layoutUnit position="north" header="#{appManager.displayName}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="center">
-
-				<h:form id="form">
-
-					<p:messages id="messages" autoUpdate="true" />
-					<div class="ui-grid">
-						<div class="ui-grid-row">
-							<div class="ui-grid-col-8" style="text-align: left; margin: 0px auto 0px 40px">
-								<h:outputText value="#{helpManager.getHelp('HelpContentForm')}" escape="false" style="font-size: 1.1em" />
-							</div>
-							<div class="ui-grid-col-4" style="text-align: right; margin: 5px">
-								<h:graphicImage value="/images/help_icon.gif" height="18" title="HelpContentHelp" onclick="PF('helpDialog').show()" />
+						<p:messages id="messages" autoUpdate="true" />
+						<div class="ui-grid">
+							<div class="ui-grid-row">
+								<div class="ui-grid-col-8" style="text-align: left; margin: 0px auto 0px 40px">
+									<h:outputText value="#{helpManager.getHelp('HelpContentForm')}" escape="false" style="font-size: 1.1em" />
+								</div>
+								<div class="ui-grid-col-4" style="text-align: right; margin: 5px">
+									<h:graphicImage value="/images/help_icon.gif" height="18" title="HelpContentHelp" onclick="PF('helpDialog').show()" />
+								</div>
 							</div>
 						</div>
-					</div>
-					<p:spacer height="10" />
+						<p:spacer height="10" />
 
-					<h:panelGrid columns="1" style="width:100%">
 
 						<p:dataTable id="table" emptyMessage="No Help Content Defined" resizableColumns="true" scrollable="true" var="_help" value="#{helpContentAction.helpItems}" selectionMode="single" rowKey="#{_help.id}" selection="#{helpContentAction.helpItem}" paginator="true" paginatorPosition="top" rows="15"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="15,25,50" sortOrder="descending" paginatorAlwaysVisible="true">
@@ -52,14 +45,14 @@
 								<h:outputText value="Help Content" />
 							</f:facet>
 
-							<p:column style="width:160px" sortBy="#{_help.keyword}">
+							<p:column sortBy="#{_help.keyword}">
 								<f:facet name="header">
 									<h:outputText value="Help Key" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_help.keyword}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:600px">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Help Content" style="font-size:0.93em" />
 								</f:facet>
@@ -84,24 +77,20 @@
 						<div>
 							<h:outputText id="filterCount" value="Items: #{helpContentAction.itemCount}" />
 						</div>
-					</h:panelGrid>
 
-					<div style="text-align: right; margin: 0 10px 0 0">
-						<p:commandButton value="#{msg.buttonClose}" action="#{helpContentAction.close}" style="width:80px" title="Close view" />
+						<div style="text-align: right; margin: 0 10px 0 0">
+							<p:commandButton value="#{msg.buttonClose}" action="#{helpContentAction.close}" icon="ui-icon-cancel" title="Close view" />
+						</div>
 					</div>
-				</h:form>
-			</p:layoutUnit>
-			<p:layoutUnit position="south">
-				<h:form>
-					<ui:include src="/includes/footer.xhtml" />
-				</h:form>
-			</p:layoutUnit>			
-		</p:layout>
+				</div>
+			</div>
+		</h:form>
+
 
 		<p:dialog id="editDlg" header="Edit Help Content" widgetVar="editDialog" modal="true" styleClass="formDialog" position="30,30">
 			<h:form id="editForm">
 				<p:messages severity="warn,error" />
-				<h:panelGrid id="editPanel" columns="1" columnClasses="left,left">
+				<p:panelGrid columns="1" layout="grid" columnClasses="ui-g-12" styleClass="ui-panelgrid-blank form-group">
 
 					<p:outputLabel for="helpKey" value="Help Key:" />
 					<p:inputText id="helpKey" value="#{helpContentAction.helpItem.keyword}" size="35" maxlength="30" label="Help Key" required="true" />
@@ -121,18 +110,18 @@
 
 						</p:outputPanel>
 					</f:facet>
-				</h:panelGrid>
+				</p:panelGrid>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog id="importDlg" header="Import Help Content" widgetVar="importDialog" minWidth="600" resizable="true" modal="true">
 			<h:form id="importForm" enctype="multipart/form-data">
 				<p:messages />
-				<h:panelGrid>
+				<p:panelGrid columns="1" layout="grid" columnClasses="ui-g-12" styleClass="ui-panelgrid-blank form-group">
 					<h:outputText value="Click Choose to browse for the Help Content File (Excel Format)" styleClass="help" />
 					<h:outputText value="Click Upload to upload file for import" styleClass="help" />
 					<h:outputText value="Close the dialog" styleClass="help" />
-				</h:panelGrid>
+				</p:panelGrid>
 				<p:panel id="uploadPanel" header="Upload Help Content">
 					<p:fileUpload fileUploadListener="#{helpContentAction.handleHelpContentUpload}" mode="advanced" update=":form:table :importForm" sizeLimit="5000000" allowTypes="/(\.|\/)(xls|xlsx)$/" />
 					<p:spacer height="60" />
@@ -153,10 +142,6 @@
 				</div>
 			</h:form>
 		</p:confirmDialog>
-
-		<ui:include src="/includes/helppanel.xhtml">
-			<ui:param name="helpResource" value="#{helpManager.getHelp('HelpContentHelp')}" />
-		</ui:include>
 
 	</ui:define>
 </ui:composition>

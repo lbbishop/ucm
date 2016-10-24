@@ -22,8 +22,10 @@
 package com.sfs.ucm.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Collection;
+import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,9 +36,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -50,6 +51,7 @@ import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
 import com.sfs.ucm.data.Constants;
@@ -87,7 +89,7 @@ public class Issue extends EntityBase implements Serializable {
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
 	@NotNull(message = "Description is required")
 	@Lob
-	@Column(name = "description", columnDefinition = "TEXT", nullable = false)
+	@Column(name = "description", columnDefinition = "CLOB", nullable = false)
 	private String description;
 
 	@NotNull(message = "Status is required")
@@ -106,15 +108,15 @@ public class Issue extends EntityBase implements Serializable {
 	private PriorityType priorityType;
 
 	@DecimalMin("0.00")
-	@Digits(integer=3, fraction=2)
+	@Digits(integer = 3, fraction = 2)
 	@Column(name = "estimated_effort", nullable = true)
 	private Double estimatedEffort;
 
 	@DecimalMin("0.00")
-	@Digits(integer=3, fraction=2)
+	@Digits(integer = 3, fraction = 2)
 	@Column(name = "actual_effort", nullable = true)
 	private Double actualEffort;
-	
+
 	@OneToOne
 	@JoinColumn(name = "authuser_id", nullable = true)
 	private ProjectMember assignee;
@@ -122,6 +124,17 @@ public class Issue extends EntityBase implements Serializable {
 	@Column(name = "send_notification", nullable = false)
 	private Boolean sendNotification;
 
+	@IndexedEmbedded
+	@OneToMany(mappedBy = "issue", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<IssueComment> comments;
+
+	@IndexedEmbedded
+	@OneToMany(mappedBy = "issue", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<IssueLabel> labels;
+
+	@IndexedEmbedded
+	@OneToMany(mappedBy = "issue", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<IssueAttachment> attachments;
 
 	@ManyToOne
 	private Project project;
@@ -141,7 +154,7 @@ public class Issue extends EntityBase implements Serializable {
 		super();
 		init();
 		this.identifier = Integer.valueOf(identifier);
-		
+
 	}
 
 	/**
@@ -150,28 +163,9 @@ public class Issue extends EntityBase implements Serializable {
 	private void init() {
 		this.sendNotification = false;
 		this.assignee = new ProjectMember();
-	}
-
-	/**
-	 * PrePersist method
-	 */
-	@PrePersist
-	public void prePersist() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
-	}
-
-	/**
-	 * PreUpdate method
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		if (this.modifiedBy == null) {
-			this.modifiedBy = Literal.APPNAME.toString();
-		}
-		this.modifiedDate = new Date();
+		this.attachments = new HashSet<IssueAttachment>();
+		this.labels = new HashSet<IssueLabel>();
+		this.comments = new HashSet<IssueComment>();
 	}
 
 	/**
@@ -345,6 +339,108 @@ public class Issue extends EntityBase implements Serializable {
 	 */
 	public String getArtifact() {
 		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_ISSUE.toString(), this.identifier);
+	}
+
+	/**
+	 * @return the actualEffort
+	 */
+	public Double getActualEffort() {
+		return actualEffort;
+	}
+
+	/**
+	 * @param actualEffort
+	 *            the actualEffort to set
+	 */
+	public void setActualEffort(Double actualEffort) {
+		this.actualEffort = actualEffort;
+	}
+
+	/**
+	 * @return the attachments
+	 */
+	public Collection<IssueAttachment> getAttachments() {
+		return attachments;
+	}
+
+	/**
+	 * Add attachment
+	 * 
+	 * @param attachment
+	 *            the attachment to add
+	 */
+	public void addAttachment(IssueAttachment attachment) {
+		attachment.setIssue(this);
+		this.attachments.add(attachment);
+	}
+
+	/**
+	 * Remove attachment
+	 * 
+	 * @param attachment
+	 *            the attachment to remove
+	 */
+	public void removeAttachment(IssueAttachment attachment) {
+		attachment.setIssue(null);
+		this.attachments.remove(attachment);
+	}
+
+	/**
+	 * @return the labels
+	 */
+	public Collection<IssueLabel> getLabels() {
+		return labels;
+	}
+
+	/**
+	 * Add label
+	 * 
+	 * @param label
+	 *            the label to add
+	 */
+	public void addLabel(IssueLabel label) {
+		label.setIssue(this);
+		this.labels.add(label);
+	}
+
+	/**
+	 * Remove label
+	 * 
+	 * @param label
+	 *            the label to remove
+	 */
+	public void removeLabel(IssueLabel label) {
+		label.setIssue(null);
+		this.labels.remove(label);
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public Collection<IssueComment> getComments() {
+		return comments;
+	}
+
+	/**
+	 * Add comment
+	 * 
+	 * @param comment
+	 *            the comment to add
+	 */
+	public void addComment(IssueComment comment) {
+		comment.setIssue(this);
+		this.comments.add(comment);
+	}
+
+	/**
+	 * Remove comment
+	 * 
+	 * @param comment
+	 *            the comment to remove
+	 */
+	public void removeComment(IssueComment comment) {
+		comment.setIssue(null);
+		this.comments.remove(comment);
 	}
 
 	/*

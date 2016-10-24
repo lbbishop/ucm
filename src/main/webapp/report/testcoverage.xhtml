@@ -43,48 +43,48 @@
 						<p:tabView>
 							<p:tab title="TestCase">
 
-								<p:dataTable id="testCaseTable" styleClass="dataTable" emptyMessage="No TestCase Results" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testCoverageAction.testCaseResults}">
+								<p:dataTable id="testCaseTable" styleClass="dataTable" emptyMessage="No TestCase Results" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="result" value="#{testCoverageAction.testCaseResults}" reflow="true">
 
 									<f:facet name="header">
 										<h:outputText value="TestCase Coverage Report" />
 									</f:facet>
 
-									<p:column style="width:50px;vertical-align:top" sortBy="#{result.artifact}">
+									<p:column style="vertical-align:top" sortBy="#{result.artifact}">
 										<f:facet name="header">
 											<h:outputText value="Artifact" style="font-size:0.93em" />
 										</f:facet>
 										<h:outputText value="#{result.artifact}" style="font-size:0.9em" />
 									</p:column>
 
-									<p:column style="width:60px;vertical-align:top">
+									<p:column style="vertical-align:top">
 										<f:facet name="header">
 											<h:outputText value="Test Type" style="font-size:0.93em" />
 										</f:facet>
 										<h:outputText value="#{result.testType}" style="font-size:0.9em" />
 									</p:column>
 
-									<p:column style="width:80px;vertical-align:top" sortBy="#{result.testSet}">
+									<p:column style="vertical-align:top" sortBy="#{result.testSet}">
 										<f:facet name="header">
 											<h:outputText value="TestSet" style="font-size:0.93em" />
 										</f:facet>
 										<h:outputText value="#{result.testSet}" style="font-size:0.9em" />
 									</p:column>
 
-									<p:column style="width:240px;vertical-align:top" sortBy="#{result.testName}">
+									<p:column style="vertical-align:top" sortBy="#{result.testName}">
 										<f:facet name="header">
 											<h:outputText value="Test Name" style="font-size:0.93em" />
 										</f:facet>
 										<h:outputText value="#{result.testName}" styleClass="wordWrap" style="font-size:0.9em" />
 									</p:column>
 
-									<p:column style="width:100px;vertical-align:top" sortBy="#{result.tester}">
+									<p:column style="vertical-align:top" sortBy="#{result.tester}">
 										<f:facet name="header">
 											<h:outputText value="Tester" style="font-size:0.93em" />
 										</f:facet>
 										<h:outputText value="#{result.tester}" style="font-size:0.9em" />
 									</p:column>
 
-									<p:column style="width:90px;vertical-align:top">
+									<p:column style="vertical-align:top">
 										<f:facet name="header">
 											<h:outputText value="Test Date" style="font-size:0.93em" />
 										</f:facet>
@@ -93,7 +93,7 @@
 										</h:outputText>
 									</p:column>
 
-									<p:column style="width:70px;vertical-align:top" sortBy="#{result.testResultType}">
+									<p:column style="vertical-align:top" sortBy="#{result.testResultType}">
 										<f:facet name="header">
 											<h:outputText value="Test Result" style="font-size:0.93em" />
 										</f:facet>

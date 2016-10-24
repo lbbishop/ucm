@@ -25,8 +25,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,11 +45,10 @@ import org.hibernate.search.annotations.Store;
 
 import com.sfs.ucm.data.Constants;
 import com.sfs.ucm.data.Literal;
-import com.sfs.ucm.data.RiskLevelType;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
- * Risk
+ * Issue Label
  * 
  * @author lbbishop
  * 
@@ -59,8 +56,8 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name = "risk")
-public class Risk extends EntityBase implements Serializable {
+@Table(name = "issue_label")
+public class IssueLabel extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,40 +67,35 @@ public class Risk extends EntityBase implements Serializable {
 	private Long id;
 
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
-	@NotNull(message = "Name is required")
+	@NotNull(message = "Label is required")
 	@Size(max = 100)
-	@Column(name = "name", length = 100, nullable = false)
-	private String name;
+	@Column(name = "label", length = 100, nullable = false)
+	private String label;
 
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
 	@NotNull(message = "Description is required")
 	@Lob
-	@Column(name = "description", columnDefinition = "CLOB", nullable = false)
+	@Column(name = "description", columnDefinition = "CLOB", nullable = true)
 	private String description;
 
-	@Lob
-	@Column(name = "mitigation", columnDefinition = "CLOB", nullable = true)
-	private String mitigation;
-
-	@NotNull(message = "Level is required")
-	@Enumerated(EnumType.STRING)
-	@Column(name = "risk_level_type", nullable = false)
-	private RiskLevelType riskLevelType;
+	@Size(max = 50)
+	@Column(name = "style", length = 50, nullable = true)
+	private String style;
 
 	@ManyToOne
-	private Project project;
+	private Issue issue;
 
 	/**
 	 * Default constructor
 	 */
-	public Risk() {
+	public IssueLabel() {
 		super();
 	}
 
 	/**
 	 * Constructor
 	 */
-	public Risk(int identifier) {
+	public IssueLabel(int identifier) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 	}
@@ -121,23 +113,6 @@ public class Risk extends EntityBase implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		if (name != null) {
-			this.name = name.trim();
-		}
 	}
 
 	/**
@@ -163,88 +138,55 @@ public class Risk extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the mitigation
-	 */
-	public String getMitigation() {
-		return mitigation;
-	}
-
-	/**
-	 * @return the mitigation
-	 */
-	public String getMitigationAbbrv() {
-		return StringUtils.abbreviate(this.mitigation, Constants.ABBRV_DESC_LEN);
-	}
-
-	/**
-	 * @param mitigation
-	 *            the mitigation to set
-	 */
-	public void setMitigation(String mitigation) {
-		this.mitigation = mitigation;
-	}
-
-	/**
-	 * @return the riskLevelType
-	 */
-	public RiskLevelType getRiskLevelType() {
-		return riskLevelType;
-	}
-
-	/**
-	 * @param riskLevelType
-	 *            the riskLevelType to set
-	 */
-	public void setRiskLevelType(RiskLevelType riskLevelType) {
-		this.riskLevelType = riskLevelType;
-	}
-
-	/**
-	 * @return the project
-	 */
-	public Project getProject() {
-		return project;
-	}
-
-	/**
-	 * @param project
-	 *            the project to set
-	 */
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	/**
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
 	public String getArtifact() {
-		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_RISK.toString(), this.identifier);
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_ISSUELABEL.toString(), this.identifier);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * @return the label
 	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Risk [id=");
-		builder.append(id);
-		builder.append(", identifier=");
-		builder.append(identifier);
-		builder.append(", name=");
-		builder.append(name);
-		builder.append(", description=");
-		builder.append(description);
-		builder.append(", mitigation=");
-		builder.append(mitigation);
-		builder.append(", riskLevelType=");
-		builder.append(riskLevelType);
-		builder.append(", project=");
-		builder.append(project);
-		builder.append("]");
-		return builder.toString();
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label
+	 *            the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * @return the style
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * @param style
+	 *            the style to set
+	 */
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	/**
+	 * @return the issue
+	 */
+	public Issue getIssue() {
+		return issue;
+	}
+
+	/**
+	 * @param issue
+	 *            the issue to set
+	 */
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
 
 	/*
@@ -256,7 +198,7 @@ public class Risk extends EntityBase implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((label == null) ? 0 : label.hashCode());
 		return result;
 	}
 
@@ -273,14 +215,34 @@ public class Risk extends EntityBase implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Risk other = (Risk) obj;
-		if (name == null) {
-			if (other.name != null)
+		IssueLabel other = (IssueLabel) obj;
+		if (label == null) {
+			if (other.label != null)
 				return false;
 		}
-		else if (!name.equals(other.name))
+		else if (!label.equals(other.label))
 			return false;
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IssueLabel [id=");
+		builder.append(id);
+		builder.append(", label=");
+		builder.append(label);
+		builder.append(", description=");
+		builder.append(description);
+		builder.append(", style=");
+		builder.append(style);
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

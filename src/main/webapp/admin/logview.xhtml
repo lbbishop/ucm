@@ -5,72 +5,59 @@
 
 	<ui:define name="content">
 
-		<p:layout fullPage="true">
+		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
+		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
+			<p:graphicImage value="/images/loading.gif" width="25" />
+		</p:dialog>
 
-			<p:layoutUnit position="north" header="#{appManager.displayName}">
-				<h:form>
-					<ui:include src="/includes/menu.xhtml" />
-				</h:form>
-			</p:layoutUnit>
+		<h:form id="form">
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
 
-			<p:layoutUnit position="center">
+						<div style="margin: 5px">
+							<h:outputText value="Application Server Log Entries" styleClass="header" />
+						</div>
+						<div style="margin: 5px">
+							<h:outputText value="Inspect WDDR Application Server Log Entries" styleClass="label" />
+						</div>
+						<div style="text-align: right; margin: 5px">
+							<h:graphicImage value="/images/help_icon.gif" height="18" title="LoggerView" onclick="PF('helpDialog').show()" />
+						</div>
+						<p:messages id="messages" />
+						<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-2,ui-g-2,ui-g-3,ui-g-5" styleClass="ui-panelgrid-blank form-group">
+							<p:outputLabel for="logFileSelect" value="Log File:" />
+							<h:panelGroup>
+								<p:selectOneMenu id="logFileSelect" value="#{logViewer.selectedLogFile}" style="width:220px" valueChangeListener="#{logViewer.onLogFileChange}">
+									<f:selectItem itemLabel="Select Log File" itemValue="" />
+									<f:selectItems value="#{logViewer.logFiles}" var="file" itemLabel="#{file}" itemValue="#{file}" />
+									<p:ajax update=":form:tablePanel" />
+								</p:selectOneMenu>
+							</h:panelGroup>
+							<p:spacer width="20" />
+							<p:commandButton value="Refresh" actionListener="#{logViewer.refresh}" update=":form:tablePanel" />
+						</p:panelGrid>
 
-				<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
-				<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
-					<p:graphicImage value="/images/loading.gif" width="25" />
-				</p:dialog>
+						<p:panel id="tablePanel">
+							<f:facet name="header">
+								Application Logger
+							</f:facet>
 
-				<h:form id="form">
+							<ui:repeat value="#{logViewer.lines}" var="line">
+								<h:outputText value="#{line}" />
+								<br />
+							</ui:repeat>
+						</p:panel>
 
-					<div style="margin: 5px">
-						<h:outputText value="Application Server Log Entries" styleClass="header" />
+						<div style="text-align: right; margin: 10px">
+							<p:commandButton value="Close" action="#{logViewer.close}" icon="ui-icon-cancel" title="Close view" />
+						</div>
+
 					</div>
-					<div style="margin: 5px">
-						<h:outputText value="Inspect WDDR Application Server Log Entries" styleClass="label" />
-					</div>
-					<div style="text-align: right; margin: 5px">
-						<h:graphicImage value="/images/help_icon.gif" height="18" title="LoggerView" onclick="PF('helpDialog').show()" />
-					</div>
-					<p:messages id="messages" />
-					<h:panelGrid columns="4" styleClass="panelGrid" columnClasses="left-120,left-200,left,left">
-						<p:outputLabel for="logFileSelect" value="Log File:" />
-						<h:panelGroup>
-							<p:selectOneMenu id="logFileSelect" value="#{logViewer.selectedLogFile}" style="width:220px" valueChangeListener="#{logViewer.onLogFileChange}">
-								<f:selectItem itemLabel="Select Log File" itemValue="" />
-								<f:selectItems value="#{logViewer.logFiles}" var="file" itemLabel="#{file}" itemValue="#{file}" />
-								<p:ajax update=":form:tablePanel" />
-							</p:selectOneMenu>
-						</h:panelGroup>
-						<p:spacer width="20" />
-						<p:commandButton value="Refresh" actionListener="#{logViewer.refresh}" update=":form:tablePanel"/>							
-					</h:panelGrid>
+				</div>
+			</div>
+		</h:form>
 
-					<p:panel id="tablePanel" >
-						<f:facet name="header">
-						Application Logger
-						</f:facet>
-
-						<ui:repeat value="#{logViewer.lines}" var="line">
-							<h:outputText value="#{line}" /><br/>
-						</ui:repeat>
-					</p:panel>
-
-					<div style="text-align: right; margin: 10px">
-						<p:commandButton value="Close" action="#{logViewer.close}" style="width:80px" title="Close view" />
-					</div>
-
-				</h:form>
-			</p:layoutUnit>
-			<p:layoutUnit position="south">
-				<h:form>
-					<ui:include src="/includes/footer.xhtml" />
-				</h:form>
-			</p:layoutUnit>			
-		</p:layout>
-
-		<ui:include src="/includes/helppanel.xhtml">
-			<ui:param name="helpResource" value="#{helpManager.getHelp('LoggerView')}" />
-		</ui:include>
 
 	</ui:define>
 </ui:composition>

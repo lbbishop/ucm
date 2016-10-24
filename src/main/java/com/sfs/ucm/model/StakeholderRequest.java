@@ -80,7 +80,7 @@ public class StakeholderRequest extends EntityBase implements Serializable {
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
 	@NotNull(message = "Description is required")
 	@Lob
-	@Column(name = "description", columnDefinition = "TEXT", nullable = false)
+	@Column(name = "description", columnDefinition = "CLOB", nullable = false)
 	private String description;
 
 	@OneToOne

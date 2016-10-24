@@ -116,7 +116,7 @@ public class UseCase extends EntityBase implements Serializable {
 	private String triggerEvent;
 
 	@Lob
-	@Column(name = "comments", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "comments", columnDefinition = "CLOB", nullable = true)
 	private String comments;
 
 	@Column(name = "percent_complete", nullable = true)
@@ -126,7 +126,7 @@ public class UseCase extends EntityBase implements Serializable {
 	private Project project;
 
 	@Lob
-	@Column(name = "issues", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "issues", columnDefinition = "CLOB", nullable = true)
 	private String issues;
 
 	@ManyToOne

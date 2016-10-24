@@ -59,7 +59,7 @@ public class TestPlan extends EntityBase implements Serializable {
 
 	@NotNull(message = "Description is required")
 	@Lob
-	@Column(name = "description", columnDefinition = "TEXT", nullable = false)
+	@Column(name = "description", columnDefinition = "CLOB", nullable = false)
 	private String description;
 
 	@ManyToOne

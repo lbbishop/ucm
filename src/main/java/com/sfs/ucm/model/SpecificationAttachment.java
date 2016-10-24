@@ -32,14 +32,14 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-@DiscriminatorValue("Requirement")
+@DiscriminatorValue("Specification")
 public class SpecificationAttachment extends AbstractAttachment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne
-	@JoinColumn(name = "requirement_id")
-	protected Specification requirement;
+	@JoinColumn(name = "specification_id")
+	protected Specification specification;
 
 	/**
 	 * Constructor
@@ -49,18 +49,18 @@ public class SpecificationAttachment extends AbstractAttachment implements Seria
 	}
 
 	/**
-	 * @return the requirement
+	 * @return the specification
 	 */
-	public Specification getRequirement() {
-		return requirement;
+	public Specification getSpecification() {
+		return specification;
 	}
 
 	/**
-	 * @param requirement
-	 *            the requirement to set
+	 * @param specification
+	 *            the specification to set
 	 */
-	public void setRequirement(Specification requirement) {
-		this.requirement = requirement;
+	public void setSpecification(Specification specification) {
+		this.specification = specification;
 	}
 
 }

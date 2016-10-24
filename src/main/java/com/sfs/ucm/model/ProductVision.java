@@ -54,11 +54,11 @@ public class ProductVision extends EntityBase implements Serializable {
 	private Long id;
 
 	@Lob
-	@Column(name = "product_description", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "product_description", columnDefinition = "CLOB", nullable = true)
 	private String productDescription;
 
 	@Lob
-	@Column(name = "problem_statement", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "problem_statement", columnDefinition = "CLOB", nullable = true)
 	private String problemStatement;
 
 	@OneToOne(mappedBy = "productVision")

@@ -69,7 +69,7 @@ public class SpecificationTest extends EntityBase implements Serializable {
 	private TestResultType testResultType;
 
 	@Lob
-	@Column(name = "notes", columnDefinition = "TEXT NULL", nullable = true)
+	@Column(name = "notes", columnDefinition = "CLOB", nullable = true)
 	private String notes;
 
 	@OneToOne

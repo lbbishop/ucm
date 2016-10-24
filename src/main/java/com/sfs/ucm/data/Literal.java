@@ -52,14 +52,13 @@ public final class Literal {
 	public static final Literal ENV_DEV = new Literal("dev");
 	public static final Literal ENV_QUAL = new Literal("qual");
 	public static final Literal ENV_PROD = new Literal("prod");
-	
-	
+
 	/**
 	 * Log file
 	 */
 	public static final Literal LOG_FILE = new Literal("server.log");
 	public static final Literal LOG_DIR = new Literal("c:/wildfly-9.0.1.Final/standalong/log");
-	
+
 	/**
 	 * resource message bundle
 	 */
@@ -148,7 +147,11 @@ public final class Literal {
 	public static final Literal PREFIX_SCENARIO = new Literal("SCN");
 	public static final Literal PREFIX_STAKEHOLDER = new Literal("STK");
 	public static final Literal PREFIX_STAKEHOLDERREQUEST = new Literal("STRQ");
-	public static final Literal PREFIX_ISSUE = new Literal("ISS");
+	public static final Literal PREFIX_ISSUE = new Literal("ISE");
+	public static final Literal PREFIX_ISSUELABEL = new Literal("ISEL");
+	public static final Literal PREFIX_ISSUECOMMENT = new Literal("ISEC");
+	public static final Literal PREFIX_ISSUEMILESTONE = new Literal("ISEM");
+	public static final Literal PREFIX_ISSUEATTACHMENT = new Literal("ISEA");
 	public static final Literal PREFIX_BUSINESSRULE = new Literal("BR");
 	public static final Literal PREFIX_CONSTRAINT = new Literal("CST");
 	public static final Literal PREFIX_GLOSSARY = new Literal("GLS");

@@ -33,36 +33,21 @@
 							#{issueAction.project.name} Project Issues (#{projectSecurityMarking})
 						</f:facet>
 
-							<p:column headerText="Id" style="width:40px;vertical-align:top" sortBy="#{_issue.artifact}">
+							<p:column headerText="Id" style="vertical-align:top" sortBy="#{_issue.artifact}">
 								<h:outputText value="#{_issue.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Type" style="width:40px;vertical-align:top" sortBy="#{_issue.issueType}">
+							<p:column headerText="Type" style="vertical-align:top" sortBy="#{_issue.issueType}">
 								<h:outputText value="#{_issue.issueType}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Issue Name" style="width:100px;vertical-align:top">
-								<h:outputText value="#{_issue.name}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
+							<p:column headerText="Issue Title" style="vertical-align:top">
+								<h:outputText value="#{_issue.title}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column headerText="Description" style="width:100px;vertical-align:top">
-								<h:outputText value="#{_issue.description}" escape="false" styleClass="wordWrap" style="font-size:0.9em" />
-							</p:column>
-
-							<p:column headerText="Status" style="width:40px;vertical-align:top" sortBy="_issue.statusType">
+							<p:column headerText="Status" style="vertical-align:top" sortBy="_issue.statusType">
 								<h:outputText value="#{_issue.statusType}" style="font-size:0.9em" />
 							</p:column>
-
-							<p:column headerText="Estimate" style="width:40px;vertical-align:top">
-								<h:outputText value="#{_issue.estimatedEffort}" style="font-size:0.9em" />
-							</p:column>
-
-							<p:columnGroup type="footer">
-								<p:row>
-									<p:column colspan="6" footerText="Total Estimated New Issue Hours:" style="text-align:right;font-size:0.95em" />
-									<p:column footerText="#{issueAction.totalHours} (#{issueAction.newIssueCount})" style="text-align:left;font-size:0.95em" />
-								</p:row>
-							</p:columnGroup>
 
 						</p:dataTable>
 
@@ -71,7 +56,7 @@
 						</div>
 
 						<div style="text-align: right; margin: 10px">
-							<h:link value="Close" outcome="/issues"  title="Close view">
+							<h:link value="Close" outcome="/issues" title="Close view">
 								<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 								<f:param name="id" value="#{issueAction.id}" />
 							</h:link>

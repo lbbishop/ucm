@@ -30,6 +30,9 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.envers.Audited;
 
+import com.sfs.ucm.data.Literal;
+import com.sfs.ucm.util.ModelUtils;
+
 @Audited
 @Entity
 @DiscriminatorValue("Issue")
@@ -61,6 +64,13 @@ public class IssueAttachment extends AbstractAttachment implements Serializable 
 	 */
 	public void setIssue(Issue issue) {
 		this.issue = issue;
+	}
+	
+	/**
+	 * @return the identifier string (PREFIX concatenated with identifier)
+	 */
+	public String getArtifact() {
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_ISSUEATTACHMENT.toString(), this.identifier);
 	}
 
 }

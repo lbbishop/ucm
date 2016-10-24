@@ -6,25 +6,18 @@
 	<ui:define name="content">
 		<h:outputScript name="jquery/jquery.js" library="primefaces" target="head" />
 
-		<div class="Container100">
-			<div class="ContainerIndent">
-				<div class="Container30 Responsive">
-					<div class="ContainerIndent">
-						<ui:include src="/includes/sidebar.xhtml" />
-					</div>
-				</div>
-
-				<div class="Container70 Responsive">
-					<div class="ContainerIndent">
-						<h:form>
-							<p:galleria value="#{galleriaManager.images}" var="image" panelHeight="450" frameWidth="120" frameHeight="90" transitionInterval="20000">
-								<p:graphicImage value="/images/#{image}" />
-							</p:galleria>
-						</h:form>
+		<h:form>
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<div class="card">
+						<p:galleria value="#{galleriaManager.images}" var="image" panelHeight="450" frameWidth="120" frameHeight="90" transitionInterval="20000">
+							<p:graphicImage value="/images/#{image}" />
+						</p:galleria>
 					</div>
 				</div>
 			</div>
-		</div>
+		</h:form>
+
 
 	</ui:define>
 </ui:composition>

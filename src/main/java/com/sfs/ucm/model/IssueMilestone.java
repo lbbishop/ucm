@@ -25,8 +25,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,11 +45,10 @@ import org.hibernate.search.annotations.Store;
 
 import com.sfs.ucm.data.Constants;
 import com.sfs.ucm.data.Literal;
-import com.sfs.ucm.data.RiskLevelType;
 import com.sfs.ucm.util.ModelUtils;
 
 /**
- * Risk
+ * Issue milestone
  * 
  * @author lbbishop
  * 
@@ -59,8 +56,8 @@ import com.sfs.ucm.util.ModelUtils;
 @Entity
 @Indexed
 @Audited
-@Table(name = "risk")
-public class Risk extends EntityBase implements Serializable {
+@Table(name = "issue_milestone")
+public class IssueMilestone extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,40 +67,31 @@ public class Risk extends EntityBase implements Serializable {
 	private Long id;
 
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
-	@NotNull(message = "Name is required")
+	@NotNull(message = "Milestone is required")
 	@Size(max = 100)
-	@Column(name = "name", length = 100, nullable = false)
-	private String name;
+	@Column(name = "milestone", length = 100, nullable = false)
+	private String milestone;
 
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
 	@NotNull(message = "Description is required")
 	@Lob
-	@Column(name = "description", columnDefinition = "CLOB", nullable = false)
+	@Column(name = "description", columnDefinition = "CLOB", nullable = true)
 	private String description;
 
-	@Lob
-	@Column(name = "mitigation", columnDefinition = "CLOB", nullable = true)
-	private String mitigation;
-
-	@NotNull(message = "Level is required")
-	@Enumerated(EnumType.STRING)
-	@Column(name = "risk_level_type", nullable = false)
-	private RiskLevelType riskLevelType;
-
 	@ManyToOne
-	private Project project;
+	private Issue issue;
 
 	/**
 	 * Default constructor
 	 */
-	public Risk() {
+	public IssueMilestone() {
 		super();
 	}
 
 	/**
 	 * Constructor
 	 */
-	public Risk(int identifier) {
+	public IssueMilestone(int identifier) {
 		super();
 		this.identifier = Integer.valueOf(identifier);
 	}
@@ -121,23 +109,6 @@ public class Risk extends EntityBase implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		if (name != null) {
-			this.name = name.trim();
-		}
 	}
 
 	/**
@@ -163,88 +134,40 @@ public class Risk extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the mitigation
-	 */
-	public String getMitigation() {
-		return mitigation;
-	}
-
-	/**
-	 * @return the mitigation
-	 */
-	public String getMitigationAbbrv() {
-		return StringUtils.abbreviate(this.mitigation, Constants.ABBRV_DESC_LEN);
-	}
-
-	/**
-	 * @param mitigation
-	 *            the mitigation to set
-	 */
-	public void setMitigation(String mitigation) {
-		this.mitigation = mitigation;
-	}
-
-	/**
-	 * @return the riskLevelType
-	 */
-	public RiskLevelType getRiskLevelType() {
-		return riskLevelType;
-	}
-
-	/**
-	 * @param riskLevelType
-	 *            the riskLevelType to set
-	 */
-	public void setRiskLevelType(RiskLevelType riskLevelType) {
-		this.riskLevelType = riskLevelType;
-	}
-
-	/**
-	 * @return the project
-	 */
-	public Project getProject() {
-		return project;
-	}
-
-	/**
-	 * @param project
-	 *            the project to set
-	 */
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	/**
 	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
 	public String getArtifact() {
-		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_RISK.toString(), this.identifier);
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_ISSUEMILESTONE.toString(), this.identifier);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * @return the milestone
 	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Risk [id=");
-		builder.append(id);
-		builder.append(", identifier=");
-		builder.append(identifier);
-		builder.append(", name=");
-		builder.append(name);
-		builder.append(", description=");
-		builder.append(description);
-		builder.append(", mitigation=");
-		builder.append(mitigation);
-		builder.append(", riskLevelType=");
-		builder.append(riskLevelType);
-		builder.append(", project=");
-		builder.append(project);
-		builder.append("]");
-		return builder.toString();
+	public String getMilestone() {
+		return milestone;
+	}
+
+	/**
+	 * @param milestone
+	 *            the milestone to set
+	 */
+	public void setMilestone(String milestone) {
+		this.milestone = milestone;
+	}
+
+	/**
+	 * @return the issue
+	 */
+	public Issue getIssue() {
+		return issue;
+	}
+
+	/**
+	 * @param issue
+	 *            the issue to set
+	 */
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
 
 	/*
@@ -256,7 +179,7 @@ public class Risk extends EntityBase implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((milestone == null) ? 0 : milestone.hashCode());
 		return result;
 	}
 
@@ -273,14 +196,32 @@ public class Risk extends EntityBase implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Risk other = (Risk) obj;
-		if (name == null) {
-			if (other.name != null)
+		IssueMilestone other = (IssueMilestone) obj;
+		if (milestone == null) {
+			if (other.milestone != null)
 				return false;
 		}
-		else if (!name.equals(other.name))
+		else if (!milestone.equals(other.milestone))
 			return false;
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IssueMilestone [id=");
+		builder.append(id);
+		builder.append(", milestone=");
+		builder.append(milestone);
+		builder.append(", description=");
+		builder.append(description);
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

@@ -64,7 +64,7 @@ public class FlowStep extends EntityBase implements Serializable {
 	private Actor actor;
 
 	@NotNull(message = "Action Description is required")
-	@Column(name = "action_description", columnDefinition = "TEXT")
+	@Column(name = "action_description", columnDefinition = "CLOB")
 	private String actionDescription;
 
 	@ManyToOne(optional = false)

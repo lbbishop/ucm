@@ -84,7 +84,7 @@ public class Specification extends EntityBase implements Serializable {
 	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
 	@NotNull(message = "Description is required")
 	@Lob
-	@Column(name = "description", columnDefinition = "TEXT", nullable = false)
+	@Column(name = "description", columnDefinition = "CLOB", nullable = false)
 	private String description;
 
 	@NotNull(message = "Quality Type is required")
@@ -113,6 +113,10 @@ public class Specification extends EntityBase implements Serializable {
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "specification", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
 	private Collection<SpecificationRule> specificationRules;
+	
+	@IndexedEmbedded
+	@OneToMany(mappedBy = "specification", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	private Collection<SpecificationAttachment> attachments;
 
 	/**
 	 * Default constructor
@@ -306,7 +310,7 @@ public class Specification extends EntityBase implements Serializable {
 	/**
 	 * @return the issues
 	 */
-	public String getIssues() {
+	public String getSpecifications() {
 		return issues;
 	}
 
@@ -314,8 +318,37 @@ public class Specification extends EntityBase implements Serializable {
 	 * @param issues
 	 *            the issues to set
 	 */
-	public void setIssues(String issues) {
+	public void setSpecifications(String issues) {
 		this.issues = issues;
+	}
+	
+	/**
+	 * @return the attachments
+	 */
+	public Collection<SpecificationAttachment> getAttachments() {
+		return attachments;
+	}
+
+	/**
+	 * Add attachment
+	 * 
+	 * @param attachment
+	 *            the attachment to add
+	 */
+	public void addAttachment(SpecificationAttachment attachment) {
+		attachment.setSpecification(this);
+		this.attachments.add(attachment);
+	}
+
+	/**
+	 * Remove attachment
+	 * 
+	 * @param attachment
+	 *            the attachment to remove
+	 */
+	public void removeAttachment(SpecificationAttachment attachment) {
+		attachment.setSpecification(null);
+		this.attachments.remove(attachment);
 	}
 
 	/*

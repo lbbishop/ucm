@@ -28,45 +28,63 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
+
+import com.sfs.ucm.data.Literal;
+import com.sfs.ucm.util.ModelUtils;
 
 /**
- * SubFlowStep
+ * Issue Comment
  * 
  * @author lbbishop
  * 
  */
 @Entity
+@Indexed
 @Audited
-@Table(name = "subflowstep")
-public class SubflowStep extends EntityBase implements Serializable {
+@Table(name = "issue_comment")
+public class IssueComment extends EntityBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@DocumentId
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
-	@Column(name = "step_number", nullable = false)
-	private Short stepNumber;
+	@Field(index = Index.YES, analyze = Analyze.YES, store = Store.YES)
+	@NotNull(message = "Comment is required")
+	@Lob
+	@Column(name = "comment", columnDefinition = "CLOB", nullable = true)
+	private String comment;
 
-	@NotNull(message = "Action Description is required")
-	@Column(name = "action_description", columnDefinition = "CLOB", nullable = false)
-	private String actionDescription;
-
-	@ManyToOne(optional = false)
-	private Subflow subflow;
+	@ManyToOne
+	private Issue issue;
 
 	/**
 	 * Default constructor
 	 */
-	public SubflowStep() {
+	public IssueComment() {
 		super();
+	}
+
+	/**
+	 * Constructor
+	 */
+	public IssueComment(int identifier) {
+		super();
+		this.identifier = Integer.valueOf(identifier);
 	}
 
 	/**
@@ -85,97 +103,42 @@ public class SubflowStep extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * @return the subflow
+	 * @return the comment
 	 */
-	public Subflow getSubflow() {
-		return subflow;
+	public String getComment() {
+		return comment;
 	}
 
 	/**
-	 * @param subflow
-	 *            the subflow to set
+	 * @param comment
+	 *            the comment to set
 	 */
-	public void setSubflow(Subflow subflow) {
-		this.subflow = subflow;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	/**
-	 * @return the actionDescription
+	 * @return the issue
 	 */
-	public String getActionDescription() {
-		return actionDescription;
+	public Issue getIssue() {
+		return issue;
 	}
 
 	/**
-	 * @param actionDescription
-	 *            the actionDescription to set
+	 * @param issue
+	 *            the issue to set
 	 */
-	public void setActionDescription(String actionDescription) {
-		this.actionDescription = actionDescription;
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
-
+	
 	/**
-	 * @return the modifiedBy
+	 * @return the identifier string (PREFIX concatenated with identifier)
 	 */
-	public String getModifiedBy() {
-		return modifiedBy;
+	public String getArtifact() {
+		return ModelUtils.buildArtifactIdentifier(Literal.PREFIX_ISSUECOMMENT.toString(), this.identifier);
 	}
 
-	/**
-	 * @param modifiedBy
-	 *            the modifiedBy to set
-	 */
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-
-	/**
-	 * @return the modifiedDate
-	 */
-	public java.util.Date getModifiedDate() {
-		return modifiedDate;
-	}
-
-	/**
-	 * @param modifiedDate
-	 *            the modifiedDate to set
-	 */
-	public void setModifiedDate(java.util.Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-
-	/**
-	 * @return the stepNumber
-	 */
-	public Short getStepNumber() {
-		return stepNumber;
-	}
-
-	/**
-	 * @param stepNumber
-	 *            the stepNumber to set
-	 */
-	public void setStepNumber(Short stepNumber) {
-		this.stepNumber = stepNumber;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("FlowStep [id=");
-		builder.append(id);
-		builder.append(", stepNumber=");
-		builder.append(stepNumber);
-		builder.append(", actionDescription=");
-		builder.append(actionDescription);
-		builder.append("]");
-		return builder.toString();
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -186,7 +149,7 @@ public class SubflowStep extends EntityBase implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + stepNumber;
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
 		return result;
 	}
 
@@ -203,10 +166,30 @@ public class SubflowStep extends EntityBase implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SubflowStep other = (SubflowStep) obj;
-		if (stepNumber != other.stepNumber)
+		IssueComment other = (IssueComment) obj;
+		if (comment == null) {
+			if (other.comment != null)
+				return false;
+		}
+		else if (!comment.equals(other.comment))
 			return false;
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IssueComment [id=");
+		builder.append(id);
+		builder.append(", comment=");
+		builder.append(comment);
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

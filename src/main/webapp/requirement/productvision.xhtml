@@ -20,7 +20,7 @@
 
 						<p:tabView>
 							<p:tab title="Product Description">
-								<p:editor id="descriptionEditor" value="#{productVisionAction.productVision.productDescription}" width="750" height="450" controls="#{editorControls}" />
+								<p:textEditor id="descriptionEditor" value="#{productVisionAction.productVision.productDescription}" width="100%" height="450" />
 							</p:tab>
 
 							<p:tab title="Problem Statement">
@@ -30,7 +30,7 @@
 						<div style="margin: 10px; text-align: right">
 							<p:commandButton value="OK" style="width:80px" update=":form:messages" action="#{productVisionAction.okay}" icon="ui-icon-check" oncomplete="handleComplete(xhr, status, args)" />
 							<p:spacer width="10" />
-							<p:commandButton value="Cancel" action="#{productVisionAction.close}"  icon="ui-icon-close" title="Cancel form changes and close form" />
+							<p:commandButton value="Cancel" action="#{productVisionAction.close}" icon="ui-icon-close" title="Cancel form changes and close form" />
 							<p:spacer width="10" />
 							<p:commandButton value="Apply" style="width:80px" update=":form:messages" ajax="false" icon="ui-icon-check" actionListener="#{productVisionAction.apply}" oncomplete="handleComplete(xhr, status, args)" />
 						</div>

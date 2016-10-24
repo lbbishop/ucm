@@ -32,7 +32,7 @@
 							<h:outputText value="#{projectPackageAction.project.name}: Project Packages" styleClass="header" />
 						</div>
 						<p:dataTable id="table" emptyMessage="No Packages Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_package" value="#{projectPackageAction.projectPackages}" selectionMode="single" rowKey="#{_package.id}"
-							selection="#{projectPackageAction.projectPackage}">
+							selection="#{projectPackageAction.projectPackage}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{projectPackageAction.onRowSelect}" update="editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
 
@@ -40,21 +40,21 @@
 								<h:outputText value="#{projectPackageAction.project.name}: Packages" />
 							</f:facet>
 
-							<p:column style="width:50px" sortBy="#{_package.artifact}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Id" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_package.artifact}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:250px" sortBy="#{_package.name}">
+							<p:column sortBy="#{_package.name}">
 								<f:facet name="header">
 									<h:outputText value="Package Name" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_package.name}" style="font-size:0.9em" />
 							</p:column>
 
-							<p:column style="width:400px" sortBy="#{_package.description}">
+							<p:column>
 								<f:facet name="header">
 									<h:outputText value="Description" style="font-size:0.93em" />
 								</f:facet>
@@ -75,7 +75,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{projectPackageAction.close}"  title="Close view" />
+							<p:commandButton value="Close" action="#{projectPackageAction.close}" title="Close view" />
 						</div>
 					</div>
 				</div>
@@ -110,8 +110,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{projectPackageAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No" onclick="PF('cd').hide()"  type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{projectPackageAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

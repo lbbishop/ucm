@@ -74,13 +74,23 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("authenticator.logout")))).after(PhaseId.RESTORE_VIEW))
 
 				// =========== help ==============
-				.addRule(Join.path("/help/overview").to("/help/overview.jsf")).addRule(Join.path("/help/workflow").to("/help/workflow.jsf")).addRule(Join.path("/help/about").to("/help/about.jsf"))
+				.addRule(Join.path("/help/overview").to("/help/overview.jsf"))
+
+				.addRule(Join.path("/help/workflow").to("/help/workflow.jsf"))
+
+				.addRule(Join.path("/help/about").to("/help/about.jsf"))
 
 				// =========== admin ==============
 				.addRule(Join.path("/admin/users").to("/admin/users.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("userAction.load")))).after(PhaseId.RESTORE_VIEW))
 
 				.addRule(Join.path("/admin/settings").to("/admin/settings.jsf"))
+
+				.addRule(Join.path("/admin/contexthelp").to("/admin/contexthelp.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("helpContentAction.load")))).after(PhaseId.RESTORE_VIEW))
+
+				.addRule(Join.path("/admin/logview").to("/admin/logview.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("logViewer.load")))).after(PhaseId.RESTORE_VIEW))
 
 				// ================= user ================
 				.addRule(Join.path("/user/preferences").to("/user/preferences.jsf"))
@@ -178,7 +188,7 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.addRule(Join.path("/project/{id}/usecaselist").to("/requirement/usecaselist.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("useCaseAction.load")))).after(PhaseId.RESTORE_VIEW)).where("id")
 				.bindsTo(PhaseBinding.to(El.property("useCaseAction.id")).after(PhaseId.RESTORE_VIEW))
-				
+
 				.addRule(Join.path("/usecase/{id}/alternativeflows").to("/requirement/alternativeflows.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("alternativeFlowAction.load")))).after(PhaseId.RESTORE_VIEW)).where("id")
 				.bindsTo(PhaseBinding.to(El.property("alternativeFlowAction.id")).after(PhaseId.RESTORE_VIEW))

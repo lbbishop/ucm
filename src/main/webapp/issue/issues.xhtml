@@ -32,7 +32,7 @@
 							<h:outputText value="#{issueAction.project.name}: Project Issues" styleClass="header" />
 						</div>
 						<p:dataTable id="table" emptyMessage="No Issues Defined" resizableColumns="false" var="_issue" value="#{issueAction.issues}" selectionMode="single" rowKey="#{_issue.id}" selection="#{issueAction.issue}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}"
-							filteredValue="#{issueAction.filteredIssues}">
+							filteredValue="#{issueAction.filteredIssues}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{issueAction.onRowSelect}" update="editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('issueDialog').show()" />
 
@@ -56,9 +56,9 @@
 
 							<p:column style="vertical-align:top">
 								<f:facet name="header">
-									<h:outputText value="Issue Name" style="font-size:0.93em" />
+									<h:outputText value="Issue Title" style="font-size:0.93em" />
 								</f:facet>
-								<h:outputText value="#{_issue.nameAbbrv}" style="font-size:0.9em" />
+								<h:outputText value="#{_issue.titleAbbrv}" style="font-size:0.9em" />
 							</p:column>
 
 							<p:column style="vertical-align:top" filterBy="#{_issue.statusType}" filterOptions="#{statusSelectItems}" filterMatchMode="exact">
@@ -70,31 +70,10 @@
 
 							<p:column style="vertical-align:top">
 								<f:facet name="header">
-									<h:outputText value="Hours" style="font-size:0.93em" />
-								</f:facet>
-								<h:outputText value="#{_issue.estimatedEffort}" style="font-size:0.9em" />
-							</p:column>
-
-							<p:column style="vertical-align:top">
-								<f:facet name="header">
 									<h:outputText value="Assignee" style="font-size:0.93em" />
 								</f:facet>
 								<h:outputText value="#{_issue.assignee.authUser.name}" style="font-size:0.9em" />
 							</p:column>
-
-							<p:column style="vertical-align:top" sortBy="#{_issue.productRelease.version}">
-								<f:facet name="header">
-									<h:outputText value="Release" style="font-size:0.93em" />
-								</f:facet>
-								<h:outputText value="#{_issue.productRelease.version}" style="font-size:0.9em" />
-							</p:column>
-
-							<p:columnGroup type="footer">
-								<p:row>
-									<p:column colspan="4" footerText="Total Estimated New Issue Hours:" style="text-align:right" />
-									<p:column footerText="#{issueAction.totalHours} (#{issueAction.newIssueCount})" style="text-align:left" />
-								</p:row>
-							</p:columnGroup>
 
 							<f:facet name="footer">
 								<p:commandButton value="Add Issue" disabled="#{not issueAction.editable}" update=":editForm:editPanel" action="#{issueAction.add}" oncomplete="PF('issueDialog').show()" title="Add new Issue" />
@@ -137,8 +116,8 @@
 						<f:selectItems value="#{issueTypes}" var="_issue" itemValue="#{_issue}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel id="issueNameLabel" for="issueName" value="Issue Name:" title="A brief descriptive title for the Issue" />
-					<p:inputText id="issueName" value="#{issueAction.issue.name}" size="80" maxlength="100" label="Name" required="true" requiredMessage="Issue Name is required" />
+					<p:outputLabel id="issueNameLabel" for="issueName" value="Issue:" title="A brief descriptive title for the Issue" />
+					<p:inputText id="issueName" value="#{issueAction.issue.title}" size="80" maxlength="100" label="Name" required="true" requiredMessage="Issue Name is required" />
 
 					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="A detailed description of the Issue" />
 
