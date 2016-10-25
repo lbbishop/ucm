@@ -86,24 +86,14 @@
 
 		<p:dialog id="editDlg" header="Edit Project" widgetVar="editDialog" resizable="true" width="900" modal="true" responsive="true" >
 			<h:form id="editForm">
-				<p:messages severity="error" />
+				<p:messages id="messages" severity="error" />
 				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
 
 					<p:outputLabel for="name" value="Project Name:" />
-					<p:inputText id="name" value="#{projectAction.project.name}" size="80" maxlength="100" requiredMessage="Name is required" required="true" />
+					<p:inputText id="name" value="#{projectAction.project.name}" style="width:90%" maxlength="100" requiredMessage="Name is required" required="true" />
 
 					<p:outputLabel for="description" value="Description:" />
-					<p:textEditor id="description" value="#{projectAction.project.description}" style="width:90%" height="180" widgetVar="descriptionEditor" requiredMessage="Description is required" required="true" placeholder="Describe your project">
-						<f:facet name="toolbar">
-							<span class="ql-formats">
-								<button class="ql-bold"></button>
-								<button class="ql-italic"></button>
-								<button class="ql-underline"></button>
-							</span>
-							<span class="ql-formats"> <select class="ql-font"></select> <select class="ql-size"></select>
-							</span>
-						</f:facet>
-					</p:textEditor>
+					<p:inputTextarea id="description" value="#{projectAction.project.description}" style="width:90%" rows="6"/>
 
 					<p:outputLabel for="securityMarking" value="Security Marking:" />
 					<p:selectOneMenu id="securityMarking" value="#{projectAction.project.securityMarking}" required="true" requiredMessage="Security Marking is required">
@@ -119,7 +109,7 @@
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
-							<p:commandButton value="Save" update="@(form)" actionListener="#{projectAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
+							<p:commandButton value="Save" update=":form :editForm:messages" actionListener="#{projectAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
 							<p:spacer width="6" />
 							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-cancel" />
 						</p:outputPanel>
