@@ -28,7 +28,6 @@ import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,11 +48,9 @@ import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.ProjectMember;
 import com.sfs.ucm.security.AccessManager;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
-import com.sfs.ucm.util.ProjectSecurityInit;
-import com.sfs.ucm.util.ProjectUpdated;
-import com.sfs.ucm.util.UserUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
 
 /**
@@ -76,12 +73,8 @@ public class MemberAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	private Event<Project> projectEventSrc;
-
-	@Inject
-	@UserUpdated
-	private Event<AuthUser> userSrc;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	private AccessManager accessManager;
@@ -96,10 +89,6 @@ public class MemberAction extends ActionBase implements Serializable {
 	private AuthUser authUser;
 
 	private ProjectMember projectMember;
-
-	@Inject
-	@ProjectSecurityInit
-	private Event<Project> projectSecurityMarkingSrc;
 
 	private List<ProjectMember> projectMembers;
 
@@ -125,11 +114,8 @@ public class MemberAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
-
-			// update producers
-			this.userSrc.fire(this.authUser);
-			this.projectSecurityMarkingSrc.fire(this.project);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			loadList();
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
@@ -176,9 +162,6 @@ public class MemberAction extends ActionBase implements Serializable {
 			// refresh list
 			loadList();
 
-			// fire update events
-			this.projectEventSrc.fire(project);
-			
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -200,10 +183,7 @@ public class MemberAction extends ActionBase implements Serializable {
 					this.project.addProjectMember(this.projectMember);
 				}
 				em.persist(this.project);
-				
-				// fire update events
-				this.projectEventSrc.fire(project);
-				
+
 				this.facesContextMessage.infoMessage("messages", "{0} saved successfully", this.projectMember.getArtifact());
 				logger.info("saved: {}", this.projectMember.getArtifact());
 
@@ -287,6 +267,13 @@ public class MemberAction extends ActionBase implements Serializable {
 	 */
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	/**
+	 * @return the authUser
+	 */
+	public AuthUser getAuthUser() {
+		return authUser;
 	}
 
 	/**

@@ -88,12 +88,29 @@ public class ProjectMember extends EntityBase implements Serializable {
 
 	}
 
+	/**
+	 * Data constructor
+	 * @param identifier
+	 * @param authUser
+	 */
 	public ProjectMember(int identifier, AuthUser authUser) {
 		super();
 		init();
 		this.identifier = Integer.valueOf(identifier);
 		this.authUser = authUser;
-
+	}
+	
+	/**
+	 * Data constructor
+	 * @param identifier
+	 * @param authUser
+	 */
+	public ProjectMember(int identifier, AuthUser authUser, String primaryRole) {
+		super();
+		init();
+		this.identifier = Integer.valueOf(identifier);
+		this.authUser = authUser;
+		this.primaryRole = primaryRole;
 	}
 
 	/**

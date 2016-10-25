@@ -23,7 +23,7 @@
 					<div class="card">
 						<p:growl id="messages" life="#{appManager.growlLife}" />
 						<div style="margin: 6px">
-							<h2>Projects</h2>
+							<h2>Manage Projects</h2>
 						</div>
 						<p:dataTable id="table" emptyMessage="No Projects Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="proj" value="#{projectAction.projects}" selectionMode="single" rowKey="#{proj.id}" selection="#{projectAction.project}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{projectAction.onRowSelect}" update=":form:table editButton deleteButton" />
@@ -99,6 +99,13 @@
 					<p:selectOneMenu id="securityMarking" value="#{projectAction.project.securityMarking}" required="true" requiredMessage="Security Marking is required">
 						<f:selectItem itemLabel="Select Security Marking" itemValue="" />
 						<f:selectItems value="#{securityMarkingItems}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="managerSelect" value="Project Manager:" />
+					<p:selectOneMenu id="managerSelect" value="#{projectAction.projectManager}" style="width:200px" valueChangeListener="#{projectAction.onProjectManagerChange}" converter="#{authUserConverter}" effect="fade" title="The project manager" required="true" requiredMessage="Project Manager is required">
+						<f:selectItem itemLabel="Select User" itemValue="" />
+						<f:selectItems value="#{availableUsers}" var="user" itemLabel="#{user.name}" itemValue="#{user}" />
+						<p:ajax update=":editForm:messages"/>
 					</p:selectOneMenu>
 
 					<p:outputLabel for="url" value="Resource Path:" />

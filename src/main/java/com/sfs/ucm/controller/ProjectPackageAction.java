@@ -50,6 +50,7 @@ import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.ProjectPackage;
 import com.sfs.ucm.security.AccessManager;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
@@ -74,10 +75,10 @@ public class ProjectPackageAction extends ActionBase implements Serializable {
 
 	@PersistenceContext(type = PersistenceContextType.EXTENDED)
 	private EntityManager em;
-
+	
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEvent;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	private Logger logger;
@@ -120,7 +121,8 @@ public class ProjectPackageAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			loadList();
 
 			// update producers
@@ -170,7 +172,6 @@ public class ProjectPackageAction extends ActionBase implements Serializable {
 			// refresh list
 			loadList();
 
-			projectEvent.fire(this.project);
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -204,9 +205,6 @@ public class ProjectPackageAction extends ActionBase implements Serializable {
 
 				logger.info("saved {}", this.projectPackage.getName());
 				this.facesContextMessage.infoMessage("{0} saved successfully", StringUtils.abbreviate(this.projectPackage.getName(), 25));
-
-				// update producers
-				projectEvent.fire(this.project);
 
 				// refresh list
 				loadList();

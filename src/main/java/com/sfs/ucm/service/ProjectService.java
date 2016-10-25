@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 
-import com.sfs.ucm.data.ModelNode;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.Actor;
 import com.sfs.ucm.model.AuthUser;
@@ -36,14 +35,43 @@ public class ProjectService {
 	@Inject
 	private Logger logger;
 
-	public List<ModelNode> findMemberProjects(final AuthUser authUser) throws UCMException {
-		List<ModelNode> list = null;
+	/**
+	 * Find all project members
+	 * 
+	 * @return projectMembers
+	 * @throws UCMException
+	 */
+	public List<ProjectMember> findAllProjectMembers() throws UCMException {
+		List<ProjectMember> list = null;
 		try {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<ModelNode> cq = cb.createQuery(ModelNode.class);
-			Root<ProjectMember> pm = cq.from(ProjectMember.class);
-			cq.select(cb.construct(ModelNode.class, pm.get("project").get("name"), pm.get("project").get("id"), pm.get("project").get("description"))).orderBy(cb.asc(pm.get("project").get("id")));
-			cq.where(cb.equal(pm.get("authUser"), authUser));
+			CriteriaQuery<ProjectMember> c = cb.createQuery(ProjectMember.class);
+			Root<ProjectMember> obj = c.from(ProjectMember.class);
+			c.select(obj).orderBy(cb.asc(obj.get("id")));
+			list = em.createQuery(c).getResultList();
+		}
+		catch (Exception e) {
+			logger.error("Error occurred in findAllProjectMembers: {}", e.getMessage());
+			throw new UCMException(e);
+		}
+		return list;
+	}
+
+	/**
+	 * Find member projects
+	 * 
+	 * @param authUser
+	 * @return
+	 * @throws UCMException
+	 */
+	public List<Project> findMemberProjects(final AuthUser authUser) throws UCMException {
+		List<Project> list = null;
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Project> cq = cb.createQuery(Project.class);
+			Root<ProjectMember> obj = cq.from(ProjectMember.class);
+			cq.select(obj.get("project")).orderBy(cb.asc(obj.get("project").get("name")));
+			cq.where(cb.equal(obj.get("authUser"), authUser));
 			list = em.createQuery(cq).getResultList();
 		}
 		catch (Exception e) {
@@ -52,7 +80,7 @@ public class ProjectService {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * is user is a project member
 	 * 
@@ -76,8 +104,6 @@ public class ProjectService {
 		}
 		return userIsMember;
 	}
-
-	
 
 	/**
 	 * Find the System actor for project
@@ -192,7 +218,5 @@ public class ProjectService {
 		}
 		return project;
 	}
-
-	
 
 }

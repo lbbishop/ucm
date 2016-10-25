@@ -11,8 +11,6 @@
 		}
 		</script>
 
-
-
 		<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />
 		<p:dialog modal="false" widgetVar="statusDialog" resizable="false" showHeader="false" draggable="false" closable="false">
 			<p:graphicImage value="/images/ajax-loading.gif" width="25" />
@@ -28,9 +26,8 @@
 							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
 						</div>
 
-						<div style="margin: 6px">
-							<h:outputText value="#{projectPackageAction.project.name}: Project Packages" styleClass="header" />
-						</div>
+						<h2>#{projectPackageAction.project.name}: Project Packages</h2>
+
 						<p:dataTable id="table" emptyMessage="No Packages Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_package" value="#{projectPackageAction.projectPackages}" selectionMode="single" rowKey="#{_package.id}"
 							selection="#{projectPackageAction.projectPackage}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{projectPackageAction.onRowSelect}" update="editButton deleteButton" />

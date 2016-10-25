@@ -30,6 +30,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -46,19 +47,24 @@ import org.slf4j.Logger;
 import com.sfs.ucm.data.Literal;
 import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.Actor;
+import com.sfs.ucm.model.AuthRole;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.EnvironmentalFactors;
 import com.sfs.ucm.model.Feature;
 import com.sfs.ucm.model.ProductVision;
 import com.sfs.ucm.model.Project;
+import com.sfs.ucm.model.ProjectMember;
 import com.sfs.ucm.model.Specification;
 import com.sfs.ucm.model.StakeholderRequest;
 import com.sfs.ucm.model.TechnicalFactors;
 import com.sfs.ucm.model.TestPlan;
 import com.sfs.ucm.model.TestSet;
 import com.sfs.ucm.model.UseCase;
+import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.util.Authenticated;
+import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectUpdated;
+import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
 /**
@@ -90,6 +96,12 @@ public class ProjectAction extends ActionBase implements Serializable {
 	@Inject
 	@Authenticated
 	private AuthUser authUser;
+	
+	@Inject
+	@Service
+	private ProjectService projectService;
+
+	private AuthUser projectManager;
 
 	private Project project;
 
@@ -151,6 +163,33 @@ public class ProjectAction extends ActionBase implements Serializable {
 
 		// add default System Actor
 		this.project.addActor(new Actor(0, "System", Actor.SIMPLE, "Responds to Actor Actions"));
+	}
+
+	/**
+	 * Project manager change handler
+	 * 
+	 * @throws UCMException
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void onProjectManagerChange(ValueChangeEvent event) throws UCMException {
+		try {
+			this.projectManager = (AuthUser) event.getNewValue();
+
+			if (!this.projectManager.hasRole(Literal.ROLE_MANAGER.toString())) {
+				this.projectManager.addAuthRole(new AuthRole(this.authUser.getUsername(), Literal.ROLE_MANAGER.toString(), Literal.ROLEGROUP_MANAGERS.toString()));
+
+				// add pm as project member
+				List<ProjectMember> projectMembers = this.projectService.findAllProjectMembers();
+				this.project.addProjectMember(new ProjectMember(ModelUtils.getNextIdentifier(projectMembers), this.projectManager, Literal.MEMBERROLE_PROJECTMANAGER.toString()));
+				
+				// queue messages
+				logger.info("User {} given role of Manager", this.authUser.getUsername());
+				this.facesContextMessage.infoMessage("User {0} given role of Project Manager", this.authUser.getUsername());
+			}
+		}
+		catch (Exception e) {
+			throw new UCMException(e);
+		}
 	}
 
 	/**
@@ -284,6 +323,21 @@ public class ProjectAction extends ActionBase implements Serializable {
 	 */
 	public void setProject(Project project) {
 		this.project = project;
+	}
+
+	/**
+	 * @return the projectManager
+	 */
+	public AuthUser getProjectManager() {
+		return projectManager;
+	}
+
+	/**
+	 * @param projectManager
+	 *            the projectManager to set
+	 */
+	public void setProjectManager(AuthUser projectManager) {
+		this.projectManager = projectManager;
 	}
 
 	/**

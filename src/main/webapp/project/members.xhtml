@@ -29,7 +29,7 @@
 						</div>
 						<p:messages id="messages" severity="info" />
 						<div style="margin: 6px">
-							<h:outputText value="#{memberAction.project.name}: Project Members" styleClass="header" />
+							<h2>#{memberAction.project.name}: Project Members</h2>
 						</div>
 
 						<p:dataTable id="table" emptyMessage="No Members Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_member" value="#{memberAction.projectMembers}" selectionMode="single" rowKey="#{_member.id}" selection="#{memberAction.projectMember}"

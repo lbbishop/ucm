@@ -40,8 +40,6 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-import com.sfs.ucm.model.AuthUser;
-
 /**
  * Rewrite configuration provider
  * 
@@ -69,6 +67,7 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("authenticator.login")))).after(PhaseId.RESTORE_VIEW))
 
 				.addRule(Join.path("/home").to("/home.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("dashboardAction.load")))).after(PhaseId.RESTORE_VIEW))
 
 				.addRule(Join.path("/logout").to("/logout.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("authenticator.logout")))).after(PhaseId.RESTORE_VIEW))
@@ -76,7 +75,7 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				// =========== help ==============
 				.addRule(Join.path("/help/overview").to("/help/overview.jsf"))
 
-				.addRule(Join.path("/help/workflow").to("/help/workflow.jsf"))
+				.addRule(Join.path("/help/usecases").to("/help/usecases.jsf"))
 
 				.addRule(Join.path("/help/about").to("/help/about.jsf"))
 
@@ -84,6 +83,9 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.addRule(Join.path("/admin/users").to("/admin/users.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("userAction.load")))).after(PhaseId.RESTORE_VIEW))
 
+				.addRule(Join.path("/admin/projects").to("/admin/projects.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("projectAction.load")))).after(PhaseId.RESTORE_VIEW))
+				
 				.addRule(Join.path("/admin/contexthelp").to("/admin/contexthelp.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("helpContentAction.load")))).after(PhaseId.RESTORE_VIEW))
 
@@ -98,25 +100,20 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.addRule(Join.path("/reports/testcoverage").to("/reports/testcoverage.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("testCoverageAction.load")))).after(PhaseId.RESTORE_VIEW))
 
+				
 				// =========== project ==============
-				.addRule(Join.path("/projects").to("/project/projects.jsf"))
-				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("projectAction.load")))).after(PhaseId.RESTORE_VIEW))
+				.addRule(Join.path("/project/techfactors").to("/project/techfactors.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("technicalFactorsAction.load")))).after(PhaseId.RESTORE_VIEW))
+				
+				.addRule(Join.path("/project/envfactors").to("/project/envfactors.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("environmentalFactorsAction.load")))).after(PhaseId.RESTORE_VIEW))
+				
+				.addRule(Join.path("/project/members").to("/project/members.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("memberAction.load")))).after(PhaseId.RESTORE_VIEW))			
 
-				.addRule(Join.path("/project/{id}/techfactors").to("/project/techfactors.jsf"))
-				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("technicalFactorsAction.load")))).after(PhaseId.RESTORE_VIEW)).where("id")
-				.bindsTo(PhaseBinding.to(El.property("technicalFactorsAction.id")).after(PhaseId.RESTORE_VIEW))
-
-				.addRule(Join.path("/project/{id}/envfactors").to("/project/envfactors.jsf"))
-				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("environmentalFactorsAction.load")))).after(PhaseId.RESTORE_VIEW)).where("id")
-				.bindsTo(PhaseBinding.to(El.property("environmentalFactorsAction.id")).after(PhaseId.RESTORE_VIEW))
-
-				.addRule(Join.path("/project/{id}/members").to("/project/members.jsf"))
-				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("memberAction.load")))).after(PhaseId.RESTORE_VIEW)).where("id")
-				.bindsTo(PhaseBinding.to(El.property("memberAction.id")).after(PhaseId.RESTORE_VIEW))
-
-				.addRule(Join.path("/project/{id}/packages").to("/project/packages.jsf"))
-				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("projectPackageAction.load")))).after(PhaseId.RESTORE_VIEW)).where("id")
-				.bindsTo(PhaseBinding.to(El.property("projectPackageAction.id")).after(PhaseId.RESTORE_VIEW))
+				.addRule(Join.path("/project/packages").to("/project/packages.jsf"))
+				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("projectPackageAction.load")))).after(PhaseId.RESTORE_VIEW))
+				
 
 				// =========== requirement ==============
 				.addRule(Join.path("/project/{id}/productvision").to("/requirement/productvision.jsf"))

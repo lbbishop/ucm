@@ -20,51 +20,52 @@
 
 					<pu:menu widgetVar="me">
 						<p:menuitem id="um_home" value="Home" icon="home" outcome="/home" containerStyleClass="layout-menubar-active" />
-						<p:submenu id="um_proj" label="Project Management" icon="create" expanded="false">
-							<p:menuitem id="um_proj_projects" value="Projects" icon="search" outcome="/project/projects" />
-							<p:menuitem id="um_proj_members" value="Members" icon="search" outcome="/project/members" />
-							<p:menuitem id="um_proj_packages" value="Packages" icon="search" outcome="/project/packages" />
-							<p:menuitem id="um_proj_envfactors" value="Environmental Factors" icon="search" outcome="/project/envfactors" />
-							<p:menuitem id="um_proj_techfactors" value="Technical Factors" icon="search" outcome="/project/techfactors" />
+						<p:submenu id="um_proj" label="Project Management" icon="create" expanded="false">							
+							<p:menuitem id="um_proj_members" value="Members" icon="create" outcome="/project/members" />
+							<p:menuitem id="um_proj_packages" value="Packages" icon="create" outcome="/project/packages" />
+							<p:menuitem id="um_proj_envfactors" value="Environmental Factors" icon="create" outcome="/project/envfactors" />
+							<p:menuitem id="um_proj_techfactors" value="Technical Factors" icon="create" outcome="/project/techfactors" />
 						</p:submenu>
 
 						<p:submenu id="um_req" label="Requirements" icon="create" expanded="true">
-							<p:menuitem id="um_req_productvision" value="Product Vision" icon="search" outcome="/requirement/productvision" />
-							<p:menuitem id="um_req_stakeholders" value="Stakeholders" icon="search" outcome="/requirement/stakeholders" />
-							<p:menuitem id="um_req_stakeholderrequests" value="Stakeholder Requests" icon="search" outcome="/requirement/stakeholderrequests" />
-							<p:menuitem id="um_req_risks" value="Risks" icon="search" outcome="/requirement/risks" />
-							<p:menuitem id="um_req_constraints" value="Design Constraints" icon="search" outcome="/requirement/constraints" />
-							<p:menuitem id="um_req_glossary" value="Glossary" icon="search" outcome="/requirement/glossary" />
-							<p:menuitem id="um_req_features" value="Features" icon="search" outcome="/requirement/features" />
-							<p:menuitem id="um_req_spec" value="Supplementary Specs" icon="search" outcome="/requirement/specifications" />
-							<p:menuitem id="um_req_actors" value="Actors" icon="search" outcome="/requirement/actors" />
-							<p:menuitem id="um_req_usecases" value="Use Cases" icon="search" outcome="/requirement/usecases" />
+							<p:menuitem id="um_req_productvision" value="Product Vision" icon="create" outcome="/requirement/productvision" />
+							<p:menuitem id="um_req_stakeholders" value="Stakeholders" icon="create" outcome="/requirement/stakeholders" />
+							<p:menuitem id="um_req_stakeholderrequests" value="Stakeholder Requests" icon="create" outcome="/requirement/stakeholderrequests" />
+							<p:menuitem id="um_req_risks" value="Risks" icon="create" outcome="/requirement/risks" />
+							<p:menuitem id="um_req_constraints" value="Design Constraints" icon="create" outcome="/requirement/constraints" />
+							<p:menuitem id="um_req_glossary" value="Glossary" icon="create" outcome="/requirement/glossary" />
+							<p:menuitem id="um_req_features" value="Features" icon="create" outcome="/requirement/features" />
+							<p:menuitem id="um_req_spec" value="Supplementary Specs" icon="create" outcome="/requirement/specifications" />
+							<p:menuitem id="um_req_actors" value="Actors" icon="create" outcome="/requirement/actors" />
+							<p:menuitem id="um_req_usecases" value="Use Cases" icon="create" outcome="/requirement/usecases" />
 						</p:submenu>
 
 						<p:submenu id="um_testplan" label="Tests" icon="create" expanded="false">
-							<p:menuitem id="um_test_plan" value="Test Plan" icon="search" outcome="/test/testplan" />
-							<p:menuitem id="um_test_sets" value="Test Sets" icon="search" outcome="/test/testsets" />
-							<p:menuitem id="um_test_unit" value="Unit Tests" icon="search" outcome="/test/unittests" />							
-							<p:menuitem id="um_test_cases" value="Test Cases" icon="search" outcome="/test/testcases" />
-							<p:menuitem id="um_spec_tests" value="Specification Tests" icon="search" outcome="/test/specificationtests" />
-							<p:menuitem id="um_rule_tests" value="Business Rule Tests" icon="search" outcome="/test/businessruletests" />
+							<p:menuitem id="um_test_plan" value="Test Plan" icon="create" outcome="/test/testplan" />
+							<p:menuitem id="um_test_sets" value="Test Sets" icon="create" outcome="/test/testsets" />
+							<p:menuitem id="um_test_unit" value="Unit Tests" icon="create" outcome="/test/unittests" />							
+							<p:menuitem id="um_test_cases" value="Test Cases" icon="create" outcome="/test/testcases" />
+							<p:menuitem id="um_spec_tests" value="Specification Tests" icon="create" outcome="/test/specificationtests" />
+							<p:menuitem id="um_rule_tests" value="Business Rule Tests" icon="create" outcome="/test/businessruletests" />
 						</p:submenu>
 
-						<p:menuitem id="um_issues" value="Issues" icon="search" outcome="/issue/issues" />
+						<p:menuitem id="um_issues" value="Issues" icon="create" outcome="/issue/issues" />
 
 						<p:submenu id="um_reports" label="Reports" icon="create" expanded="false">
-							<p:menuitem id="um_report_coverage" value="Test Coverage" icon="search" outcome="/report/testcoverage" />
+							<p:menuitem id="um_report_coverage" value="Test Coverage" icon="create" outcome="/report/testcoverage" />
 						</p:submenu>
 
 						<p:submenu id="um_admin" label="Admin" icon="create" expanded="false">
 							<p:menuitem id="um_admin_user" value="Manage Users" url="/admin/users" icon="contacts" />
+							<p:menuitem id="um_admin_projects" value="Manage Projects" icon="create" outcome="/admin/projects" />
+							<p:menuitem id="um_admin_contenthelp" value="Help Content" url="/admin/contexthelp" icon="folder" />
 							<p:menuitem id="um_admin_logger" value="Application Logger" url="/admin/logview" icon="folder" />
 							<p:menuitem id="um_search_reindex" value="Rebuild Search Index" actionListener="#{searchManager.rebuildIndex}" />
 						</p:submenu>
 
 						<p:submenu id="um_help" label="Help" icon="book" expanded="false">
 							<p:menuitem id="um_help_overview" value="Overview" url="/help/overview" icon="help" />
-							<p:menuitem id="um_help_workflow" value="Workflows" url="/help/workflow" icon="help" />
+							<p:menuitem id="um_help_usecases" value="Use Cases" url="/help/usecases" icon="help" />
 							<p:menuitem id="um_help_about" value="About Use Case Manager" url="/help/about" icon="help" />
 						</p:submenu>
 					</pu:menu>
