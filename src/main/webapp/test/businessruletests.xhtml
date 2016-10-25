@@ -32,7 +32,7 @@
 						<p:dataTable id="table" emptyMessage="No Tests Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="test" value="#{businessRuleTestAction.businessRuleTests}" selectionMode="single" rowKey="#{test.id}"
 							selection="#{businessRuleTestAction.businessRuleTest}">
 							<p:ajax event="rowSelect" listener="#{businessRuleTestAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 							UseCase Rule Tests
@@ -61,7 +61,7 @@
 							<f:facet name="footer">
 								<p:commandButton value="Clear Results" disabled="#{not businessRuleTestAction.editable}" update=":form:table" action="#{businessRuleTestAction.clearTestResults}" title="Clear test results" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not businessRuleTestAction.selected or not businessRuleTestAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not businessRuleTestAction.selected or not businessRuleTestAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not businessRuleTestAction.selected or not businessRuleTestAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="20" />

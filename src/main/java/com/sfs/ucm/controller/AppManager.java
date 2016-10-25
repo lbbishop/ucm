@@ -49,16 +49,20 @@ public class AppManager implements Serializable {
 	private int menuHeight;
 	private int tableScrollHeight;
 	private int listScrollHeight; // scroll height for viewing all artifacts
+	private String displayName;
 
 	public AppManager() {
 		this.name = Literal.APPNAME.toString();
-		this.releaseVersion = "0.9.7";
-		this.releaseBuildDate = "12/30/2013";
+		this.releaseVersion = "1.0.0";
+		this.releaseBuildDate = "10/24/2016";
 		this.navigatorWidth = Constants.SIDEBAR_WIDTH;
 		this.growlLife = Constants.GROWL_LIFE;
 		this.menuHeight = Constants.MENU_HEIGHT;
 		this.tableScrollHeight = Constants.TABLE_SCROLL_HEIGHT;
 		this.listScrollHeight = Constants.LIST_SCROLL_HEIGHT;
+		
+		// display name
+		this.displayName = Literal.APPNAME.toString();
 	}
 
 	/**
@@ -210,6 +214,20 @@ public class AppManager implements Serializable {
 
 		return properties.getProperty("environment");
 
+	}
+
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	/**

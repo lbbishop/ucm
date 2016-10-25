@@ -31,7 +31,7 @@
 						</div>
 						<p:dataTable id="table" emptyMessage="No TestSets Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_testSet" value="#{testSetAction.testSets}" selectionMode="single" rowKey="#{_testSet.id}" selection="#{testSetAction.testSet}">
 							<p:ajax event="rowSelect" listener="#{testSetAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 							<f:facet name="header">
 								<h:outputText value="#{testSetAction.testPlan.project.name}: TestSets" />
 							</f:facet>
@@ -86,9 +86,9 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New TestSet" disabled="#{not testSetAction.editable}" update=":editForm:editPanel" action="#{testSetAction.add}" oncomplete="PF('editDialog').show()" title="New TestSet" />
+								<p:commandButton value="New TestSet" disabled="#{not testSetAction.editable}" update=":editForm" action="#{testSetAction.add}" oncomplete="PF('editDialog').show()" title="New TestSet" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not testSetAction.selected or not testSetAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not testSetAction.selected or not testSetAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not testSetAction.selected or not testSetAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 							</f:facet>

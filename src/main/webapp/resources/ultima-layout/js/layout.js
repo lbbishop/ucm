@@ -535,29 +535,18 @@ if(window['PrimeFaces'] && window['PrimeFaces'].widget.Dialog) {
 
 /* JS extensions to support material animations */
 if(PrimeFaces.widget.InputSwitch) {
-    PrimeFaces.widget.InputSwitch = PrimeFaces.widget.InputSwitch.extend({
-         
-         init: function(cfg) {
-             this._super(cfg);
-             
-             if(this.input.prop('checked')) {
-                 this.jq.addClass('ui-inputswitch-checked');
-             }
-         },
-         
-         toggle: function() {
-             var $this = this;
+    PrimeFaces.widget.InputSwitch.prototype.toggle = function() {
+        var $this = this;
 
-             if(this.input.prop('checked'))
-                 this.uncheck();    
-             else
-                 this.check();    
-             
-             setTimeout(function() {
-                 $this.jq.toggleClass('ui-inputswitch-checked');
-             }, 100);
-         }
-    });
+        if(this.input.prop('checked'))
+            this.uncheck();    
+        else
+            this.check();    
+        
+        setTimeout(function() {
+            $this.jq.toggleClass('ui-inputswitch-checked');
+        }, 100);
+    };
 }
 
 if(PrimeFaces.widget.SelectBooleanButton) {
@@ -589,17 +578,9 @@ if(PrimeFaces.widget.SelectBooleanButton) {
 }
 
 PrimeFaces.skinInput = function(input) {
-    var parentElem = input.parent();
-
-    setTimeout(function() {
-        if(input.val() != '') {
-            input.addClass('ui-state-filled');
-            
-            if(parentElem && parentElem.is("span:not('.md-inputfield')")) {
-                parentElem.addClass('inputfield-wrapper');
-            }
-        }
-    }, 1);
+    if(input.val() != '') {
+        input.addClass('ui-state-filled');
+    }
     
     input.on('mouseenter', function() {
         $(this).addClass('ui-state-hover');
@@ -609,22 +590,15 @@ PrimeFaces.skinInput = function(input) {
     })
     .on('focus', function() {
         $(this).addClass('ui-state-focus');
-        
-        if(parentElem && parentElem.is("span:not('.md-inputfield')")) {
-            parentElem.addClass('inputfield-wrapper');
-        }
     })
     .on('blur', function() {
         $(this).removeClass('ui-state-focus');
-
-        if(input.hasClass('hasDatepicker')) {
-            setTimeout(function() {
-                onBlurAnimation(input, parentElem);
-            },150);
-        }
-        else {
-            onBlurAnimation(input, parentElem);
-        }
+    })
+    .on('input', function(e) {
+        if(input.val() != '')
+            input.addClass('ui-state-filled');
+        else
+            input.removeClass('ui-state-filled');
     });
 
     //aria
@@ -639,17 +613,5 @@ PrimeFaces.skinInput = function(input) {
     return this;
 };
 
-function onBlurAnimation(input, parentElem) {
-    if(input.val() != '') {
-        input.addClass('ui-state-filled');
-    }
-    else {
-        input.removeClass('ui-state-filled');
-
-        if(parentElem) {
-            parentElem.removeClass('inputfield-wrapper');
-        }
-    }    
-}
     
 

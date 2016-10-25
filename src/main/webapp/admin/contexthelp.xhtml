@@ -60,7 +60,7 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New Help Item" update=":editForm:editPanel" action="#{helpContentAction.add}" oncomplete="PF('editDialog').show()" title="Add new Help Item" />
+								<p:commandButton value="New Help Item" update=":editForm" action="#{helpContentAction.add}" oncomplete="PF('editDialog').show()" title="Add new Help Item" />
 								<p:spacer width="6" />
 								<p:commandButton id="editButton" value="Edit" disabled="#{not helpContentAction.selected}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />

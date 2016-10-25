@@ -35,7 +35,7 @@
 						<p:dataTable id="table" emptyMessage="No Members Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_member" value="#{memberAction.projectMembers}" selectionMode="single" rowKey="#{_member.id}" selection="#{memberAction.projectMember}"
 							reflow="true">
 							<p:ajax event="rowSelect" listener="#{memberAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Project Members" />
@@ -63,9 +63,9 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New Member" disabled="#{not authUser.hasRole('Manager')}" update=":editForm:editPanel" action="#{memberAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
+								<p:commandButton value="New Member" disabled="#{not authUser.hasRole('Manager')}" update=":editForm" action="#{memberAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not memberAction.selected or not memberAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not memberAction.selected or not memberAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not memberAction.selected or not memberAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<h:commandLink>

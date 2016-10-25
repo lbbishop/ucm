@@ -23,11 +23,11 @@
 					<div class="card">
 						<p:growl id="messages" life="#{appManager.growlLife}" />
 						<div style="margin: 6px">
-							<h:outputText value="Projects" styleClass="header" />
+							<h2>Projects</h2>
 						</div>
 						<p:dataTable id="table" emptyMessage="No Projects Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="proj" value="#{projectAction.projects}" selectionMode="single" rowKey="#{proj.id}" selection="#{projectAction.project}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{projectAction.onRowSelect}" update=":form:table editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Projects" />
@@ -44,7 +44,14 @@
 								<f:facet name="header">
 									<h:outputText value="Description" style="font-size:0.93em" />
 								</f:facet>
-								<h:outputText value="#{proj.descriptionAbbrv}" />
+								<h:outputText value="#{proj.descriptionAbbrv}" escape="false" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Security Marking" style="font-size:0.93em" />
+								</f:facet>
+								<h:outputText value="#{proj.securityMarking}" />
 							</p:column>
 
 							<p:column>
@@ -57,11 +64,11 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New Project" disabled="#{not authUser.hasRole('Manager')}" update=":editForm:editPanel" action="#{projectAction.add}" oncomplete="PF('editDialog').show()" title="New Project" />
+								<p:commandButton value="New Project" disabled="#{not authUser.hasRole('Manager')}" update=":editForm" action="#{projectAction.add}" oncomplete="PF('editDialog').show()" title="New Project" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not projectAction.selected}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not projectAction.selected}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
-								<p:commandButton id="deleteButton" value="Delete" disabled="#{not projectAction.selected}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not projectAction.selected}" icon="ui-icon-cancel" onclick="PF('cd').show()" title="Delete" />
 								<h:commandLink>
 									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
 									<pe:exporter type="xlsx" target="table" fileName="projects" orientation="landscape" />
@@ -77,8 +84,7 @@
 			</div>
 		</h:form>
 
-
-		<p:dialog id="editDlg" header="Edit Project" widgetVar="editDialog" resizable="true" modal="true" styleClass="modalDialog">
+		<p:dialog id="editDlg" header="Edit Project" widgetVar="editDialog" resizable="true" width="900" modal="true" responsive="true" >
 			<h:form id="editForm">
 				<p:messages severity="error" />
 				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
@@ -87,7 +93,17 @@
 					<p:inputText id="name" value="#{projectAction.project.name}" size="80" maxlength="100" requiredMessage="Name is required" required="true" />
 
 					<p:outputLabel for="description" value="Description:" />
-					<p:editor id="description" value="#{projectAction.project.description}" style="width:600px" width="600" height="180" controls="#{editorControls}" widgetVar="descriptionEditor" requiredMessage="Description is required" required="true" />
+					<p:textEditor id="description" value="#{projectAction.project.description}" style="width:90%" height="180" widgetVar="descriptionEditor" requiredMessage="Description is required" required="true" placeholder="Describe your project">
+						<f:facet name="toolbar">
+							<span class="ql-formats">
+								<button class="ql-bold"></button>
+								<button class="ql-italic"></button>
+								<button class="ql-underline"></button>
+							</span>
+							<span class="ql-formats"> <select class="ql-font"></select> <select class="ql-size"></select>
+							</span>
+						</f:facet>
+					</p:textEditor>
 
 					<p:outputLabel for="securityMarking" value="Security Marking:" />
 					<p:selectOneMenu id="securityMarking" value="#{projectAction.project.securityMarking}" required="true" requiredMessage="Security Marking is required">
@@ -96,16 +112,16 @@
 					</p:selectOneMenu>
 
 					<p:outputLabel for="url" value="Resource Path:" />
-					<p:inputText id="url" value="#{projectAction.project.url}" size="100" maxlength="255" />
+					<p:inputText id="url" value="#{projectAction.project.url}" style="width:90%" maxlength="255" />
 
-					<p:outputLabel for="visibleCheckbox" value="Visible To Public:" />
-					<h:selectBooleanCheckbox id="visibleCheckbox" value="#{projectAction.project.visibleToPublic}" title="Is this project private or public" />
+					<p:outputLabel for="visibleCheckbox" value="Visible To Public?" />
+					<p:selectBooleanCheckbox id="visibleCheckbox" value="#{projectAction.project.visibleToPublic}" title="Is this project private or public" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
 							<p:commandButton value="Save" update="@(form)" actionListener="#{projectAction.save}" oncomplete="handleComplete(xhr, status, args)" icon="ui-icon ui-icon-check" />
 							<p:spacer width="6" />
-							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-close" />
+							<p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" icon="ui-icon ui-icon-cancel" />
 						</p:outputPanel>
 					</f:facet>
 				</p:panelGrid>

@@ -22,7 +22,10 @@
 package com.sfs.ucm.security;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.faces.context.ExternalContext;
@@ -38,11 +41,13 @@ import org.slf4j.Logger;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.service.AuthUserService;
 import com.sfs.ucm.util.Authenticated;
+import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.Service;
 import com.sfs.ucm.view.FacesContextMessage;
 
 @Named
 @RequestScoped
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class Authenticator implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -107,6 +112,7 @@ public class Authenticator implements Serializable {
 	 * 
 	 * @return AuthUser
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private AuthUser configure(final String username, final HttpServletRequest request) {
 
 		// find or persist user
@@ -114,9 +120,10 @@ public class Authenticator implements Serializable {
 
 		if (authUser == null) {
 
-			authUser = new AuthUser(username, username);
+			// persist the user
+			List<AuthUser> authUsers = authUserService.findAllAuthUsers();
+			authUser = new AuthUser(ModelUtils.getNextIdentifier(authUsers),username, username);
 			this.authUserService.store(authUser);
-
 		}
 
 		// put userid in session scope context

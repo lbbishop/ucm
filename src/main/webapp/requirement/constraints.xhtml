@@ -32,7 +32,7 @@
 						<p:dataTable id="table" emptyMessage="No Constraints Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_designConstraint" value="#{constraintAction.designConstraints}" selectionMode="single" rowKey="#{_designConstraint.id}"
 							selection="#{constraintAction.designConstraint}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{constraintAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Design Constraints" />
@@ -60,13 +60,13 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton id="newButton" value="New Constraint" disabled="#{not constraintAction.editable}" update=":editForm:editPanel" action="#{constraintAction.add}" oncomplete="PF('editDialog').show()" title="New Constraint" />
+								<p:commandButton id="newButton" value="New Constraint" disabled="#{not constraintAction.editable}" update=":editForm" action="#{constraintAction.add}" oncomplete="PF('editDialog').show()" title="New Constraint" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not constraintAction.selected or not constraintAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not constraintAction.selected or not constraintAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not constraintAction.selected or not constraintAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="6" />
-								<p:button id="viewButton" value="View All" outcome="/constraintlist" icon="ui-icon-search" title="View or Print Constraints List">
+								<p:button id="viewButton" value="View All" outcome="/requirement/constraintlist" icon="ui-icon-search" title="View or Print Constraints List">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{constraintAction.id}" />
 								</p:button>

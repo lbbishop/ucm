@@ -31,7 +31,7 @@
 						</div>
 						<p:dataTable id="table" emptyMessage="No UnitTests Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_unitTest" value="#{unitTestAction.unitTests}" selectionMode="single" rowKey="#{_unitTest.id}" selection="#{unitTestAction.unitTest}">
 							<p:ajax event="rowSelect" listener="#{unitTestAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Project UnitTests" />
@@ -59,9 +59,9 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New UnitTest" disabled="#{not unitTestAction.editable}" update=":editForm:editPanel" action="#{unitTestAction.add}" oncomplete="PF('editDialog').show()" title="New UnitTest" />
+								<p:commandButton value="New UnitTest" disabled="#{not unitTestAction.editable}" update=":editForm" action="#{unitTestAction.add}" oncomplete="PF('editDialog').show()" title="New UnitTest" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not unitTestAction.selected or not unitTestAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not unitTestAction.selected or not unitTestAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not unitTestAction.selected or not unitTestAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<h:commandLink>

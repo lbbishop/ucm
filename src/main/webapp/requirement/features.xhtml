@@ -34,7 +34,7 @@
 						<p:dataTable id="table" emptyMessage="No Features Defined" resizableColumns="false" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_feature" value="#{featureAction.features}" selectionMode="single" rowKey="#{_feature.id}" selection="#{featureAction.feature}"
 							reflow="true">
 							<p:ajax event="rowSelect" listener="#{featureAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('featureDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('featureDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="#{featureAction.project.name}: Product Features" />
@@ -62,13 +62,13 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="Add Feature" disabled="#{not featureAction.editable}" update=":editForm:editPanel" action="#{featureAction.add}" oncomplete="PF('featureDialog').show()" title="Add new Feature" />
+								<p:commandButton value="Add Feature" disabled="#{not featureAction.editable}" update=":editForm" action="#{featureAction.add}" oncomplete="PF('featureDialog').show()" title="Add new Feature" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not featureAction.selected or not featureAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('featureDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not featureAction.selected or not featureAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('featureDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not featureAction.selected or not featureAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="6" />
-								<p:button id="viewButton" value="View All" outcome="/featurelist" icon="ui-icon-search" title="View or Print Feature List">
+								<p:button id="viewButton" value="View All" outcome="/requirement/featurelist" icon="ui-icon-search" title="View or Print Feature List">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{featureAction.id}" />
 								</p:button>
@@ -80,7 +80,7 @@
 							</f:facet>
 						</p:dataTable>
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{featureAction.close}" icon="ui-icon-close" title="Close view" />
+							<p:commandButton value="Close" action="#{featureAction.close}" icon="ui-icon-cancel" title="Close view" />
 						</div>
 					</div>
 				</div>

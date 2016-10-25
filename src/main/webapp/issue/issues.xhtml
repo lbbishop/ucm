@@ -34,7 +34,7 @@
 						<p:dataTable id="table" emptyMessage="No Issues Defined" resizableColumns="false" var="_issue" value="#{issueAction.issues}" selectionMode="single" rowKey="#{_issue.id}" selection="#{issueAction.issue}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}"
 							filteredValue="#{issueAction.filteredIssues}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{issueAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('issueDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('issueDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="#{issueAction.project.name} Project Issues" />
@@ -76,13 +76,13 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="Add Issue" disabled="#{not issueAction.editable}" update=":editForm:editPanel" action="#{issueAction.add}" oncomplete="PF('issueDialog').show()" title="Add new Issue" />
+								<p:commandButton value="Add Issue" disabled="#{not issueAction.editable}" update=":editForm" action="#{issueAction.add}" oncomplete="PF('issueDialog').show()" title="Add new Issue" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not issueAction.selected or not issueAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('issueDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not issueAction.selected or not issueAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('issueDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not issueAction.selected or not issueAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="10" />
-								<p:button id="viewButton" value="View All" outcome="/issuelist" icon="ui-icon-search" title="View or Print Issue List">
+								<p:button id="viewButton" value="View All" outcome="/issue/issuelist" icon="ui-icon-search" title="View or Print Issue List">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{issueAction.id}" />
 								</p:button>

@@ -34,7 +34,7 @@
 						<p:dataTable id="table" emptyMessage="No Packages Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_package" value="#{projectPackageAction.projectPackages}" selectionMode="single" rowKey="#{_package.id}"
 							selection="#{projectPackageAction.projectPackage}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{projectPackageAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="#{projectPackageAction.project.name}: Packages" />
@@ -62,9 +62,9 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New Package" disabled="#{not projectPackageAction.editable}" update=":editForm:editPanel" action="#{projectPackageAction.add}" oncomplete="PF('editDialog').show()" title="New Package" />
+								<p:commandButton value="New Package" disabled="#{not projectPackageAction.editable}" update=":editForm" action="#{projectPackageAction.add}" oncomplete="PF('editDialog').show()" title="New Package" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not projectPackageAction.selected or not projectPackageAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not projectPackageAction.selected or not projectPackageAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not projectPackageAction.selected or not projectPackageAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<h:commandLink>

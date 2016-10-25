@@ -19,7 +19,7 @@
 	</context-param>
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
-		<param-value>ultima-dark-blue</param-value>
+		<param-value>ultima-sandia-blue</param-value>
 	</context-param>
 	<context-param>
 		<param-name>primefaces.SUBMIT</param-name>
@@ -84,17 +84,23 @@
 
 
 	<security-constraint>
+		<display-name>Restrict raw XHTML Documents</display-name>
 		<web-resource-collection>
-			<web-resource-name>HtmlAuth</web-resource-name>
-			<description>application security constraints</description>
+			<web-resource-name>RestrictedPages</web-resource-name>
+			<description>These pages are only accessible by authenticated users.</description>
 			<url-pattern>/*</url-pattern>
 			<http-method>GET</http-method>
 			<http-method>POST</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>OPTIONS</http-method>
 		</web-resource-collection>
 		<auth-constraint>
-			<role-name>Admin</role-name>
+			<description>These are the roles who have access.</description>
+			<role-name>SNLUser</role-name>
 		</auth-constraint>
-
 		<user-data-constraint>
 			<description>This is how the user data must be transmitted</description>
 			<transport-guarantee>NONE</transport-guarantee>
@@ -102,10 +108,12 @@
 	</security-constraint>
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>ApplicationRealm</realm-name>
+		<realm-name>Sandia-Kerberos</realm-name>
 	</login-config>
-
 	<security-role>
-		<role-name>Admin</role-name>
+		<description>An authenticated User</description>
+		<role-name>SNLUser</role-name>
 	</security-role>
+
+
 </web-app>

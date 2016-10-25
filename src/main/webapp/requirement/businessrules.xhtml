@@ -31,7 +31,7 @@
 						<p:dataTable id="table" emptyMessage="No Requirement Rules Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_rule" value="#{useCaseRuleAction.flowStepRules}" selectionMode="single" rowKey="#{_rule.id}"
 							selection="#{useCaseRuleAction.flowStepRule}">
 							<p:ajax event="rowSelect" listener="#{useCaseRuleAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('ruleDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('ruleDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="UseCase Business Rules" />
@@ -73,7 +73,7 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseRuleAction.selected or not useCaseRuleAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('ruleDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseRuleAction.selected or not useCaseRuleAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('ruleDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseRuleAction.selected or not useCaseRuleAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="10" />

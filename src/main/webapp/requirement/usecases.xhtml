@@ -30,7 +30,7 @@
 						</div>
 						<p:dataTable id="table" emptyMessage="No UseCases Defined" resizableColumns="true" var="_useCase" value="#{useCaseAction.useCases}" selectionMode="single" rowKey="#{_useCase.id}" selection="#{useCaseAction.useCase}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{useCaseAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="#{useCaseAction.project.name}: UseCases" />
@@ -73,13 +73,13 @@
 
 
 							<f:facet name="footer">
-								<p:commandButton value="New UseCase" disabled="#{not useCaseAction.editable}" update=":editForm:editPanel" action="#{useCaseAction.add}" oncomplete="PF('editDialog').show()" title="New UseCase" />
+								<p:commandButton value="New UseCase" disabled="#{not useCaseAction.editable}" update=":editForm" action="#{useCaseAction.add}" oncomplete="PF('editDialog').show()" title="New UseCase" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseAction.selected or not useCaseAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseAction.selected or not useCaseAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseAction.selected or not useCaseAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="10" />
-								<p:button id="viewButton" value="View All" outcome="/usecaselist" icon="ui-icon-search" title="View or Print UseCase List">
+								<p:button id="viewButton" value="View All" outcome="/requirement/usecaselist" icon="ui-icon-search" title="View or Print UseCase List">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{useCaseAction.id}" />
 								</p:button>
@@ -92,7 +92,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{useCaseAction.close}" icon="ui-icon-close" title="Close view" />
+							<p:commandButton value="Close" action="#{useCaseAction.close}" icon="ui-icon-cancel" title="Close view" />
 						</div>
 					</div>
 				</div>

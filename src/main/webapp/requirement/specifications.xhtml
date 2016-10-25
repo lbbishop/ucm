@@ -37,7 +37,7 @@
 						<p:dataTable id="table" emptyMessage="No Specifications Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_specification" value="#{specificationAction.specifications}" selectionMode="single" rowKey="#{_specification.id}"
 							selection="#{specificationAction.specification}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{specificationAction.onRowSelect}" update="editButton deleteButton :form:table:addRuleButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('specificationDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('specificationDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Supplementary Specification Specifications" />
@@ -72,15 +72,15 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="Add Specification" disabled="#{not specificationAction.editable}" update=":editForm:editPanel" action="#{specificationAction.add}" oncomplete="PF('specificationDialog').show()" title="Add new Specification" />
+								<p:commandButton value="Add Specification" disabled="#{not specificationAction.editable}" update=":editForm" action="#{specificationAction.add}" oncomplete="PF('specificationDialog').show()" title="Add new Specification" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not specificationAction.selected or not specificationAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('specificationDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not specificationAction.selected or not specificationAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('specificationDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not specificationAction.selected or not specificationAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="20" />
 								<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not specificationAction.selected or not specificationAction.editable}" update=":ruleForm:rulePanel" action="#{specificationAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()" title="Add new Business Rule" />
 								<p:spacer width="6" />
-								<p:button id="viewButton" value="View all" outcome="/specificationlist" icon="ui-icon-search" title="View or Print Specifications">
+								<p:button id="viewButton" value="View all" outcome="/requirement/specificationlist" icon="ui-icon-search" title="View or Print Specifications">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{specificationAction.id}" />
 								</p:button>

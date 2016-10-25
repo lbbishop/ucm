@@ -22,7 +22,7 @@
 								<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
 									<p:commandButton value="OK" update=":form:messages" action="#{testPlanAction.okay}" icon="ui-icon-check" title="Save form changes and close view" />
 									<p:spacer width="6" />
-									<p:commandButton value="Cancel" action="#{testPlanAction.close}" icon="ui-icon-cancel" title="Close view" />
+									<p:commandButton value="Cancel" immediate="true" action="#{testPlanAction.close}" icon="ui-icon-cancel" title="Close view" />
 									<p:spacer width="6" />
 									<p:commandButton value="Apply" update=":form:messages" action="#{testPlanAction.apply}" icon="ui-icon-check" title="Save form changes" />
 								</p:outputPanel>

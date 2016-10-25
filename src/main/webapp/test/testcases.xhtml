@@ -32,7 +32,7 @@
 						<p:dataTable id="table" emptyMessage="No TestCases Defined" resizableColumns="true" var="_testCase" value="#{testCaseAction.testCases}" selectionMode="single" rowKey="#{_testCase.id}" selection="#{testCaseAction.testCase}" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}"
 							filteredValue="#{testCaseAction.filteredTestCases}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{testCaseAction.onRowSelect}" update="@(:input) executeButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Project TestCases" style="font-size:0.93em" />
@@ -80,11 +80,11 @@
 								<p:spacer width="6" />
 								<p:commandButton id="clearResultsButton" value="Clear Results" disabled="#{not testCaseAction.selected or not testCaseAction.editable}" update=":form:table" action="#{testCaseAction.clearTestResults}" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not testCaseAction.selected or not testCaseAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not testCaseAction.selected or not testCaseAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not testCaseAction.selected or not testCaseAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="6" />
-								<p:button id="executeButton" value="Run Test" outcome="/testcase" disabled="#{not testCaseAction.selected}" title="Run the TestCase">
+								<p:button id="executeButton" value="Run Test" outcome="/test/testcase" disabled="#{not testCaseAction.selected}" title="Run the TestCase">
 									<f:param name="id" value="#{testCaseAction.testCase.id}" />
 								</p:button>
 								<p:spacer width="10" />

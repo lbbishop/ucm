@@ -90,13 +90,13 @@
 								</p:column>
 
 								<f:facet name="footer">
-									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not alternativeFlowAction.editable}" update=":editForm:editPanel" action="#{alternativeFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
+									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not alternativeFlowAction.editable}" update=":editForm" action="#{alternativeFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
 									<p:spacer width="6" />
-									<p:commandButton id="editButton" value="Edit" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit flow step" />
+									<p:commandButton id="editButton" value="Edit" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" title="Edit flow step" />
 									<p:spacer width="6" />
 									<p:commandButton id="deleteButton" value="Delete" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete selected flow step" />
 									<p:spacer width="6" />
-									<p:commandButton id="insertButton" value="Insert" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" update=":editForm:editPanel" action="#{alternativeFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()"
+									<p:commandButton id="insertButton" value="Insert" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" update=":editForm" action="#{alternativeFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()"
 										title="Insert new step above selection" />
 									<p:spacer width="6" />
 									<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not alternativeFlowAction.alternativeStepSelected or not alternativeFlowAction.editable}" update=":ruleForm:rulePanel" action="#{alternativeFlowAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()"

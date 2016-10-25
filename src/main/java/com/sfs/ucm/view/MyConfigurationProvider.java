@@ -84,8 +84,6 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 				.addRule(Join.path("/admin/users").to("/admin/users.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("userAction.load")))).after(PhaseId.RESTORE_VIEW))
 
-				.addRule(Join.path("/admin/settings").to("/admin/settings.jsf"))
-
 				.addRule(Join.path("/admin/contexthelp").to("/admin/contexthelp.jsf"))
 				.perform(PhaseOperation.enqueue(new IgnorePostbackOperation(Invoke.binding(El.retrievalMethod("helpContentAction.load")))).after(PhaseId.RESTORE_VIEW))
 

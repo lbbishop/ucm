@@ -110,13 +110,13 @@
 								</p:column>
 
 								<f:facet name="footer">
-									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
+									<p:commandButton id="addStepButton" value="Add Flow Step" disabled="#{not useCaseFlowAction.editable}" update=":editForm" action="#{useCaseFlowAction.addFlowStep}" oncomplete="PF('editDialog').show()" title="New Flow Step" />
 									<p:spacer width="4" />
-									<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit flow step" />
+									<p:commandButton id="editButton" value="Edit" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" title="Edit flow step" />
 									<p:spacer width="4" />
 									<p:commandButton id="deleteButton" value="Delete" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete selected basic flow step" />
 									<p:spacer width="4" />
-									<p:commandButton id="insertButton" value="Insert" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":editForm:editPanel" action="#{useCaseFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()" title="Insert new step above selection" />
+									<p:commandButton id="insertButton" value="Insert" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":editForm" action="#{useCaseFlowAction.insertFlowStep}" oncomplete="PF('editDialog').show()" title="Insert new step above selection" />
 									<p:spacer width="4" />
 									<p:commandButton id="addFlowButton" value="Add Alternative Flow" disabled="#{not useCaseFlowAction.basicStepSelected or not useCaseFlowAction.editable}" update=":flowForm:flowPanel" action="#{useCaseFlowAction.addAlternativeFlow}" oncomplete="PF('flowDialog').show()"
 										title="Add new Alternative Flow" />

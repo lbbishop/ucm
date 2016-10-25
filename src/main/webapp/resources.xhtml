@@ -90,9 +90,9 @@
 						</p:column>
 
 						<f:facet name="footer">
-							<p:commandButton value="New Resource" disabled="#{not resourceAction.editable}" update=":editForm:editPanel" action="#{resourceAction.add}" oncomplete="PF('editDialog').show()" title="New Model Resource" />
+							<p:commandButton value="New Resource" disabled="#{not resourceAction.editable}" update=":editForm" action="#{resourceAction.add}" oncomplete="PF('editDialog').show()" title="New Model Resource" />
 							<p:spacer width="6" />
-							<p:commandButton id="editButton" value="Edit" icon="ui-icon-pencil" disabled="#{not resourceAction.selected or not resourceAction.editable}" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" title="Edit resource metadata"/>
+							<p:commandButton id="editButton" value="Edit" icon="ui-icon-pencil" disabled="#{not resourceAction.selected or not resourceAction.editable}" update=":editForm" oncomplete="PF('editDialog').show()" title="Edit resource metadata"/>
 							<p:commandButton id="viewAttachButton" value="View Resource" disabled="#{not resourceAction.selected or not resourceAction.editable}" icon="ui-icon-check" ajax="false" title="Download and view resource">
 								<p:fileDownload value="#{resourceAction.resourceFile}" />
 							</p:commandButton>
@@ -119,7 +119,7 @@
 			</h:panelGrid>
 
 			<h:form enctype="multipart/form-data">
-				<p:fileUpload fileUploadListener="#{resourceAction.handleFileUpload}" mode="advanced" update=":form:messages :editForm:editPanel" sizeLimit="20000000" />
+				<p:fileUpload fileUploadListener="#{resourceAction.handleFileUpload}" mode="advanced" update=":form:messages :editForm" sizeLimit="20000000" />
 			</h:form>
 
 			<p:spacer height="20" />

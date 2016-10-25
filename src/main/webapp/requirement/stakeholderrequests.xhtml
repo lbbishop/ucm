@@ -33,7 +33,7 @@
 						<p:dataTable id="table" emptyMessage="No Requests Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_stakeholderRequest" value="#{stakeholderRequestAction.stakeholderRequests}" selectionMode="single" rowKey="#{_stakeholderRequest.id}"
 							selection="#{stakeholderRequestAction.stakeholderRequest}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{stakeholderRequestAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Stakeholder Requests" />
@@ -61,12 +61,12 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New StakeholderRequest" disabled="#{not stakeholderRequestAction.editable}" update=":editForm:editPanel" action="#{stakeholderRequestAction.add}" oncomplete="PF('editDialog').show()" title="New StakeholderRequest" />
+								<p:commandButton value="New StakeholderRequest" disabled="#{not stakeholderRequestAction.editable}" update=":editForm" action="#{stakeholderRequestAction.add}" oncomplete="PF('editDialog').show()" title="New StakeholderRequest" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not stakeholderRequestAction.selected or not stakeholderRequestAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not stakeholderRequestAction.selected or not stakeholderRequestAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not stakeholderRequestAction.selected or not stakeholderRequestAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-								<p:button id="viewButton" value="View All" outcome="/stakeholderrequestlist" icon="ui-icon-search" title="View or Print Stakeholder Requests">
+								<p:button id="viewButton" value="View All" outcome="/requirement/stakeholderrequestlist" icon="ui-icon-search" title="View or Print Stakeholder Requests">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{stakeholderRequestAction.id}" />
 								</p:button>

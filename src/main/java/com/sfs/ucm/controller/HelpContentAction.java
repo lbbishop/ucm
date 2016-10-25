@@ -77,7 +77,7 @@ public class HelpContentAction extends ActionBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@PersistenceContext(type = PersistenceContextType.EXTENDED, unitName = "wddrPU")
+	@PersistenceContext(type = PersistenceContextType.EXTENDED)
 	private EntityManager em;
 
 	@Inject

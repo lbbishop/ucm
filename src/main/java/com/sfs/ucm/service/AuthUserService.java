@@ -20,15 +20,40 @@ import com.sfs.ucm.util.Service;
 @Service
 @Stateless
 public class AuthUserService {
-	
+
 	@Inject
 	private Logger logger;
-	
+
 	@PersistenceContext
 	private EntityManager em;
 
 	/**
+	 * Find all AuthUsers
+	 * 
+	 * @return List of AuthUser
+	 * @throws UCMException
+	 */
+	public List<AuthUser> findAllAuthUsers() throws UCMException {
+		List<AuthUser> list = null;
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<AuthUser> cq = cb.createQuery(AuthUser.class);
+			Root<AuthUser> r = cq.from(AuthUser.class);
+			r.fetch("authRoles");
+			cq.select(r);
+			list = em.createQuery(cq).getResultList();
+
+		}
+		catch (Exception e) {
+			logger.error("Error occurred in findAllAuthUsers: {}", e.getMessage());
+			throw new UCMException("Error occurred in findAllAuthUsers: " + e.getMessage(), e);
+		}
+		return list;
+	}
+
+	/**
 	 * Find AuthUser by name
+	 * 
 	 * @param username
 	 * @return AuthUser null if not found
 	 * @throws UCMException
@@ -39,7 +64,7 @@ public class AuthUserService {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<AuthUser> cq = cb.createQuery(AuthUser.class);
 			Root<AuthUser> r = cq.from(AuthUser.class);
-			r.fetch("authRoles");
+			//r.fetch("authRoles");
 			cq.select(r).where(cb.equal(r.get("username"), username));
 			List<AuthUser> list = em.createQuery(cq).getResultList();
 			Iterator<AuthUser> iter = list.iterator();
@@ -51,25 +76,17 @@ public class AuthUserService {
 			logger.error("Error occurred in findUserByName: {}", e.getMessage());
 			throw new UCMException("Error occurred in findUserByName: " + e.getMessage(), e);
 		}
-		
+
 		return authUser;
 	}
-	
+
 	/**
 	 * Persist authUser
+	 * 
 	 * @param authUser
-	 * @return managed AuthUser
 	 * @throws UCMException
 	 */
-	public AuthUser store (final AuthUser authUser) throws UCMException {
-		AuthUser obj = authUser;
-		if (authUser.getId() == null) {
-			em.persist(obj);
-		}
-		else {
-			obj = em.merge(obj);
-		}
-		
-		return obj;
+	public void store(AuthUser authUser) throws UCMException {
+			em.persist(authUser);
 	}
 }

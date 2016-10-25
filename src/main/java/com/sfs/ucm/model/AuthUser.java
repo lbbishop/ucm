@@ -28,6 +28,7 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -80,7 +81,7 @@ public class AuthUser extends EntityBase implements Serializable {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	private Collection<AuthRole> authRoles;
 
 	@OneToMany(mappedBy = "authUser", cascade = { CascadeType.ALL })
@@ -113,7 +114,7 @@ public class AuthUser extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * constructor
+	 * data constructor
 	 * 
 	 * @param userName
 	 */
@@ -124,7 +125,7 @@ public class AuthUser extends EntityBase implements Serializable {
 	}
 
 	/**
-	 * constructor
+	 * data constructor
 	 * 
 	 * @param username
 	 * @param password
@@ -133,6 +134,22 @@ public class AuthUser extends EntityBase implements Serializable {
 	public AuthUser(String username, String name) {
 		super();
 		init();
+		this.username = username;
+		this.name = name;
+	}
+
+	/**
+	 * data constructor
+	 * 
+	 * @param identifier
+	 * @param username
+	 * @param password
+	 * @param name
+	 */
+	public AuthUser(Integer identifier, String username, String name) {
+		super();
+		init();
+		this.identifier = identifier;
 		this.username = username;
 		this.name = name;
 	}

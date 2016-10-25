@@ -29,6 +29,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Event;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -86,6 +87,8 @@ public class UserAction extends ActionBase implements Serializable {
 
 	private boolean selected;
 
+	private boolean projectManager;
+
 	/**
 	 * Controller initialization
 	 */
@@ -93,9 +96,6 @@ public class UserAction extends ActionBase implements Serializable {
 	public void init() {
 		this.authUser = new AuthUser();
 		this.selected = false;
-
-		begin();
-
 	}
 
 	/**
@@ -105,6 +105,9 @@ public class UserAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
+			// begin work unit
+			begin();
+
 			loadList();
 		}
 		catch (Exception e) {
@@ -132,6 +135,36 @@ public class UserAction extends ActionBase implements Serializable {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void add() {
 		this.authUser = new AuthUser(ModelUtils.getNextIdentifier(this.authUsers));
+	}
+
+	/**
+	 * Project manager change handler
+	 * 
+	 * @throws UCMException
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void onProjectManagerChange(ValueChangeEvent event) throws UCMException {
+		try {
+			this.projectManager = (Boolean) event.getNewValue();
+
+			if (this.projectManager) {
+				if (!this.authUser.hasRole(Literal.ROLE_MANAGER.toString())) {
+					this.authUser.addAuthRole(new AuthRole(this.authUser.getUsername(), Literal.ROLE_MANAGER.toString(), Literal.ROLEGROUP_MANAGERS.toString()));
+
+					// queue messages
+					logger.info("User {} given role of Manager", this.authUser.getUsername());
+					this.facesContextMessage.infoMessage("User {0} given role of Project Manager", this.authUser.getUsername());
+				}
+			}
+			else {
+				if (this.authUser.hasRole(Literal.ROLE_MANAGER.toString())) {
+					this.authUser.removeAuthRole(new AuthRole(this.authUser.getUsername(), Literal.ROLE_MANAGER.toString(), Literal.ROLEGROUP_MANAGERS.toString()));
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new UCMException(e);
+		}
 	}
 
 	/**
@@ -198,6 +231,8 @@ public class UserAction extends ActionBase implements Serializable {
 	 */
 	public void onRowSelect(SelectEvent event) {
 		this.selected = true;
+
+		this.projectManager = this.authUser.hasRole(Literal.ROLE_MANAGER.toString());
 	}
 
 	/**
@@ -248,6 +283,21 @@ public class UserAction extends ActionBase implements Serializable {
 	 */
 	public void setAuthUser(AuthUser authUser) {
 		this.authUser = authUser;
+	}
+
+	/**
+	 * @return the projectManager
+	 */
+	public boolean isProjectManager() {
+		return projectManager;
+	}
+
+	/**
+	 * @param projectManager
+	 *            the projectManager to set
+	 */
+	public void setProjectManager(boolean projectManager) {
+		this.projectManager = projectManager;
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">#{msg.appFullTitle} Users</ui:define>
+	<ui:define name="title">Manage Users</ui:define>
 
 	<ui:define name="content">
 
@@ -23,12 +23,11 @@
 					<div class="card">
 						<p:growl id="messages" life="#{appManager.growlLife}" />
 
-						<div style="margin: 10px">
-							<h:outputText value="#{msg.appFullTitle} Users"/>
-						</div>
+						<h2>Manage Users</h2>
+
 						<p:dataTable id="table" emptyMessage="No Users Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_user" value="#{userAction.authUsers}" selectionMode="single" rowKey="#{_user.id}" selection="#{userAction.authUser}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{userAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="Application Users" />
@@ -70,11 +69,11 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New User" update=":editForm:editPanel" action="#{userAction.add}" oncomplete="PF('editDialog').show()" title="New User" />
+								<p:commandButton value="New User" update=":editForm" action="#{userAction.add}" oncomplete="PF('editDialog').show()" title="New User" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not userAction.selected}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not userAction.selected}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
-								<p:commandButton id="deleteButton" value="Delete" disabled="#{not userAction.selected}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
+								<p:commandButton id="deleteButton" value="Delete" disabled="#{not userAction.selected}" icon="ui-icon-cancel" onclick="PF('cd').show()" title="Delete" />
 								<h:commandLink>
 									<p:graphicImage value="/images/excel.png" height="22" style="vertical-align: middle;" />
 									<pe:exporter type="xlsx" target="table" fileName="users" orientation="landscape" />
@@ -90,7 +89,7 @@
 			</div>
 		</h:form>
 
-		<p:dialog id="dialog" header="Edit User" widgetVar="editDialog" resizable="true" modal="true" responsive="true">
+		<p:dialog id="dialog" header="Edit User" widgetVar="editDialog" width="700" resizable="true" modal="true" responsive="true">
 			<h:form id="editForm">
 				<p:messages severity="error" />
 				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
@@ -109,6 +108,11 @@
 
 					<p:outputLabel for="phoneNumber" value="Phone Number:" />
 					<p:inputText id="phoneNumber" value="#{userAction.authUser.phoneNumber}" size="15" maxlength="12" />
+					
+					<p:outputLabel for="projectManager" value="Project Manager? " />
+					<p:selectBooleanCheckbox id="projectManager" value="#{userAction.projectManager}" valueChangeListener="#{userAction.onProjectManagerChange}">
+						<p:ajax update=":form:messages"/>
+					</p:selectBooleanCheckbox>
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">

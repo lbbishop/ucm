@@ -27,7 +27,7 @@
 						</div>
 						<p:dataTable id="table" emptyMessage="No Actors Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_actor" value="#{actorAction.actors}" selectionMode="single" rowKey="#{_actor.id}" selection="#{actorAction.actor}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{actorAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="#{actorAction.project.name}: Actors" />
@@ -62,13 +62,13 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New Actor" disabled="#{not actorAction.editable}" update=":editForm:editPanel" action="#{actorAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
+								<p:commandButton value="New Actor" disabled="#{not actorAction.editable}" update=":editForm" action="#{actorAction.add}" oncomplete="PF('editDialog').show()" title="New Actor" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not actorAction.selected or not actorAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="10" />
-								<p:button id="viewButton" value="View All" outcome="/actorlist" icon="ui-icon-search" title="View or Print Actor List">
+								<p:button id="viewButton" value="View All" outcome="/requirement/actorlist" icon="ui-icon-search" title="View or Print Actor List">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{actorAction.id}" />
 								</p:button>
@@ -80,7 +80,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{actorAction.close}"  title="Close view" />
+							<p:commandButton value="Close" action="#{actorAction.close}" icon="ui-icon-cancel"  title="Close view" />
 						</div>
 					</div>
 				</div>

@@ -30,7 +30,7 @@
 						<p:dataTable id="table" emptyMessage="No Glossary Terms Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_glossaryTerm" value="#{glossaryTermAction.glossaryTerms}" selectionMode="single" rowKey="#{_glossaryTerm.id}"
 							selection="#{glossaryTermAction.glossaryTerm}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{glossaryTermAction.onRowSelect}" update="editButton deleteButton" />
-							<p:ajax event="rowDblselect" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
 							<f:facet name="header">
 								<h:outputText value="#{glossaryTermAction.project.name}: Glossary of Terms" />
@@ -58,12 +58,12 @@
 							</p:column>
 
 							<f:facet name="footer">
-								<p:commandButton value="New Glossary Term" disabled="#{not glossaryTermAction.editable}" update=":editForm:editPanel" action="#{glossaryTermAction.add}" oncomplete="PF('editDialog').show()" title="New Glossary Term" />
+								<p:commandButton value="New Glossary Term" disabled="#{not glossaryTermAction.editable}" update=":editForm" action="#{glossaryTermAction.add}" oncomplete="PF('editDialog').show()" title="New Glossary Term" />
 								<p:spacer width="6" />
-								<p:commandButton id="editButton" value="Edit" disabled="#{not glossaryTermAction.selected or not glossaryTermAction.editable}" icon="ui-icon-pencil" update=":editForm:editPanel" oncomplete="PF('editDialog').show()" />
+								<p:commandButton id="editButton" value="Edit" disabled="#{not glossaryTermAction.selected or not glossaryTermAction.editable}" icon="ui-icon-pencil" update=":editForm" oncomplete="PF('editDialog').show()" />
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not glossaryTermAction.selected or not glossaryTermAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
-								<p:button id="viewButton" value="View All" outcome="/glossarylist" icon="ui-icon-search" title="View or Print Glossary">
+								<p:button id="viewButton" value="View All" outcome="/requirement/glossarylist" icon="ui-icon-search" title="View or Print Glossary">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
 									<f:param name="id" value="#{glossaryTermAction.id}" />
 								</p:button>
@@ -76,7 +76,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{glossaryTermAction.close}"  title="Close view" />
+							<p:commandButton value="Close" action="#{glossaryTermAction.close}" icon="ui-icon-cancel"  title="Close view" />
 						</div>
 					</div>
 				</div>

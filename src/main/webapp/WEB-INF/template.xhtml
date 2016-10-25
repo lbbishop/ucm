@@ -8,9 +8,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 	</f:facet>
-	
+
 	<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
-	 
+
 	<title><ui:insert name="title">Default Title</ui:insert></title>
 	<h:outputScript name="js/nanoscroller.js" library="ultima-layout" />
 	<h:outputScript name="js/layout.js" library="ultima-layout" />
@@ -30,21 +30,21 @@
 		</div>
 	</div>
 
-   <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
-           <f:facet name="start">
-               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
-           </f:facet>
+	<p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+		</f:facet>
 
-           <f:facet name="complete">
-               <h:outputText value="" />
-           </f:facet>
-       </p:ajaxStatus>
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
 
-	<h:outputStylesheet name="css/styles.css"  />
+	<h:outputStylesheet name="css/styles.css" />
 	<h:outputStylesheet name="css/nanoscroller.css" library="ultima-layout" />
 	<h:outputStylesheet name="css/animate.css" library="ultima-layout" />
 	<h:outputStylesheet name="css/ripple.css" library="ultima-layout" />
-	<h:outputStylesheet name="css/layout-dark-blue.css" library="ultima-layout" />
+	<h:outputStylesheet name="css/layout-sandia-blue.css" library="ultima-layout" />
 </h:body>
 
 </html>
