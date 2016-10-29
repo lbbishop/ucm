@@ -62,6 +62,7 @@ import com.sfs.ucm.model.UseCaseRuleTest;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
 import com.sfs.ucm.service.TestService;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.Service;
@@ -87,6 +88,10 @@ public class UseCaseAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	private List<Feature> features;
+	
+	@Inject
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	@Service
@@ -148,7 +153,8 @@ public class UseCaseAction extends ActionBase implements Serializable {
 			// begin work unit
 			begin();
 
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 
 			loadList();
 			loadFeatures(this.project);

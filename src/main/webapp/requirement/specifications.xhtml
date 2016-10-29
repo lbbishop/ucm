@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Supplementary Specification Specifications</ui:define>
+	<ui:define name="title">Supplementary Requirement Specifications</ui:define>
 	<ui:define name="content">
 
 		<script type="text/javascript">
@@ -32,7 +32,7 @@
 							<h:outputText value="#{projectSecurityMarking}" styleClass="securityMarking" />
 						</div>
 						<div style="margin: 6px">
-							<h:outputText value="#{specificationAction.project.name}: Supplementary Specification Specifications" styleClass="header" />
+							<h:outputText value="#{specificationAction.project.name}: Supplementary Requirement Specifications" styleClass="header" />
 						</div>
 						<p:dataTable id="table" emptyMessage="No Specifications Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_specification" value="#{specificationAction.specifications}" selectionMode="single" rowKey="#{_specification.id}"
 							selection="#{specificationAction.specification}" reflow="true">
@@ -40,7 +40,7 @@
 							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('specificationDialog').show()" />
 
 							<f:facet name="header">
-								<h:outputText value="Supplementary Specification Specifications" />
+								<h:outputText value="Supplementary Requirement Specifications" />
 							</f:facet>
 
 							<p:column>
@@ -78,7 +78,7 @@
 								<p:spacer width="6" />
 								<p:commandButton id="deleteButton" value="Delete" disabled="#{not specificationAction.selected or not specificationAction.editable}" icon="ui-icon-close" onclick="PF('cd').show()" title="Delete" />
 								<p:spacer width="20" />
-								<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not specificationAction.selected or not specificationAction.editable}" update=":ruleForm:rulePanel" action="#{specificationAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()" title="Add new Business Rule" />
+								<p:commandButton id="addRuleButton" value="Add Business Rule" disabled="#{not specificationAction.selected or not specificationAction.editable}" update=":ruleForm" action="#{specificationAction.addBusinessRule}" oncomplete="PF('ruleDialog').show()" title="Add new Business Rule" />
 								<p:spacer width="6" />
 								<p:button id="viewButton" value="View all" outcome="/requirement/specificationlist" icon="ui-icon-search" title="View or Print Specifications">
 									<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
@@ -101,7 +101,7 @@
 		</h:form>
 
 
-		<p:dialog header="Edit Specification" widgetVar="specificationDialog" resizable="true" modal="true" responsive="true">
+		<p:dialog header="Edit Specification" widgetVar="specificationDialog" resizable="true" modal="true" responsive="true" width="900">
 			<h:form id="editForm">
 				<p:messages severity="error" />
 				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
@@ -110,7 +110,7 @@
 					<h:outputText id="identifier" value="#{specificationAction.specification.artifact}" />
 
 					<p:outputLabel id="nameLabel" for="name" value="Name:" title="A brief name of this specification" />
-					<p:inputText id="name" value="#{specificationAction.specification.name}" size="90" maxlength="100" requiredMessage="Name is required" required="true" />
+					<p:inputText id="name" value="#{specificationAction.specification.name}" style="width:90%" maxlength="100" requiredMessage="Name is required" required="true" />
 
 					<p:outputLabel id="descriptionLabel" for="description" value="Description:" title="Provide a detailed specification of this specification" />
 					<p:editor id="description" value="#{specificationAction.specification.description}" style="width:600px" width="600" height="180" controls="#{editorControls}" widgetVar="descriptionEditorWidget" requiredMessage="Description is required" required="true" />
@@ -140,7 +140,7 @@
 					</p:selectOneMenu>
 
 					<p:outputLabel id="issuesLabel" for="issues" value="Issues:" title="Any outstanding issues associated with this specification" />
-					<p:inputTextarea id="issues" value="#{specificationAction.specification.issues}" rows="4" cols="120" />
+					<p:inputTextarea id="issues" value="#{specificationAction.specification.issues}" rows="4" style="width:90%" />
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">

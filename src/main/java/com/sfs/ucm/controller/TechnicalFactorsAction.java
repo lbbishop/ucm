@@ -41,6 +41,7 @@ import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.TechnicalFactors;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
@@ -65,8 +66,8 @@ public class TechnicalFactorsAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEvent;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	private Logger logger;
@@ -94,7 +95,8 @@ public class TechnicalFactorsAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			this.technicalFactors = this.project.getTechnicalFactors();
 		}
 		catch (Exception e) {
@@ -127,7 +129,7 @@ public class TechnicalFactorsAction extends ActionBase implements Serializable {
 				this.technicalFactors.setModifiedBy(authUser.getUsername());
 
 				em.persist(this.project);
-				projectEvent.fire(project);
+				
 				logger.info("saved: {}", this.technicalFactors);
 				this.facesContextMessage.infoMessage("Technical Factors saved successfully");
 			}
@@ -151,7 +153,7 @@ public class TechnicalFactorsAction extends ActionBase implements Serializable {
 				this.technicalFactors.setModifiedBy(authUser.getUsername());
 
 				em.persist(this.project);
-				projectEvent.fire(project);
+			
 				logger.info("saved {}", this.technicalFactors);
 				this.facesContextMessage.infoMessage("Technical Factors saved successfully");
 

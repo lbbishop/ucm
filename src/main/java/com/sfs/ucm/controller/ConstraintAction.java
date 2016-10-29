@@ -48,6 +48,7 @@ import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.DesignConstraint;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.security.AccessManager;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
@@ -71,14 +72,14 @@ public class ConstraintAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEvent;
-
-	@Inject
 	private Logger logger;
 
 	@Inject
 	private FacesContextMessage facesContextMessage;
+
+	@Inject
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	@Authenticated
@@ -114,7 +115,8 @@ public class ConstraintAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			loadList();
 
 			// update producers
@@ -167,8 +169,6 @@ public class ConstraintAction extends ActionBase implements Serializable {
 			// refresh list
 			loadList();
 
-			// fire update event
-			projectEvent.fire(project);
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -198,11 +198,8 @@ public class ConstraintAction extends ActionBase implements Serializable {
 				// refresh list
 				loadList();
 
-				// fire update event
-				projectEvent.fire(project);
-
 				this.selected = true;
-				
+
 			}
 		}
 		catch (Exception e) {

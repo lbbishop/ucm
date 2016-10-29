@@ -41,6 +41,7 @@ import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.ProductVision;
 import com.sfs.ucm.model.Project;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ProjectSecurityInit;
 import com.sfs.ucm.util.ProjectUpdated;
@@ -66,8 +67,8 @@ public class ProductVisionAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEvent;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	@ProjectSecurityInit
@@ -99,7 +100,8 @@ public class ProductVisionAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			this.productVision = this.project.getProductVision();
 
 			this.projectSecurityMarkingSrc.fire(this.project);
@@ -120,7 +122,7 @@ public class ProductVisionAction extends ActionBase implements Serializable {
 			if (validate()) {
 				this.productVision.setModifiedBy(authUser.getUsername());
 				em.persist(this.project);
-				projectEvent.fire(project);
+
 				this.facesContextMessage.infoMessage("Product Vision saved successfully");
 				logger.info("saved: {}", this.productVision);
 			}
@@ -144,7 +146,7 @@ public class ProductVisionAction extends ActionBase implements Serializable {
 			if (validate()) {
 				this.productVision.setModifiedBy(authUser.getUsername());
 				em.persist(this.project);
-				projectEvent.fire(project);
+
 				this.facesContextMessage.infoMessage("Product Vision saved successfully");
 				logger.info("saved: {}", this.productVision);
 			}

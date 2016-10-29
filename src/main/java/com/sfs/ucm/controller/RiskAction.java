@@ -48,6 +48,7 @@ import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.Risk;
 import com.sfs.ucm.security.AccessManager;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
@@ -76,8 +77,8 @@ public class RiskAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEvent;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	private Logger logger;
@@ -122,7 +123,8 @@ public class RiskAction extends ActionBase implements Serializable {
 	public void load() throws UCMException {
 
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			loadList();
 
 			// update producers

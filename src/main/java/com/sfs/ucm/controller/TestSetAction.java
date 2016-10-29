@@ -51,6 +51,7 @@ import com.sfs.ucm.model.ProjectMember;
 import com.sfs.ucm.model.TestPlan;
 import com.sfs.ucm.model.TestSet;
 import com.sfs.ucm.security.AccessManager;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
@@ -79,8 +80,8 @@ public class TestSetAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEventSrc;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	@ProjectSecurityInit
@@ -129,7 +130,8 @@ public class TestSetAction extends ActionBase implements Serializable {
 	public void load() throws UCMException {
 		try {
 			this.testPlan = em.find(TestPlan.class, id);
-			this.project = this.testPlan.getProject();
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			loadList();
 			loadProjectUsers(this.project);
 
@@ -189,7 +191,7 @@ public class TestSetAction extends ActionBase implements Serializable {
 
 			// refresh list
 			loadList();
-			projectEventSrc.fire(this.project);
+
 
 			this.selected = false;
 		}
@@ -213,7 +215,7 @@ public class TestSetAction extends ActionBase implements Serializable {
 				}
 
 				em.persist(this.testPlan);
-				projectEventSrc.fire(project);
+		
 				logger.info("saved {}", this.testSet.getArtifact());
 				this.facesContextMessage.infoMessage("{0} saved successfully", this.testSet.getArtifact());
 

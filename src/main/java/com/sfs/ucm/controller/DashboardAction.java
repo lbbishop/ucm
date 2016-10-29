@@ -97,9 +97,12 @@ public class DashboardAction extends ActionBase implements Serializable {
 		try {
 			loadList();
 
-			this.project = this.projects.get(0);
+			// TODO fix
+			if (this.projects.size() > 0) {
+				this.project = this.projects.get(0);
 
-			this.activeProjectSrc.fire(this.project);
+				this.activeProjectSrc.fire(this.project);
+			}
 		}
 		catch (Exception e) {
 			throw new UCMException(e);

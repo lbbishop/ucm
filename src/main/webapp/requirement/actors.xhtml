@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Use Case Actors</ui:define>
 
@@ -25,7 +26,8 @@
 						<div style="margin: 6px">
 							<h:outputText value="#{actorAction.project.name}: Use Case Actors" styleClass="header" />
 						</div>
-						<p:dataTable id="table" emptyMessage="No Actors Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_actor" value="#{actorAction.actors}" selectionMode="single" rowKey="#{_actor.id}" selection="#{actorAction.actor}" reflow="true">
+						<p:dataTable id="table" emptyMessage="No Actors Defined" resizableColumns="true" scrollable="true" scrollHeight="#{appManager.tableScrollHeight}" var="_actor" value="#{actorAction.actors}" selectionMode="single" rowKey="#{_actor.id}"
+							selection="#{actorAction.actor}" reflow="true">
 							<p:ajax event="rowSelect" listener="#{actorAction.onRowSelect}" update="editButton deleteButton" />
 							<p:ajax event="rowDblselect" update=":editForm" oncomplete="PF('editDialog').show()" />
 
@@ -80,7 +82,7 @@
 						</p:dataTable>
 
 						<div style="text-align: right; margin: 10px">
-							<p:commandButton value="Close" action="#{actorAction.close}" icon="ui-icon-cancel"  title="Close view" />
+							<p:commandButton value="Close" action="#{actorAction.close}" icon="ui-icon-cancel" title="Close view" />
 						</div>
 					</div>
 				</div>
@@ -88,7 +90,7 @@
 		</h:form>
 
 
-		<p:dialog id="dialog" header="Edit Actor" widgetVar="editDialog" resizable="true" modal="true" responsive="true">
+		<p:dialog id="dialog" header="Edit Actor" widgetVar="editDialog" resizable="true" modal="true" responsive="true" width="900">
 			<h:form id="editForm">
 				<p:messages severity="error" />
 				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
@@ -97,7 +99,7 @@
 					<h:outputText id="identifier" value="#{actorAction.actor.artifact}" />
 
 					<p:outputLabel for="name" value="Actor Name:" />
-					<p:inputText id="name" value="#{actorAction.actor.name}" size="80" maxlength="100" label="Name" required="true" requiredMessage="Name is required" />
+					<p:inputText id="name" value="#{actorAction.actor.name}" style="width:90%" maxlength="100" label="Name" required="true" requiredMessage="Name is required" />
 
 					<p:outputLabel for="complexity" value="Complexity:" />
 					<p:selectOneMenu id="complexity" value="#{actorAction.actor.complexity}" effect="fade" style="width:160px" required="true" requiredMessage="Complexity is required">
@@ -110,6 +112,18 @@
 
 					<p:outputLabel for="needs" value="Needs:" />
 					<p:inputTextarea id="needs" value="#{actorAction.actor.needs}" rows="4" style="width:95%;" />
+
+					<p:outputLabel for="interactions" value="Interactions:" />
+					<p:inputTextarea id="interactions" value="#{actorAction.actor.interactions}" rows="4" style="width:95%;" />
+
+					<p:outputLabel for="resources" value="Resources:" />
+					<p:inputTextarea id="resources" value="#{actorAction.actor.resources}" rows="4" style="width:95%;" />
+
+					<p:outputLabel for="background" value="Background:" />
+					<p:inputTextarea id="background" value="#{actorAction.actor.background}" rows="4" style="width:95%;" />
+					
+					<p:outputLabel for="knowledge" value="Business Knowledge:" />
+					<p:inputTextarea id="knowledge" value="#{actorAction.actor.businessKnowledge}" rows="4" style="width:95%;" />					
 
 					<f:facet name="footer">
 						<p:outputPanel layout="block" style="margin:0 auto;text-align:right">
@@ -125,8 +139,8 @@
 		<p:confirmDialog message="Are you sure?" width="200" showEffect="puff" header="Confirm" severity="alert" widgetVar="cd" style="margin:0 auto;">
 			<h:form>
 				<div style="margin: 0 auto; text-align: right">
-					<p:commandButton value="Yes" update="@(form)"  actionListener="#{actorAction.remove}" oncomplete="PF('cd').hide()" />
-					<p:commandButton value="No"  onclick="PF('cd').hide()" type="button" />
+					<p:commandButton value="Yes" update="@(form)" actionListener="#{actorAction.remove}" oncomplete="PF('cd').hide()" />
+					<p:commandButton value="No" onclick="PF('cd').hide()" type="button" />
 				</div>
 			</h:form>
 		</p:confirmDialog>

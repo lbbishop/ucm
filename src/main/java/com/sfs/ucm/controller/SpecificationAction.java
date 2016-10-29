@@ -60,6 +60,7 @@ import com.sfs.ucm.model.SpecificationRuleTest;
 import com.sfs.ucm.model.SpecificationTest;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
@@ -92,6 +93,11 @@ public class SpecificationAction extends ActionBase implements Serializable {
 
 	@Inject
 	private Logger logger;
+	
+	@Inject
+	@ActiveProject
+	private Project activeProject;
+
 
 	@Inject
 	@Authenticated
@@ -141,7 +147,8 @@ public class SpecificationAction extends ActionBase implements Serializable {
 			// begin work unit
 			begin();
 
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 
 			loadList();
 			loadFeatures(this.project);

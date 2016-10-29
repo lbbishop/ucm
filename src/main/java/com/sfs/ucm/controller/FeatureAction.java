@@ -50,6 +50,7 @@ import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.StakeholderRequest;
 import com.sfs.ucm.security.AccessManager;
 import com.sfs.ucm.service.ProjectService;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectUpdated;
@@ -76,8 +77,8 @@ public class FeatureAction extends ActionBase implements Serializable {
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	private Event<Project> projectEvent;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	@Service
@@ -124,7 +125,8 @@ public class FeatureAction extends ActionBase implements Serializable {
 			// begin work unit
 			begin();
 
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 

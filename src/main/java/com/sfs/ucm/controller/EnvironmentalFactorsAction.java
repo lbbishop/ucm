@@ -41,6 +41,7 @@ import com.sfs.ucm.exception.UCMException;
 import com.sfs.ucm.model.AuthUser;
 import com.sfs.ucm.model.EnvironmentalFactors;
 import com.sfs.ucm.model.Project;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ProjectUpdated;
 import com.sfs.ucm.view.FacesContextMessage;
@@ -66,9 +67,9 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEvent;
-
+	@ActiveProject
+	private Project activeProject;
+	
 	@Inject
 	private Logger logger;
 
@@ -95,7 +96,8 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			this.environmentalFactors = this.project.getEnvironmentalFactors();
 		}
 		catch (Exception e) {
@@ -128,7 +130,7 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 				this.environmentalFactors.setModifiedBy(authUser.getUsername());
 
 				em.persist(this.project);
-				projectEvent.fire(project);
+			
 
 				this.facesContextMessage.infoMessage("Environmental Factors saved successfully");
 				logger.info("saved: {}", this.environmentalFactors);
@@ -154,7 +156,7 @@ public class EnvironmentalFactorsAction extends ActionBase implements Serializab
 				this.environmentalFactors.setModifiedBy(authUser.getUsername());
 
 				em.persist(this.project);
-				projectEvent.fire(project);
+			
 
 				this.facesContextMessage.infoMessage("Environmental Factors saved successfully");
 				logger.info("saved: {}", this.environmentalFactors);

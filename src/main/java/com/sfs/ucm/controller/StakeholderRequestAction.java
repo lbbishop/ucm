@@ -50,6 +50,7 @@ import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.Stakeholder;
 import com.sfs.ucm.model.StakeholderRequest;
 import com.sfs.ucm.security.AccessManager;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
@@ -76,8 +77,8 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	private EntityManager em;
 
 	@Inject
-	@ProjectUpdated
-	Event<Project> projectEvent;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	@ProjectSecurityInit
@@ -102,7 +103,7 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	private Project project;
 
 	private boolean selected;
-	
+
 	private List<Stakeholder> stakeholders;
 
 	/**
@@ -121,14 +122,15 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 
 			// update producers
 			this.projectSecurityMarkingSrc.fire(this.project);
 
 			loadList();
 			loadStakeholders(this.project);
-			
+
 			editable = this.accessManager.hasPermission("projectMember", "Edit", this.project);
 		}
 		catch (Exception e) {
@@ -176,7 +178,7 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 			this.selected = false;
 
 			// update producers
-			this.projectEvent.fire(this.project);
+
 		}
 		catch (Exception e) {
 			throw new UCMException(e);
@@ -205,8 +207,6 @@ public class StakeholderRequestAction extends ActionBase implements Serializable
 				loadList();
 				this.selected = true;
 
-				// update producers
-				this.projectEvent.fire(this.project);
 			}
 		}
 		catch (Exception e) {

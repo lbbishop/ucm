@@ -99,11 +99,11 @@
 			</div>
 		</h:form>
 
-		<p:dialog id="dialog" header="Edit UseCase" widgetVar="editDialog" resizable="true" modal="true" style="width:800px" width="800" responsive="true">
+		<p:dialog id="dialog" header="Edit UseCase" widgetVar="editDialog" resizable="true" modal="true"  width="1000" responsive="true">
 
 			<h:form id="editForm">
 				<p:messages severity="error" />
-				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-3,ui-g-9" styleClass="ui-panelgrid-blank form-group">
+				<p:panelGrid columns="2" layout="grid" columnClasses="ui-g-2,ui-g-10" styleClass="ui-panelgrid-blank form-group">
 
 					<h:outputLabel id="identifierLabel" for="identifier" value="Identifier:" title="A unique identifier for this artifact" />
 					<h:outputText id="identifier" value="#{useCaseAction.useCase.artifact}" />
@@ -170,7 +170,7 @@
 					</f:facet>
 				</p:panelGrid>
 				<pe:tooltip for="identifier" styleClass="customTooltip" />
-				<pe:tooltip for="extendedFlow" styleClass="customTooltip" />
+				<pe:tooltip for="extendedFlowSelect" styleClass="customTooltip" />
 				<pe:tooltip for="basicFlow" styleClass="customTooltip" />
 				<pe:tooltip for="commentsLabel" styleClass="customTooltip" />
 				<pe:tooltip for="triggerEvent" styleClass="customTooltip" />

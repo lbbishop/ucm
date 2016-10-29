@@ -49,6 +49,7 @@ import com.sfs.ucm.model.Project;
 import com.sfs.ucm.model.Stakeholder;
 import com.sfs.ucm.model.SurvivalTest;
 import com.sfs.ucm.security.AccessManager;
+import com.sfs.ucm.util.ActiveProject;
 import com.sfs.ucm.util.Authenticated;
 import com.sfs.ucm.util.ModelUtils;
 import com.sfs.ucm.util.ProjectSecurityInit;
@@ -75,9 +76,10 @@ public class StakeholderAction extends ActionBase implements Serializable {
 	@PersistenceContext(type = PersistenceContextType.EXTENDED)
 	private EntityManager em;
 
+	
 	@Inject
-	@ProjectUpdated
-	private Event<Project> projectEvent;
+	@ActiveProject
+	private Project activeProject;
 
 	@Inject
 	private Logger logger;
@@ -121,7 +123,8 @@ public class StakeholderAction extends ActionBase implements Serializable {
 	 */
 	public void load() throws UCMException {
 		try {
-			this.project = em.find(Project.class, id);
+			logger.info("Using active project {}", this.activeProject);
+			this.project = em.find(Project.class, this.activeProject.getId());
 			loadList();
 
 			// update events
@@ -201,9 +204,6 @@ public class StakeholderAction extends ActionBase implements Serializable {
 			// refresh list
 			loadList();
 
-			// update producers
-			this.projectEvent.fire(this.project);
-
 			this.selected = false;
 		}
 		catch (Exception e) {
@@ -226,7 +226,6 @@ public class StakeholderAction extends ActionBase implements Serializable {
 				}
 
 				em.persist(this.project);
-				projectEvent.fire(project);
 
 				this.facesContextMessage.infoMessage("{0} saved successfully", this.stakeholder.getArtifact());
 				logger.info("saved: {}", this.stakeholder.getArtifact());
